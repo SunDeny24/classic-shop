@@ -1,14 +1,14 @@
 //검색 모달 화면
+
 import Link from 'next/link';
 
 export default function SearchModal({ closeSearch }) {
     console.log('SearchModal열림');
-    //★ x 버튼구현하기
     return (
-        <div className="absolute inset-0 bg-white z-[999] p-4 md:p-8 border">
+        <div className="fixed inset-0 bg-white z-[999] p-4 md:p-8 ">
             <button
                 onClick={closeSearch}
-                className="border top-6 right-6 md:top-8 md:right-8 text-gray-500 hover:text-black z-[1000]"
+                className="top-6 right-6 md:top-8 md:right-8 text-gray-500 hover:text-black z-[1000]"
             >
                 <svg
                     className="w-8 h-8"
@@ -20,7 +20,7 @@ export default function SearchModal({ closeSearch }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            <div className="max-w-3xl mx-auto border">
+            <div className="max-w-3xl mx-auto">
                 <div className="relative mt-12">
                     <input
                         type="text"

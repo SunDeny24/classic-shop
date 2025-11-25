@@ -3,7 +3,6 @@
 
 export default async function ProductDetail({ params }) {
     const { id } = await params;
-    console.log('id : ', id);
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
             <div className="border p-5">

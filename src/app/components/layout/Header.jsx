@@ -1,6 +1,7 @@
 //Header 컴포넌트 구성
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Logo from './Logo';
 import Navigation from './Navigation';
 import SearchBar from './SearchBar';
@@ -11,6 +12,13 @@ import SearchModal from '../ui/SearchModal';
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false); //햄버거메뉴오픈
     const [isSearchOpen, setIsSearchOpen] = useState(false); //검색모달 오픈
+    const pathName = usePathname();
+
+    //경로 변경시 모달 강제닫기
+    useEffect(() => {
+        setIsSearchOpen(false);
+    }, [pathName]);
+
     return (
         <div className="w-full bg-white border-b border-gray-200 sticky top-0 z-20">
             <div className="container mx-auto px-4">

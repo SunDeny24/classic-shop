@@ -2,8 +2,8 @@
 // src/app/(main)/search/[query]/page.jsx
 
 export default async function SearchPage({ params }) {
-    const { query } = await params; //인코딩되어있음
-    const keyword = decodeURIComponent(query); //디코딩함수사용해서 한글변환
+    const { query } = await params;
+    const keyword = decodeURIComponent(query); //디코딩함수사용
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
             <div className="border p-5">
