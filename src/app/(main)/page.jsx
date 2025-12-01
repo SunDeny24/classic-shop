@@ -4,6 +4,7 @@
 import ProductCardGrid from '../components/ui/ProductCardGrid';
 import WeatherBanner from '../components/ui/WeatherBanner';
 import CategoryCardList from '../components/ui/CategoryCardList';
+import { useProducts } from '../hooks/useProducts';
 
 export default function Home() {
     //최근 본 상품 view css class 정의하고 limit-4로 데이터 제한해서 페칭해오기
