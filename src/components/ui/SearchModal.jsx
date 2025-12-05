@@ -49,19 +49,19 @@ export default function SearchModal({ closeSearch }) {
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">최근 검색어</h3>
                     <div className="flex flex-wrap gap-3">
                         <Link
-                            href="/search/'아우터'"
+                            href="/search/아우터"
                             className="bg-gray-100 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-200"
                         >
                             아우터
                         </Link>
                         <Link
-                            href="/search/'패딩'"
+                            href="/search/패딩"
                             className="bg-gray-100 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-200"
                         >
                             패딩
                         </Link>
                         <Link
-                            href="/search/'부츠'"
+                            href="/search/부츠"
                             className="bg-gray-100 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-200"
                         >
                             부츠

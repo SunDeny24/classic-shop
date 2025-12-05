@@ -4,16 +4,12 @@
 
 'use client';
 
-import { useProducts } from '@/app/hooks/useProducts';
-import ProductCardGrid from '@/app/components/ui/ProductCardGrid';
+import { useProducts } from '@/hooks/useProducts';
+import ProductCardGrid from '@/components/ui/ProductCardGrid';
 
 export default function ProductTestPage() {
     //셔츠라는 query 데이터(검색어)를 넘겨서 fetch
     const { products, loading, error, refetch } = useProducts('셔츠');
-
-    // 이 로그 순서 봐!
-    console.log('[Page] products:', products.length, 'items');
-    console.log('[Page] loading:', loading);
 
     //추후에 ui 변경예정
     if (loading) return <p>로딩중...</p>;
@@ -23,9 +19,15 @@ export default function ProductTestPage() {
     return (
         <div className="p-6">
             <h1>네이버 패션 상품 테스트</h1>
-            <button onClick={refetch}>다시 불러오기</button>
-
-            <ProductCardGrid productInfo={products} />
+            <div>
+                <button
+                    className="bg-gray-100 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-200"
+                    onClick={refetch}
+                >
+                    다시 불러오기
+                </button>
+            </div>
+            <ProductCardGrid className="grid grid-cols-2 md:grid-cols-4 gap-4" productInfo={products} />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 //카테고리 카드
-//app/components/ui/CategoryCard.jsx
+//src/components/ui/CategoryCard.jsx
 
 export default function CategoryCard() {
     return (

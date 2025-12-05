@@ -7,7 +7,7 @@ import Navigation from './Navigation';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
 import MobileMenu from './MobileMenu';
-import SearchModal from '../ui/SearchModal';
+import SearchModal from '@/components/ui/SearchModal';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false); //햄버거메뉴오픈

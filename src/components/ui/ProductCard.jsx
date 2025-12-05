@@ -1,20 +1,17 @@
 //상품 카드 컴포넌트
-// app/components/ui/ProductCard.jsx
+// src/components/ui/ProductCard.jsx
 
 import Link from 'next/link';
 
 export default function ProductCard({ productData }) {
-    //데이터 가공
-
     console.log(productData);
-
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden group">
-            <Link href={`/product/${productData.id}`}>
+            <Link href={`/product/${productData.productId}`}>
                 <div className="relative">
                     <img
                         src={productData.image}
-                        alt={productData.productName}
+                        alt={productData.title}
                         className="w-full h-64 object-cover transition-transform group-hover:scale-105"
                     />
                     <button data-like-button className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md">
@@ -36,8 +33,8 @@ export default function ProductCard({ productData }) {
                 </div>
                 <div className="p-4">
                     <p className="text-sm font-semibold text-gray-600">{productData.brand}</p>
-                    <h3 className="text-lg font-medium text-gray-900 truncate">{productData.productName}</h3>
-                    <p className="text-xl font-bold text-gray-900 mt-1">{productData.price}</p>
+                    <h3 className="text-lg font-medium text-gray-900 truncate">{productData.title}</h3>
+                    <p className="text-xl font-bold text-gray-900 mt-1">{productData.lprice}</p>
                 </div>
             </Link>
         </div>

@@ -1,5 +1,5 @@
 //카테고리 카드리스트
-//app/components/ui/CategoryCardList.jsx
+//src/components/ui/CategoryCardList.jsx
 
 import CategoryCard from './CategoryCard';
 

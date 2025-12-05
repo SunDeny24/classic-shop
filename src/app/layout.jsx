@@ -1,5 +1,5 @@
 //전체 provider 설정 최상위지점
-import './styles/globals.css';
+import '@/styles/globals.css';
 
 export const metadata = {
     title: 'Shopping In Classic',

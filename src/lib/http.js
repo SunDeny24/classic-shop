@@ -1,5 +1,5 @@
 // 공통 fetch 유틸 : 공통 헤더 설정, 에러처리 담당 재사용
-// src/app/lib/http.js
+// src/lib/http.js
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',

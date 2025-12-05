@@ -1,5 +1,5 @@
 //날씨 배너
-//app/components/ui/WeatherBanner.jsx
+//src/components/ui/WeatherBanner.jsx
 
 export default function WeatherBanner() {
     return (
