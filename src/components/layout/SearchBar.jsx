@@ -1,7 +1,6 @@
 import Link from 'next/link';
 export default function SearchBar({ open, setOpen }) {
     const handleChange = () => {
-        console.log('검색모달로 이동');
         setOpen(true);
     };
     return (

@@ -16,7 +16,9 @@ export default function Header() {
 
     //경로 변경시 모달 강제닫기
     useEffect(() => {
-        setIsSearchOpen(false);
+        if (isSearchOpen) {
+            setIsSearchOpen(false);
+        }
     }, [pathName]);
 
     return (

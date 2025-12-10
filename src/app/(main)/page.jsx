@@ -13,11 +13,11 @@ export default function Home() {
     const gridClass = 'grid grid-cols-2 md:grid-cols-4 gap-4';
 
     //최근 본 상품 구현시 변경하기
-    const { products, loading, error, refetch } = useProducts('셔츠');
-    //추후에 ui 변경예정
-    if (loading) return <p>로딩중...</p>;
-    if (error) return <p>에러: {error}</p>;
-    if (!products || products.length === 0) return <p>상품이 없습니다.</p>;
+    // const { products, loading, error, refetch } = useProducts('셔츠');
+    // //추후에 ui 변경예정
+    // if (loading) return <p>로딩중...</p>;
+    // if (error) return <p>에러: {error}</p>;
+    // if (!products || products.length === 0) return <p>상품이 없습니다.</p>;
 
     return (
         <div className="bg-zinc-50 font-sans ">
@@ -29,7 +29,7 @@ export default function Home() {
                 </section>
                 <section className="border">
                     <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
-                    <ProductCardGrid gridClass={gridClass} productInfo={products} />
+                    {/*<ProductCardGrid gridClass={gridClass} productInfo={products} />*/}
                 </section>
             </div>
         </div>

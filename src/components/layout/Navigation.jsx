@@ -1,6 +1,5 @@
 import Link from 'next/link';
 export default function Navigation() {
-    //useSearchParams를 사용해서 query값 추출
     return (
         <div className="flex space-x-6">
             <Link href="/search/아우터" className="text-gray-700 font-medium hover:text-blue-600">

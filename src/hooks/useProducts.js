@@ -57,18 +57,31 @@ export function useProducts(query, options = {}) {
     const [products, setProducts] = useState([]); //상품데이터 배열 state
     const [loading, setLoading] = useState(false); //로딩여부 state
     const [error, setError] = useState(null); //에러 state
+    const [page, setPage] = useState(1); //현재 페이지 state
+    const display = options.display ?? 20; //display 옵션
 
     //데이터 가져와서 api fetch함수 호출시킴
-    const load = async () => {
-        if (!query) return; //쿼리없으면 return
+    const load = async (nextPage = 1) => {
+        if (!query) return;
+        //query없으면 패칭x
         setLoading(true);
         setError(null);
 
         try {
-            const data = await fetchFashionProducts(query, options);
+            //start 값 계산법
+            const start = (nextPage - 1) * display + 1;
+            const data = await fetchFashionProducts(query, { ...options, start, display });
             const rawItems = data.items ?? [];
             const curatedData = processNaverData({ items: rawItems });
-            setProducts(curatedData);
+            if (nextPage === 1) {
+                //첫페이지에서는 그대로 데이터 가져오고
+                setProducts(curatedData);
+            } else {
+                //다음 페이지부터는 기존값에 덧붙혀준다.
+                setProducts((prev) => [...prev, ...curatedData]);
+            }
+
+            setPage(nextPage); //페이지 셋팅
         } catch (e) {
             setError(e.message ?? '알수없는 에러 등장');
         } finally {
@@ -76,9 +89,18 @@ export function useProducts(query, options = {}) {
         }
     };
 
+    //검색어 바뀌면 1페이지부터 load처리
     useEffect(() => {
-        load();
+        if (!query) {
+            return; //query없이 호출 x
+        }
+        load(1);
     }, [query]);
 
-    return { products, loading, error, refetch: load };
+    //다음 페이지 요청
+    const loadMore = () => {
+        load(page + 1);
+    };
+
+    return { products, loading, error, refetch: () => load(page), loadMore };
 }
