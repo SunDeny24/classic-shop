@@ -7,7 +7,14 @@ export default function ProductCard({ productData }) {
     //console.log(productData);
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden group">
-            <Link href={`/product/${productData.productId}`}>
+            <Link
+                href={{
+                    pathname: `/product/${productData.productId}`,
+                    query: {
+                        data: encodeURIComponent(JSON.stringify(productData)),
+                    },
+                }}
+            >
                 <div className="relative">
                     <img
                         src={productData.image}

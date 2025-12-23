@@ -1,4 +1,5 @@
-//검색 데이터 데이터 넘겨주는 클라이언트 컴포넌트
+// 검색 상품목록 데이터 넘겨주는 클라이언트 컴포넌트
+// src/components/search/ProductResults.jsx
 'use client';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from '@/components/ui/ProductCardGrid';

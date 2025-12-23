@@ -3,19 +3,21 @@
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('query') || '';
+    const query = searchParams.get('query') || ''; //목록 검색어
     const display = searchParams.get('display') || '20';
     const start = searchParams.get('start') || '1';
 
-    const NAVER_URL = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
+    const apiUrl = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
         query
     )}&display=${display}&start=${start}`;
 
-    const res = await fetch(NAVER_URL, {
-        headers: {
-            'X-Naver-Client-Id': process.env.NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET,
-        },
+    const customHeaders = {
+        'X-Naver-Client-Id': process.env.NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET,
+    };
+
+    const res = await fetch(apiUrl, {
+        headers: customHeaders,
         cache: 'no-store',
     });
 

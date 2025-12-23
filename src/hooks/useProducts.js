@@ -1,5 +1,5 @@
-//데이터 핸들링 커스텀 훅
-//app/hooks/useProducts.js
+//네이버 상품목록 조회 커스텀 훅
+//src/hooks/useProducts.js
 'use client';
 
 import { useState, useEffect } from 'react';
