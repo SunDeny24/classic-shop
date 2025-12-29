@@ -10,6 +10,7 @@ export async function fetchFashionProducts(query, options = {}) {
     url.searchParams.set('query', query);
     url.searchParams.set('display', options.display ?? '20');
     url.searchParams.set('start', options.start ?? '1');
+    url.searchParams.set('sort', options.sort ?? 'sim');
 
     return httpGet(url.toString(), {
         cache: 'no-store',

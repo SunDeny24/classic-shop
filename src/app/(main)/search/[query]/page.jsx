@@ -9,7 +9,9 @@ export default async function SearchPage({ params }) {
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
             <div className="border p-5">
-                <h1>"{keyword}"의 검색결과</h1>
+                <h1 className="p-5 text-3xl font-medium ">
+                    "{keyword}" <span className="text-xl">의 검색결과</span>
+                </h1>
                 <ProductResults query={keyword} />
             </div>
         </div>

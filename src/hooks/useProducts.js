@@ -2,9 +2,11 @@
 //src/hooks/useProducts.js
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { fetchFashionProducts } from '@/lib/services/fashionService';
 import formatPrice from '@/utils/formatPrice';
+
+const DISPLAY = 100;
 
 /**
  * 네이버 쇼핑 API 응답 데이터 가공
@@ -17,6 +19,7 @@ const processNaverData = (apiResponse) => {
         return [];
     }
     const curatedProductMap = new Map();
+
     apiResponse.items.forEach((item) => {
         const key = item.productId; //키는 네이버의 productId
         const currentPrice = parseInt(item.lprice, 10); //최저가 10진수 변환
@@ -37,6 +40,7 @@ const processNaverData = (apiResponse) => {
                 brand: item.brand || item.mallName || '알수없음',
                 link: item.link,
                 lprice: formatPrice(currentPrice),
+                rawPrice: currentPrice,
             });
         } else {
             //기존상품의 최저가 셋팅
@@ -44,6 +48,7 @@ const processNaverData = (apiResponse) => {
             //현재최저가<기존최저가 일시 더 낮은 가격으로 변경
             if (currentPrice < existProduct.lprice) {
                 existProduct.lprice = formatPrice(currentPrice); //더 낮은 가격의 현재최저가로 변경
+                existProduct.rawPrice = currentPrice;
                 existProduct.link = item.link;
                 existProduct.mallName = item.mallName;
             }
@@ -54,31 +59,30 @@ const processNaverData = (apiResponse) => {
 
 export function useProducts(query, options = {}) {
     //상태관리 정의
-    const [products, setProducts] = useState([]); //상품데이터 배열 state
+    const [rawProducts, setrawProducts] = useState([]); //상품데이터 배열 state
     const [loading, setLoading] = useState(false); //로딩여부 state
     const [error, setError] = useState(null); //에러 state
     const [page, setPage] = useState(1); //현재 페이지 state
-    const display = options.display ?? 20; //display 옵션
+    const [sortType, setSortType] = useState('default'); //정렬 state
 
     //데이터 가져와서 api fetch함수 호출시킴
     const load = async (nextPage = 1) => {
         if (!query) return;
-        //query없으면 패칭x
+
         setLoading(true);
         setError(null);
 
         try {
-            //start 값 계산법
-            const start = (nextPage - 1) * display + 1;
-            const data = await fetchFashionProducts(query, { ...options, start, display });
-            const rawItems = data.items ?? [];
-            const curatedData = processNaverData({ items: rawItems });
+            //처음 100개 요청
+            const start = (nextPage - 1) * DISPLAY + 1;
+            const data = await fetchFashionProducts(query, { ...options, start, display: DISPLAY, sort: 'sim' });
+            const curatedData = processNaverData({ items: data.items ?? [] });
             if (nextPage === 1) {
                 //첫페이지에서는 그대로 데이터 가져오고
-                setProducts(curatedData);
+                setrawProducts(curatedData);
             } else {
                 //다음 페이지부터는 기존값에 덧붙혀준다.
-                setProducts((prev) => [...prev, ...curatedData]);
+                setrawProducts((prev) => [...prev, ...curatedData]);
             }
 
             setPage(nextPage); //페이지 셋팅
@@ -89,6 +93,19 @@ export function useProducts(query, options = {}) {
         }
     };
 
+    //정렬 로직(가격순)
+    const products = useMemo(() => {
+        const sorted = [...rawProducts];
+
+        if (sortType === 'low') {
+            sorted.sort((a, b) => a.rawPrice - b.rawPrice);
+        }
+        if (sortType === 'high') {
+            sorted.sort((a, b) => b.rawPrice - a.rawPrice);
+        }
+        return sorted;
+    }, [rawProducts, sortType]);
+
     //검색어 바뀌면 1페이지부터 load처리
     useEffect(() => {
         if (!query) {
@@ -98,9 +115,15 @@ export function useProducts(query, options = {}) {
     }, [query]);
 
     //다음 페이지 요청
-    const loadMore = () => {
-        load(page + 1);
-    };
+    const loadMore = () => load(page + 1);
 
-    return { products, loading, error, refetch: () => load(page), loadMore };
+    return {
+        products,
+        loading,
+        error,
+        sortType,
+        setSortType,
+        refetch: () => load(page),
+        loadMore,
+    };
 }

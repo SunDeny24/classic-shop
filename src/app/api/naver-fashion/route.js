@@ -6,10 +6,11 @@ export async function GET(request) {
     const query = searchParams.get('query') || ''; //목록 검색어
     const display = searchParams.get('display') || '20';
     const start = searchParams.get('start') || '1';
+    const sort = searchParams.get('sort') || 'sim';
 
     const apiUrl = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
         query
-    )}&display=${display}&start=${start}`;
+    )}&display=${display}&start=${start}&sort=${sort}`;
 
     const customHeaders = {
         'X-Naver-Client-Id': process.env.NAVER_CLIENT_ID,

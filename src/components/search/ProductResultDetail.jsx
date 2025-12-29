@@ -23,13 +23,21 @@ export default function ProductResultDetail() {
                     <p className="text-3xl font-bold text-gray-900 mt-4 mb-6">{product.lprice}</p>
 
                     <div className="flex items-center space-x-4 mt-auto pt-6 border-t">
-                        <button className="flex-1 bg-gray-800 text-white text-lg font-bold py-4 rounded-lg hover:bg-black">
+                        <div className="flex-1 flex items-center justify-center bg-gray-800 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors">
                             장바구니
-                        </button>
-                        <button className="flex-1 bg-blue-600 text-white text-lg font-bold py-4 rounded-lg hover:bg-blue-700">
-                            <a href={product.link}>바로 주문</a>
-                        </button>
-                        <button data-like-button className="border border-gray-300 rounded-lg p-4 hover:bg-gray-100">
+                        </div>
+                        <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                            <a
+                                className="flex items-center justify-center w-full h-full py-4 text-white text-lg font-bold"
+                                href={product.link}
+                            >
+                                바로 주문
+                            </a>
+                        </div>
+                        <div
+                            data-like-button
+                            className="flex items-center justify-center border border-gray-300 rounded-lg w-[60px] h-[60px] hover:bg-gray-100 transition-colors"
+                        >
                             <svg
                                 className="w-7 h-7 text-gray-500"
                                 fill="none"
@@ -44,7 +52,7 @@ export default function ProductResultDetail() {
                                     d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 016.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
                                 ></path>
                             </svg>
-                        </button>
+                        </div>
                     </div>
                 </div>
             </div>
