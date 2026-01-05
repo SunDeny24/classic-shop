@@ -30,6 +30,7 @@ export default function ProductResultDetail() {
                             <a
                                 className="flex items-center justify-center w-full h-full py-4 text-white text-lg font-bold"
                                 href={product.link}
+                                target="_blank"
                             >
                                 바로 주문
                             </a>

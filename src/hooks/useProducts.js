@@ -41,6 +41,8 @@ const processNaverData = (apiResponse) => {
                 link: item.link,
                 lprice: formatPrice(currentPrice),
                 rawPrice: currentPrice,
+                productType: item.productType,
+                mallName: item.mallName,
             });
         } else {
             //기존상품의 최저가 셋팅
@@ -78,11 +80,16 @@ export function useProducts(query, options = {}) {
             const data = await fetchFashionProducts(query, { ...options, start, display: DISPLAY, sort: 'sim' });
             const curatedData = processNaverData({ items: data.items ?? [] });
             if (nextPage === 1) {
-                //첫페이지에서는 그대로 데이터 가져오고
+                //첫페이지에서는 그대로 데이터 가져옴
                 setrawProducts(curatedData);
             } else {
-                //다음 페이지부터는 기존값에 덧붙혀준다.
-                setrawProducts((prev) => [...prev, ...curatedData]);
+                //다음 페이지부터는 기존값에 추가
+                //+ 데이터 합칠때 productId 중복체크로직 추가
+                setrawProducts((prev) => {
+                    const existingIds = new Set(prev.map((item) => item.productId));
+                    const uniqueNewData = curatedData.filter((item) => !existingIds.has(item.productId));
+                    return [...prev, ...uniqueNewData];
+                });
             }
 
             setPage(nextPage); //페이지 셋팅
