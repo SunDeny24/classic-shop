@@ -24,8 +24,11 @@ export default function Header() {
     return (
         <div className="w-full bg-white border-b border-gray-200 sticky top-0 z-20">
             <div className="container mx-auto px-4">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-20 gap-8">
                     <Logo />
+                    <div className="hidden md:flex flex-1 max-w-xl relative group">
+                        <SearchBar open={isSearchOpen} setOpen={setIsSearchOpen} />
+                    </div>
                     <UserMenu />
                     {/* 모바일에서 보이는 햄버거메뉴 버튼*/}
                     <button
@@ -66,10 +69,6 @@ export default function Header() {
                             </svg>
                         )}
                     </button>
-                </div>
-                <div className="hidden md:flex justify-between items-center h-12">
-                    <Navigation />
-                    <SearchBar open={isSearchOpen} setOpen={setIsSearchOpen} />
                 </div>
                 {/* 검색창 클릭시 검색모달 오픈*/}
                 {isSearchOpen ? <SearchModal closeSearch={() => setIsSearchOpen(false)} /> : ''}
