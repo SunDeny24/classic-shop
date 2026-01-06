@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Logo from './Logo';
-import Navigation from './Navigation';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
 import MobileMenu from './MobileMenu';
