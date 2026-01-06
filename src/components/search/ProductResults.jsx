@@ -5,7 +5,7 @@ import ProductCardGrid from '@/components/ui/ProductCardGrid';
 
 export default function ProductResults({ query }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
-    const gridClass = 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'; //상품그리드 css 설정
+    const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
     // 필터 상태 관리 (중고, 단종, 판매예정)
     const [filters, setFilters] = useState({
@@ -52,8 +52,6 @@ export default function ProductResults({ query }) {
         });
     }, [products, filters]);
 
-    if (loading && (!products || products.length === 0))
-        return <p className="p-10 text-center text-zinc-400">데이터를 분석 중입니다...</p>;
     if (error) return <p className="p-10 text-center text-red-400">에러: {error}</p>;
 
     return (
@@ -127,9 +125,23 @@ export default function ProductResults({ query }) {
                 </div>
 
                 {/* 상품 그리드 */}
-                {curatedProducts.length > 0 ? (
-                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} />
+                {/* {loading || curatedProducts.length > 0 ? (
+                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} isLoading={loading} />
                 ) : (
+                    <div className="py-20 text-center text-zinc-400 font-light italic">
+                        조건에 맞는 결과가 없습니다.
+                    </div>
+                )} */}
+                {loading && (
+                    // 로딩중이면 스켈레톤만 보여줌
+                    <ProductCardGrid gridClass={gridClass} productInfo={[]} isLoading={true} />
+                )}
+                {!loading && curatedProducts.length > 0 && (
+                    //로딩끝났고 데이터 있음 실제 그리드 보여주기
+                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} isLoading={loading} />
+                )}
+                {!loading && curatedProducts.length === 0 && (
+                    //로딩끝났는데도 데이터 없음
                     <div className="py-20 text-center text-zinc-400 font-light italic">
                         조건에 맞는 결과가 없습니다.
                     </div>
@@ -142,7 +154,7 @@ export default function ProductResults({ query }) {
                         disabled={loading}
                         className="px-10 py-3 rounded border border-zinc-200 text-xs font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-20"
                     >
-                        {loading ? '불러오는 중...' : 'Discover More'}
+                        {loading ? '불러오는 중...' : 'More'}
                     </button>
                 </div>
             </main>

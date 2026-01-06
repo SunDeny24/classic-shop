@@ -2,13 +2,28 @@
 // src/components/ui/ProductCardGrid.jsx
 
 import ProductCard from './ProductCard';
+import ProductCardSkeleton from './skeleton/ProductCardSkeleton';
 
-export default function ProductCardGrid({ gridClass, productInfo }) {
-    if (!productInfo || productInfo.length === 0) {
-        //console.log('2productInfo : ', productInfo);
-        return null;
-        // 나중에 스켈레톤/빈 상태 ui 로변경하고 들어온 array 유효한지 확인하는 코드 넣기
+export default function ProductCardGrid({ gridClass, productInfo, isLoading }) {
+    if (isLoading) {
+        return (
+            <section>
+                <div className={gridClass}>
+                    {
+                        //가짜 배열 8개만들어서 스켈레톤 UI 컴포넌트 추가
+                        Array.from({ length: 8 }).map((_, i) => (
+                            <ProductCardSkeleton key={i} />
+                        ))
+                    }
+                </div>
+            </section>
+        );
     }
+    //데이터 없을 경우
+    if (!productInfo || productInfo.length === 0) {
+        return <div className="py-20 text-center text-zinc-400">상품이 없습니다.</div>;
+    }
+    //데이터 있을 때
     return (
         <section>
             <div className={gridClass}>

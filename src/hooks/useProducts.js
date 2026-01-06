@@ -62,14 +62,17 @@ const processNaverData = (apiResponse) => {
 export function useProducts(query, options = {}) {
     //상태관리 정의
     const [rawProducts, setrawProducts] = useState([]); //상품데이터 배열 state
-    const [loading, setLoading] = useState(false); //로딩여부 state
+    const [loading, setLoading] = useState(true); //로딩여부 state
     const [error, setError] = useState(null); //에러 state
     const [page, setPage] = useState(1); //현재 페이지 state
     const [sortType, setSortType] = useState('default'); //정렬 state
 
     //데이터 가져와서 api fetch함수 호출시킴
     const load = async (nextPage = 1) => {
-        if (!query) return;
+        if (!query) {
+            setLoading(false);
+            return;
+        }
 
         setLoading(true);
         setError(null);

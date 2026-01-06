@@ -1,12 +1,16 @@
 //상품 카드 컴포넌트
 // src/components/ui/ProductCard.jsx
+'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 
 export default function ProductCard({ productData }) {
-    //console.log(productData);
+    //이미지 로딩위한 상태관리
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden group">
+        <div className="bg-white overflow-hidden group">
             <Link
                 href={{
                     pathname: `/product/${productData.productId}`,
@@ -15,11 +19,15 @@ export default function ProductCard({ productData }) {
                     },
                 }}
             >
-                <div className="relative">
+                <div className="relative aspect-[3/4] overflow-hidden bg-zinc-50">
+                    {!isImageLoaded && <div className="absolute inset-0 z-10 animate-pulse bg-zinc-200" />}
                     <img
                         src={productData.image}
                         alt={productData.title}
-                        className="w-full h-64 object-cover transition-transform group-hover:scale-105"
+                        className={`w-full h-full object-cover transition-all duration-500 ${
+                            isImageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+                        } group-hover:scale-105`}
+                        onLoad={() => setIsImageLoaded(true)}
                     />
                     <button data-like-button className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md">
                         <svg
@@ -38,10 +46,10 @@ export default function ProductCard({ productData }) {
                         </svg>
                     </button>
                 </div>
-                <div className="p-4">
-                    <p className="text-sm font-semibold text-gray-600">{productData.brand}</p>
-                    <h3 className="text-lg font-medium text-gray-900 truncate">{productData.title}</h3>
-                    <p className="text-xl font-bold text-gray-900 mt-1">{productData.lprice}</p>
+                <div className="pt-5 pb-8 px-1">
+                    <p className="text-[12px] font-semibold text-gray-600 mb-1">{productData.brand}</p>
+                    <h3 className="text-[15px] font-normal text-gray-900 ">{productData.title}</h3>
+                    <p className="text-xl font-semibold text-gray-950 mt-1">{productData.lprice}</p>
                 </div>
             </Link>
         </div>
