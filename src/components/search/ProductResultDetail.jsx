@@ -1,15 +1,41 @@
 //상세페이지 데이터 보여주는 클라이언트 컴포넌트
 'use client';
 import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function ProductResultDetail() {
     const searchParams = useSearchParams();
     const dataParams = searchParams.get('data');
+    const [recentProducts, setRecentProducts] = useState([]); //최근 본상품 상태관리
 
     if (!dataParams) {
         return <div>상품 상세 페이지를 불러오지 못했습니다.</div>;
     }
     const product = JSON.parse(decodeURIComponent(dataParams));
+
+    //최근 본 상품 상품데이터 포맷저장 객체생성
+    const productData = {
+        productId: product.productId,
+        brand: product.brand,
+        title: product.title,
+        image: product.image,
+        lprice: product.lprice,
+    };
+
+    // 첫 마운트시 최근 본 상품에 저장
+    useEffect(() => {
+        const saved = localStorage.getItem('recent_products');
+        const prevList = saved ? JSON.parse(saved) : [];
+        //기존 데이터에 추가하고 4개 제한함
+        const newProduct = [productData, ...prevList.filter((item) => item.productId !== productData.productId)].slice(
+            0,
+            4
+        );
+
+        setRecentProducts(newProduct);
+        localStorage.setItem('recent_products', JSON.stringify(newProduct));
+    }, [product.productId]);
+
     return (
         <div className="max-w-screen-xl mx-auto p-5 bg-white">
             <div className="flex flex-col md:flex-row gap-12">

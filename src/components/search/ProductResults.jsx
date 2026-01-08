@@ -125,20 +125,13 @@ export default function ProductResults({ query }) {
                 </div>
 
                 {/* 상품 그리드 */}
-                {/* {loading || curatedProducts.length > 0 ? (
-                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} isLoading={loading} />
-                ) : (
-                    <div className="py-20 text-center text-zinc-400 font-light italic">
-                        조건에 맞는 결과가 없습니다.
-                    </div>
-                )} */}
                 {loading && (
-                    // 로딩중이면 스켈레톤만 보여줌
+                    //로딩중이면 스켈레톤만 보여줌
                     <ProductCardGrid gridClass={gridClass} productInfo={[]} isLoading={true} />
                 )}
                 {!loading && curatedProducts.length > 0 && (
                     //로딩끝났고 데이터 있음 실제 그리드 보여주기
-                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} isLoading={loading} />
+                    <ProductCardGrid gridClass={gridClass} productInfo={curatedProducts} isLoading={false} />
                 )}
                 {!loading && curatedProducts.length === 0 && (
                     //로딩끝났는데도 데이터 없음

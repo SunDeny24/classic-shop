@@ -10,8 +10,8 @@ export default function ProductCardGrid({ gridClass, productInfo, isLoading }) {
             <section>
                 <div className={gridClass}>
                     {
-                        //가짜 배열 8개만들어서 스켈레톤 UI 컴포넌트 추가
-                        Array.from({ length: 8 }).map((_, i) => (
+                        //가짜 배열 12개만들어서 스켈레톤 UI 컴포넌트 추가
+                        Array.from({ length: 12 }).map((_, i) => (
                             <ProductCardSkeleton key={i} />
                         ))
                     }

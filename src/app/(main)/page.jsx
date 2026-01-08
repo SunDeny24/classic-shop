@@ -1,10 +1,7 @@
 //홈페이지 메인 콘텐츠 정의
 //app/(main)/page.jsx
 
-'use client';
-
-import ProductCardGrid from '@/components/ui/ProductCardGrid';
-import { useProducts } from '@/hooks/useProducts';
+import RecentProducts from '@/components/ui/RecentProducts';
 
 export default function Home() {
     //최근 본 상품 view css class 정의하고 limit-4로 데이터 제한해서 페칭해오기
@@ -20,10 +17,14 @@ export default function Home() {
         <div className="bg-zinc-50 font-sans ">
             <div className="max-w-screen-xl mx-auto p-5 bg-white ">
                 <section className="border ">
-                    <h2 className="text-2xl font-bold mb-6 text-center">제안 섹션</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-center">카테고리</h2>
+                </section>
+                <section className="border ">
+                    <h2 className="text-2xl font-bold mb-6 text-center">최근 검색어 기반 추천 상품</h2>
                 </section>
                 <section className="border">
                     <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
+                    <RecentProducts />
                 </section>
             </div>
         </div>

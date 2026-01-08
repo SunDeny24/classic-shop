@@ -119,7 +119,7 @@ export default function SearchModal({ closeSearch }) {
                                     setRecentSearches([]);
                                     localStorage.removeItem('recent_searches');
                                 }}
-                                className="text-sm text-gray-400 hover:text-red-500 underline"
+                                className="text-sm text-gray-400 hover:text-red-700 underline"
                             >
                                 전체 삭제
                             </button>
