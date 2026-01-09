@@ -2,6 +2,7 @@
 //app/(main)/page.jsx
 
 import RecentProducts from '@/components/ui/RecentProducts';
+import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
 
 export default function Home() {
     //최근 본 상품 view css class 정의하고 limit-4로 데이터 제한해서 페칭해오기
@@ -19,11 +20,10 @@ export default function Home() {
                 <section className="border ">
                     <h2 className="text-2xl font-bold mb-6 text-center">카테고리</h2>
                 </section>
-                <section className="border ">
-                    <h2 className="text-2xl font-bold mb-6 text-center">최근 검색어 기반 추천 상품</h2>
+                <section className="border mt-8 p-8">
+                    <RecentKeywordRecommend />
                 </section>
-                <section className="border">
-                    <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
+                <section className="border mt-8 p-8">
                     <RecentProducts />
                 </section>
             </div>

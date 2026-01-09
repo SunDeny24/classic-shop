@@ -13,7 +13,7 @@ const DISPLAY = 100;
  * @param {object} apiResponse - 네이버 쇼핑 API 응답객체
  * @returns {Array} 큐레이션된 상품 목록 배열
  */
-const processNaverData = (apiResponse) => {
+const processNaverData = (apiResponse, keyword) => {
     //맞는 배열검증
     if (!apiResponse || !Array.isArray(apiResponse.items)) {
         return [];
@@ -43,6 +43,7 @@ const processNaverData = (apiResponse) => {
                 rawPrice: currentPrice,
                 productType: item.productType,
                 mallName: item.mallName,
+                keyword: keyword,
             });
         } else {
             //기존상품의 최저가 셋팅
@@ -81,7 +82,7 @@ export function useProducts(query, options = {}) {
             //처음 100개 요청
             const start = (nextPage - 1) * DISPLAY + 1;
             const data = await fetchFashionProducts(query, { ...options, start, display: DISPLAY, sort: 'sim' });
-            const curatedData = processNaverData({ items: data.items ?? [] });
+            const curatedData = processNaverData({ items: data.items ?? [] }, query);
             if (nextPage === 1) {
                 //첫페이지에서는 그대로 데이터 가져옴
                 setrawProducts(curatedData);

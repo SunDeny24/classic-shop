@@ -4,14 +4,14 @@
 import ProductCard from './ProductCard';
 import ProductCardSkeleton from './skeleton/ProductCardSkeleton';
 
-export default function ProductCardGrid({ gridClass, productInfo, isLoading }) {
+export default function ProductCardGrid({ gridClass, productInfo, isLoading, skeletonCount = 12 }) {
     if (isLoading) {
         return (
             <section>
                 <div className={gridClass}>
                     {
                         //가짜 배열 12개만들어서 스켈레톤 UI 컴포넌트 추가
-                        Array.from({ length: 12 }).map((_, i) => (
+                        Array.from({ length: skeletonCount }).map((_, i) => (
                             <ProductCardSkeleton key={i} />
                         ))
                     }

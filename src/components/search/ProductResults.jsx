@@ -1,11 +1,24 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from '@/components/ui/ProductCardGrid';
 
 export default function ProductResults({ query }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
     const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
+
+    //최근 행동 추천상품 섹션
+    useEffect(() => {
+        if (query) {
+            const saved = localStorage.getItem('recent_searches');
+            const prevSearches = saved ? JSON.parse(saved) : [];
+
+            // 현재 키워드를 맨 앞으로 보내고 중복 제거 (최대 10개)
+            const updatedSearches = [query, ...prevSearches.filter((item) => item !== query)].slice(0, 10);
+
+            localStorage.setItem('recent_searches', JSON.stringify(updatedSearches));
+        }
+    }, [query]);
 
     // 필터 상태 관리 (중고, 단종, 판매예정)
     const [filters, setFilters] = useState({

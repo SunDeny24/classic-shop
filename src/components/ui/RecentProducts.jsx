@@ -16,7 +16,8 @@ export default function RecentProducts() {
     }, []);
 
     return (
-        <div className="p-8">
+        <div>
+            <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
             <ProductCardGrid gridClass={gridClass} productInfo={recentProducts} isLoading={false} />
         </div>
     );

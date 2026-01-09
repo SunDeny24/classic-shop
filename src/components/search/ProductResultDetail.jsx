@@ -1,13 +1,11 @@
 //상세페이지 데이터 보여주는 클라이언트 컴포넌트
 'use client';
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export default function ProductResultDetail() {
     const searchParams = useSearchParams();
     const dataParams = searchParams.get('data');
-    const [recentProducts, setRecentProducts] = useState([]); //최근 본상품 상태관리
-
     if (!dataParams) {
         return <div>상품 상세 페이지를 불러오지 못했습니다.</div>;
     }
@@ -22,18 +20,25 @@ export default function ProductResultDetail() {
         lprice: product.lprice,
     };
 
-    // 첫 마운트시 최근 본 상품에 저장
     useEffect(() => {
+        // 1. 최근 본 상품에 상세페이지 들어갔던 이력 저장
         const saved = localStorage.getItem('recent_products');
         const prevList = saved ? JSON.parse(saved) : [];
-        //기존 데이터에 추가하고 4개 제한함
+        // 기존 데이터에 추가하고 4개 제한함
         const newProduct = [productData, ...prevList.filter((item) => item.productId !== productData.productId)].slice(
             0,
             4
         );
 
-        setRecentProducts(newProduct);
         localStorage.setItem('recent_products', JSON.stringify(newProduct));
+
+        // 2. 최근 검색어 순서 업데이트
+        if (product.keyword) {
+            const savedSearches = localStorage.getItem('recent_searches');
+            const prevSearches = savedSearches ? JSON.parse(savedSearches) : [];
+            const newSearches = [product.keyword, ...prevSearches.filter((k) => k !== product.keyword)].slice(0, 10);
+            localStorage.setItem('recent_searches', JSON.stringify(newSearches));
+        }
     }, [product.productId]);
 
     return (
