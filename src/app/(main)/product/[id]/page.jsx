@@ -2,15 +2,18 @@
 // src/app/(main)/product/[id]/page.jsx
 
 import ProductResultDetail from '@/components/search/ProductResultDetail';
+import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
 
 export default async function ProductDetail({ params }) {
     const { id } = await params;
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-            <div className="border p-5">
-                {/* <h1>{id} 의 상품 상세페이지</h1>*/}
+        <div className="max-w-5xl mx-auto px-4 space-y-10">
+            <section className="p-5">
                 <ProductResultDetail />
-            </div>
+            </section>
+            <section className="p-5">
+                <RecentKeywordRecommend />
+            </section>
         </div>
     );
 }

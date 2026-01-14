@@ -53,7 +53,7 @@ export default function ProductResultDetail() {
                     <h1 className="text-2xl font-bold text-gray-900 mt-2">{product.title}</h1>
                     <p className="text-3xl font-bold text-gray-900 mt-4 mb-6">{product.lprice}</p>
 
-                    <div className="flex items-center space-x-4 mt-auto pt-6 border-t">
+                    <div className="flex items-center space-x-4 mt-auto pt-6 ">
                         <div className="flex-1 flex items-center justify-center bg-gray-800 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors">
                             장바구니
                         </div>

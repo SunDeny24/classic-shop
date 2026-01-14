@@ -2,12 +2,77 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from '@/components/ui/ProductCardGrid';
+import { useSearchParams } from 'next/navigation';
 
-export default function ProductResults({ query }) {
+export default function ProductResults({ query, category }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
     const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
-    //최근 행동 추천상품 섹션
+    const searchParams = useSearchParams();
+    const targetCategory = searchParams.get('category');
+
+    // 카테고리 상태관리
+    const [selectedCategory, setSelectedCategory] = useState({
+        cat2: '', // 중분류
+        cat3: '', // 소분류
+        cat4: '', // 세분류
+    });
+
+    // 필터 상태 관리 (중고, 단종, 판매예정)
+    const [filters, setFilters] = useState({
+        excludeUsed: true,
+        excludeDiscontinued: true,
+        excludeGlobal: true,
+    });
+
+    /* -------카테고리 추출 및 계층화------- */
+    const categoryMenu = useMemo(() => {
+        // 데이터 없으면 빈객체반환
+        if (!products) return { cat1: [], cat2: [], cat3: [], cat4: [] };
+
+        // 이름을 키로, 개수를 값으로 갖는 Map 객체 생성
+        const cat1Map = new Map();
+        const cat2Map = new Map();
+        const cat3Map = new Map();
+        const cat4Map = new Map();
+
+        // 하나씩 확인해서 중분류, 소분류, 세분류 데이터 추출
+        products.forEach((item) => {
+            // 대분류 카운팅 (검색된 전체 데이터 기준)
+            if (item.category1) {
+                cat1Map.set(item.category1, (cat1Map.get(item.category1) || 0) + 1);
+            }
+            // 중분류 카운팅
+            if (item.category2) {
+                cat2Map.set(item.category2, (cat2Map.get(item.category2) || 0) + 1);
+            }
+
+            // 현재 선택된 중분류가 있으면 하위에 소분류데이터 추가
+            if (selectedCategory.cat2 === item.category2 && item.category3) {
+                cat3Map.set(item.category3, (cat3Map.get(item.category3) || 0) + 1);
+            }
+
+            // 현재 선택된 소분류가 있다면 그 하위 세분류 추가
+            if (selectedCategory.cat3 === item.category3 && item.category4) {
+                cat4Map.set(item.category4, (cat4Map.get(item.category4) || 0) + 1);
+            }
+        });
+
+        //카테고리 데이터 반환(배열형태)
+        return {
+            cat1: Array.from(cat1Map, ([name, count]) => ({ name, count })),
+            cat2: Array.from(cat2Map, ([name, count]) => ({ name, count })),
+            cat3: Array.from(cat3Map, ([name, count]) => ({ name, count })),
+            cat4: Array.from(cat4Map, ([name, count]) => ({ name, count })),
+        };
+    }, [products, selectedCategory.cat2, selectedCategory.cat3]);
+
+    // 상위 카테고리를 바뀔때 하위 카테고리는 초기화
+    const handleCat2Click = (name) => {
+        setSelectedCategory({ cat2: name, cat3: '', cat4: '' });
+    };
+
+    /* -------최근 행동 추천상품 섹션------- */
     useEffect(() => {
         if (query) {
             const saved = localStorage.getItem('recent_searches');
@@ -20,19 +85,12 @@ export default function ProductResults({ query }) {
         }
     }, [query]);
 
-    // 필터 상태 관리 (중고, 단종, 판매예정)
-    const [filters, setFilters] = useState({
-        excludeUsed: true,
-        excludeDiscontinued: true,
-        excludeGlobal: true,
-    });
-
     // 토글 핸들러 함수
     const handleToggle = (key) => {
         setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
     };
 
-    // 데이터 정제 로직
+    /* -------데이터 정제 로직------- */
     const curatedProducts = useMemo(() => {
         if (!products) return [];
 
@@ -61,9 +119,26 @@ export default function ProductResults({ query }) {
                     item.mallName?.includes('구매대행');
                 if (isGlobal) return false;
             }
+            //홈에서 카테고리(대분류) 타고 들어온 경우 해당 카테고리랑 일치하는지 검사
+            if (targetCategory && item.category1 !== targetCategory) {
+                return false;
+            }
+            //중분류 선택시(cat2) 상품의 category2값이 일치하는지 확인
+            if (selectedCategory.cat2 && item.category2 !== selectedCategory.cat2) {
+                return false;
+            }
+            //소분류 선택시(cat3) 상품의 category3값이 일치하는지 확인
+            if (selectedCategory.cat3 && item.category3 !== selectedCategory.cat3) {
+                return false;
+            }
+            //세분류 선택시(cat4) 상품의 category4값이 일치하는지 확인
+            if (selectedCategory.cat4 && item.category4 !== selectedCategory.cat4) {
+                return false;
+            }
+
             return true;
         });
-    }, [products, filters]);
+    }, [products, filters, targetCategory, selectedCategory]);
 
     if (error) return <p className="p-10 text-center text-red-400">에러: {error}</p>;
 
@@ -72,7 +147,7 @@ export default function ProductResults({ query }) {
             {/* [SIDEBAR] 필터 영역 */}
             <aside className="w-full md:w-80 flex-shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:h-screen md:sticky md:top-0">
                 <div className="flex flex-col h-full">
-                    {/* 상단 필터 옵션 영역 (flex-1을 주어 남은 공간을 차지하게 함) */}
+                    {/* 상단 필터 옵션 영역 */}
                     <div className="p-8 flex-1">
                         <h1 className="text-xl font-bold tracking-tighter mb-12 uppercase font-mono text-zinc-900 italic">
                             Filter
@@ -101,6 +176,72 @@ export default function ProductResults({ query }) {
                                     />
                                 </div>
                             </div>
+                            <div>
+                                <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8">
+                                    category
+                                </h2>
+                                {/* 중분류 (Category 2) */}
+                                <div className="flex flex-col gap-2">
+                                    <select
+                                        className="text-xs border-b border-zinc-200 py-2 focus:outline-none"
+                                        value={selectedCategory.cat2}
+                                        onChange={(e) =>
+                                            setSelectedCategory({ cat2: e.target.value, cat3: '', cat4: '' })
+                                        }
+                                    >
+                                        <option value="">중분류 전체 ({products.length})</option>
+                                        {categoryMenu.cat2.map((item) => (
+                                            <option key={item.name} value={item.name}>
+                                                {item.name}({item.count})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {/* 소분류 (Category 3) : 중분류 선택되었고 데이터 있으면 표시 */}
+                                    {selectedCategory.cat2 && categoryMenu.cat3.length > 0 && (
+                                        <select
+                                            className="text-xs border-b border-zinc-200 py-2 focus:outline-none ml-2"
+                                            value={selectedCategory.cat3}
+                                            onChange={(e) =>
+                                                setSelectedCategory((prev) => ({
+                                                    ...prev,
+                                                    cat3: e.target.value,
+                                                    cat4: '',
+                                                }))
+                                            }
+                                        >
+                                            <option value="">소분류 전체</option>
+                                            {categoryMenu.cat3.map((item) => (
+                                                <option key={item.name} value={item.name}>
+                                                    {item.name}({item.count})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+
+                                    {/* 세분류 (cat4): 소분류가 선택되었고 데이터가 있으면 표시 */}
+                                    {selectedCategory.cat3 && categoryMenu.cat4.length > 0 && (
+                                        <div className="flex flex-col gap-1 animate-in fade-in slide-in-from-top-1 duration-300">
+                                            <label className="text-[9px] text-zinc-400 uppercase font-bold tracking-wider">
+                                                세분류
+                                            </label>
+                                            <select
+                                                className="text-xs border-b border-zinc-200 py-2 focus:outline-none bg-transparent cursor-pointer hover:border-zinc-900 transition-colors"
+                                                value={selectedCategory.cat4}
+                                                onChange={(e) =>
+                                                    setSelectedCategory((prev) => ({ ...prev, cat4: e.target.value }))
+                                                }
+                                            >
+                                                <option value="">세분류 전체 </option>
+                                                {categoryMenu.cat4.map((item) => (
+                                                    <option key={item.name} value={item.name}>
+                                                        {item.name}({item.count})
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -118,6 +259,31 @@ export default function ProductResults({ query }) {
             {/* [MAIN] 상품 결과 영역 */}
             <main className="flex-1 p-5 md:p-10">
                 {/* 정렬 셀렉트 */}
+                <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-zinc-900">{curatedProducts.length}</span>
+                    <span className="text-sm text-zinc-500 font-light">Products Found</span>
+                </div>
+                {(selectedCategory.cat2 || selectedCategory.cat3) && (
+                    <div className="flex gap-2 flex-wrap">
+                        {selectedCategory.cat2 && (
+                            <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+                                {selectedCategory.cat2}
+                            </span>
+                        )}
+                        {selectedCategory.cat3 && (
+                            <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+                                {selectedCategory.cat3}
+                            </span>
+                        )}
+                        <button
+                            onClick={() => setSelectedCategory({ cat2: '', cat3: '', cat4: '' })}
+                            className="text-[10px] text-zinc-400 underline underline-offset-4 hover:text-zinc-900"
+                        >
+                            필터 초기화
+                        </button>
+                    </div>
+                )}
+
                 <div className="mb-8 border-b border-zinc-100 pb-4 flex justify-end">
                     <div className="relative inline-block w-40">
                         <select

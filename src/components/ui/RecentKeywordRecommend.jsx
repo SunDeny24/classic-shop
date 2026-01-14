@@ -10,7 +10,7 @@ import ProductCardGrid from './ProductCardGrid';
 export default function RecentKeywordRecommend() {
     const [keyword, setKeyword] = useState('');
     const { products, loading, error } = useProducts(keyword);
-    const gridClass = 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
+    const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
     useEffect(() => {
         //로컬스토리지에서 최근 검색어 배열에 최신 키워드 가져옴
@@ -30,13 +30,13 @@ export default function RecentKeywordRecommend() {
     }
 
     return (
-        <div>
+        <div className="w-full">
             <div className="flex flex-wrap items-center gap-4 mb-8">
                 <h3 className="text-xl font-bold text-zinc-800">
                     최근 찾으신 <span className="text-2xl text-blue-700">"{keyword}"</span> 추천
                 </h3>
                 {/* 조건: 로딩 중이 아니고, 데이터가 4개를 초과할 때만 '더보기' 노출 */}
-                {!loading && products.length > 4 && (
+                {!loading && products.length > 6 && (
                     <Link
                         href={`/search/${encodeURIComponent(keyword)}`}
                         className="group flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
@@ -59,7 +59,7 @@ export default function RecentKeywordRecommend() {
                 //로딩중이면 스켈레톤만 보여줌
                 <ProductCardGrid gridClass={gridClass} productInfo={[]} isLoading={true} skeletonCount={4} />
             ) : products.length > 0 ? (
-                <ProductCardGrid gridClass={gridClass} productInfo={products.slice(0, 4)} isLoading={false} />
+                <ProductCardGrid gridClass={gridClass} productInfo={products.slice(0, 6)} isLoading={false} />
             ) : (
                 /* 로딩이 끝났는데 데이터가 0개인 경우 */
                 <div className="py-20 text-center border-2 border-dashed border-zinc-100 rounded-2xl">

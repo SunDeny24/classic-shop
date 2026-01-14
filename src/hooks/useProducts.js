@@ -44,6 +44,10 @@ const processNaverData = (apiResponse, keyword) => {
                 productType: item.productType,
                 mallName: item.mallName,
                 keyword: keyword,
+                category1: item.category1,
+                category2: item.category2,
+                category3: item.category3,
+                category4: item.category4,
             });
         } else {
             //기존상품의 최저가 셋팅
