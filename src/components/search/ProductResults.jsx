@@ -2,14 +2,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from '@/components/ui/ProductCardGrid';
-import { useSearchParams } from 'next/navigation';
 
 export default function ProductResults({ query, category }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
     const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
-
-    const searchParams = useSearchParams();
-    const targetCategory = searchParams.get('category');
 
     // 카테고리 상태관리
     const [selectedCategory, setSelectedCategory] = useState({
@@ -120,7 +116,7 @@ export default function ProductResults({ query, category }) {
                 if (isGlobal) return false;
             }
             //홈에서 카테고리(대분류) 타고 들어온 경우 해당 카테고리랑 일치하는지 검사
-            if (targetCategory && item.category1 !== targetCategory) {
+            if (category && item.category1 !== category) {
                 return false;
             }
             //중분류 선택시(cat2) 상품의 category2값이 일치하는지 확인
@@ -138,7 +134,7 @@ export default function ProductResults({ query, category }) {
 
             return true;
         });
-    }, [products, filters, targetCategory, selectedCategory]);
+    }, [products, filters, category, selectedCategory]);
 
     if (error) return <p className="p-10 text-center text-red-400">에러: {error}</p>;
 

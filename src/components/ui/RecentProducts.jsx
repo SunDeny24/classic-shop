@@ -15,10 +15,27 @@ export default function RecentProducts() {
         setRecentProducts(parseItems);
     }, []);
 
+    const isEmpty = recentProducts.length === 0;
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
-            <ProductCardGrid gridClass={gridClass} productInfo={recentProducts} isLoading={false} />
+            {isEmpty ? (
+                <div className="py-20 text-center">
+                    <p className="text-zinc-400 mb-4">아직 본 상품이 없습니다</p>
+                    <p className="text-sm text-zinc-500">카테고리에서 상품을 둘러보세요</p>
+                    <button
+                        onClick={() => {
+                            document.getElementById('category-section')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="text-sm text-blue-500 underline"
+                    >
+                        카테고리 둘러보기
+                    </button>
+                </div>
+            ) : (
+                <ProductCardGrid gridClass={gridClass} productInfo={recentProducts} isLoading={false} />
+            )}
         </div>
     );
 }

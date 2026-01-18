@@ -25,7 +25,7 @@ export default function CategoryList() {
     };
 
     return (
-        <section className="py-12 px-6 max-w-screen-xl mx-auto">
+        <section id="category-section" className="py-12 px-6 max-w-screen-xl mx-auto">
             {/* 상단 텍스트 크기도 소폭 조정 */}
             <div className="flex flex-col mb-8">
                 <h2 className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-1">
