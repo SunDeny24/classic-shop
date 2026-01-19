@@ -17,6 +17,22 @@ export default function RecentProducts() {
 
     const isEmpty = recentProducts.length === 0;
 
+    // 카테고리섹션으로 이동하는 함수
+    const scrollToCategory = () => {
+        const headerElement = document.querySelector('header');
+        const categoryElement = document.getElementById('category-section');
+        if (!categoryElement) return;
+
+        //헤더 높이
+        const headerHeight = headerElement?.offsetHeight ?? 0;
+        //이동위치 = 카테고리의 top 위치 + 현재스크롤 - 헤더높이
+
+        const paddingTop = 100; // py-12 + 나머지 중복 추후 수정 예정
+        const y = categoryElement.offsetTop - headerHeight + paddingTop * -1;
+
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
@@ -24,12 +40,7 @@ export default function RecentProducts() {
                 <div className="py-20 text-center">
                     <p className="text-zinc-400 mb-4">아직 본 상품이 없습니다</p>
                     <p className="text-sm text-zinc-500">카테고리에서 상품을 둘러보세요</p>
-                    <button
-                        onClick={() => {
-                            document.getElementById('category-section')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                        className="text-sm text-blue-500 underline"
-                    >
+                    <button onClick={scrollToCategory} className="text-sm text-blue-500 underline">
                         카테고리 둘러보기
                     </button>
                 </div>
