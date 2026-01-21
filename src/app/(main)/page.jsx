@@ -4,6 +4,7 @@
 import RecentProducts from '@/components/ui/RecentProducts';
 import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
 import CategoryList from '@/components/ui/CategoryList';
+import RecommendedVideos from '@/components/ui/RecommendVideo';
 
 export default function Home() {
     //최근 본 상품 view css class 정의하고 limit-4로 데이터 제한해서 페칭해오기
@@ -22,6 +23,7 @@ export default function Home() {
                     <CategoryList />
                 </section>
                 <section className="border mt-8 p-8">
+                    <RecommendedVideos />
                     <RecentKeywordRecommend />
                 </section>
                 <section className="border mt-8 p-8">
