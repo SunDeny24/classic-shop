@@ -1,6 +1,6 @@
 //(main)의 layout지정 파일 - 헤더, 푸터, {children}
 import Header from '@/components/layout/Header';
-import ScrollToTop from '@/components/ui/ScrollToTop';
+import ScrollToTop from '@/components/layout/ScrollToTop';
 
 export default function MainLayout({ children }) {
     return (
