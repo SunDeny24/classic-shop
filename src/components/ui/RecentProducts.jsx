@@ -25,7 +25,6 @@ export default function RecentProducts() {
 
         //헤더 높이
         const headerHeight = headerElement?.offsetHeight ?? 0;
-        //이동위치 = 카테고리의 top 위치 + 현재스크롤 - 헤더높이
 
         const paddingTop = 100; // py-12 + 나머지 중복 추후 수정 예정
         const y = categoryElement.offsetTop - headerHeight + paddingTop * -1;

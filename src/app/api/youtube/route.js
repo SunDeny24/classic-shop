@@ -16,10 +16,10 @@ export async function GET(request) {
 
     if (type === 'trend') {
         // 1. 트렌드 영상 query (현재년도 트렌드로 검색)
-        finalQuery = `${currentYear} 트렌드${excludeKeywords}`;
+        finalQuery = `${currentYear} 트렌드 ${excludeKeywords}`;
     } else {
         // 2. 키워드 검색 query
-        finalQuery = `${query} 리뷰 추천${excludeKeywords}`;
+        finalQuery = `${query} 리뷰 추천 ${excludeKeywords}`;
     }
     const apiUrl =
         `https://www.googleapis.com/youtube/v3/search` +

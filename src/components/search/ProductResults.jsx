@@ -145,36 +145,14 @@ export default function ProductResults({ query, category }) {
                 <div className="flex flex-col h-full">
                     {/* 상단 필터 옵션 영역 */}
                     <div className="p-8 flex-1">
-                        <h1 className="text-xl font-bold tracking-tighter mb-12 uppercase font-mono text-zinc-900 italic">
-                            Filter
+                        <h1 className="text-xl font-bold tracking-tighter mb-12 uppercase font-mono text-zinc-900">
+                            필터
                         </h1>
 
                         <div className="space-y-10">
                             <div>
-                                <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8">
-                                    Product Option
-                                </h2>
-                                <div className="space-y-6">
-                                    <FilterToggle
-                                        label="중고 제품 제외"
-                                        checked={filters.excludeUsed}
-                                        onChange={() => handleToggle('excludeUsed')}
-                                    />
-                                    <FilterToggle
-                                        label="단종 제품 제외"
-                                        checked={filters.excludeDiscontinued}
-                                        onChange={() => handleToggle('excludeDiscontinued')}
-                                    />
-                                    <FilterToggle
-                                        label="해외직구 제외"
-                                        checked={filters.excludeGlobal}
-                                        onChange={() => handleToggle('excludeGlobal')}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8">
-                                    category
+                                <h2 className="text-[15px] font-bold text-stone-700 uppercase tracking-[0.2em] mb-8">
+                                    카테고리
                                 </h2>
                                 {/* 중분류 (Category 2) */}
                                 <div className="flex flex-col gap-2">
@@ -236,6 +214,28 @@ export default function ProductResults({ query, category }) {
                                             </select>
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                            <div>
+                                <h2 className="text-[15px] font-bold text-stone-700 uppercase tracking-[0.2em] mb-8">
+                                    상품 옵션
+                                </h2>
+                                <div className="space-y-6">
+                                    <FilterToggle
+                                        label="중고 제품 제외"
+                                        checked={filters.excludeUsed}
+                                        onChange={() => handleToggle('excludeUsed')}
+                                    />
+                                    <FilterToggle
+                                        label="단종 제품 제외"
+                                        checked={filters.excludeDiscontinued}
+                                        onChange={() => handleToggle('excludeDiscontinued')}
+                                    />
+                                    <FilterToggle
+                                        label="해외직구 제외"
+                                        checked={filters.excludeGlobal}
+                                        onChange={() => handleToggle('excludeGlobal')}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -9,7 +9,7 @@ import YoutubePlayer from './YoutubePlayer';
 import { useYoutube } from '@/hooks/useYoutube';
 
 export default function RecommendedVideos() {
-    const [keyword, setKeyword] = useState('');
+    const [keyword, setKeyword] = useState(null);
     useEffect(() => {
         // 클라이언트 사이드에서만 실행됨
         const savedSearches = localStorage.getItem('recent_searches'); //최근 검색어
@@ -26,10 +26,14 @@ export default function RecommendedVideos() {
             } catch (e) {
                 console.log('로컬스토리지 데이터 파싱 에러', e);
             }
+        } else {
+            setKeyword('');
         }
     }, []);
+
     // 검색어가 있으면 search 모드, 없으면 trend 모드
-    const type = keyword && keyword.trim().length > 0 ? 'search' : 'trend';
+    //keyword가 null이면 null로 훅호출하지않음, 있다면 검색어있으니까 search모드로, 아니면 trend모드로
+    const type = keyword === null ? null : keyword ? 'search' : 'trend';
 
     const { videos, loading, error } = useYoutube(type, keyword);
 

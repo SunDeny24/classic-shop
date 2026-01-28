@@ -1,15 +1,17 @@
-// 좋아요 버튼 컴포넌트
+// 좋아요 버튼기능 컴포넌트
+// 로컬스토리지에서 좋아요 버튼 토글시 해당 상품 저장 및 삭제적용하는 컴포넌트
 'use client';
 
 import { useEffect, useState } from 'react';
 
 export default function LikeButton({ productData }) {
     const [isLiked, setIsLiked] = useState(false);
+    const storageKey = 'wishList';
     //console.log(productData);
 
     //해당 상품ID가 로컬스토리지 ID와 맞는지 확인
     useEffect(() => {
-        const savedLikes = JSON.parse(localStorage.getItem('wishList')) || [];
+        const savedLikes = JSON.parse(localStorage.getItem(storageKey)) || [];
         // 해당 상품ID가 맞으면 TRUE 아니면 FALSE 토글처리
         const isSavedLiked = savedLikes.some((item) => item.productId === productData.productId);
         setIsLiked(isSavedLiked);
@@ -18,16 +20,25 @@ export default function LikeButton({ productData }) {
     const toggleLike = (e) => {
         e.preventDefault(); // 링크 이동 방지 (부모가 Link일 경우)
         e.stopPropagation(); // 부모 요소(카드 링크) 클릭 방지
-        console.log('클릭');
-        const savedLikes = JSON.parse(localStorage.getItem('wishList')) || [];
+
+        const savedLikes = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         let updatedLikes;
         if (isLiked) {
-            updatedLikes = savedLikes.filter((item) => item.productId === productData.productId);
+            // 선택이 되어있다면 선택된 상품과 다른 상품들만 가져옴
+            updatedLikes = savedLikes.filter((item) => item.productId !== productData.productId);
         } else {
-            updatedLikes = [...savedLikes, productData];
+            // 선택이 되어있지 않다면 가져온 상품이 있는지 확인
+            const isLikedId = savedLikes.some((item) => item.productId === productData.productId);
+            if (!isLikedId) {
+                //가져온 ID가 있으면 기존위시리스트 + 해당 상품 추가
+                updatedLikes = [...savedLikes, productData];
+            } else {
+                // 가져온ID가 없으면 해당 상품그대로 두기
+                updatedLikes = savedLikes;
+            }
         }
-        localStorage.setItem('wishList', JSON.stringify(updatedLikes));
+        localStorage.setItem(storageKey, JSON.stringify(updatedLikes));
         setIsLiked(!isLiked);
     };
 

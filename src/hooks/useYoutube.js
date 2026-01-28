@@ -10,17 +10,19 @@ export function useYoutube(type, query) {
     const [loading, setLoading] = useState(true); //로딩여부 state
     const [error, setError] = useState(null); //에러 state
     const load = async () => {
-        const activeType = !query && type === 'search' ? 'trend' : type;
+        if (!type) return;
+        //const activeType = !query && type === 'search' ? 'trend' : type;
         // console.log('[useYoutube]activeType : ', activeType);
         // console.log('[useYoutube]query : ', query);
 
+        setvideos([]);
         setLoading(true);
         setError(null);
         try {
-            const data = await fetchYoutubeService(activeType, query);
-            //console.log('검색 타입:', type, '응답 데이터:', data);
+            const data = await fetchYoutubeService(type, query);
+            console.log('검색 타입:', type, '응답 데이터:', data);
             if (data.items && data.items.length > 0) {
-                const formattedVideo = data.items.map((item) => ({
+                const formattedVideo = data.items.slice(0, 4).map((item) => ({
                     id: typeof item.id === 'string' ? item.id : item.id.videoId,
                     title: item.snippet.title,
                     thumbnail: item.snippet.thumbnails.medium.url,
@@ -36,8 +38,7 @@ export function useYoutube(type, query) {
     };
 
     useEffect(() => {
-        //  if (!query) return;
-        load();
-    }, [query]);
+        if (type) load();
+    }, [query, type]);
     return { videos, loading, error };
 }
