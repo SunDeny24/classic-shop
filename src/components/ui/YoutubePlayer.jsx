@@ -1,8 +1,33 @@
 // 유튜브 컴포넌트 - plyr 사용
 
-// 추후 수정 'use client';
+// 추후 수정
+'use client';
+
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
+import { useEffect, useRef } from 'react';
 
 export default function YoutubePlayer({ videoId }) {
+    const videoRef = useRef(null);
+    useEffect(() => {
+        const player = new Plyr(videoRef.current, {
+            loop: { active: true },
+            controls: ['play', 'mute'], //재생버튼, 뮤트
+            youtube: {
+                noCookie: true, // 쿠키 사용 안 함
+                rel: 0, // 추천 영상 제한
+                showinfo: 0, // 영상 정보 숨기기
+                iv_load_policy: 3, // 주석 숨기기
+                loop: 1,
+                playlist: videoId,
+            },
+        });
+
+        return () => {
+            if (player) player.destroy();
+        };
+    }, [videoId]);
+
     // videoId가 없을 경우
     if (!videoId) {
         return (
@@ -14,14 +39,15 @@ export default function YoutubePlayer({ videoId }) {
 
     return (
         <div className="w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-black">
-            <iframe
+            {/* <iframe
                 width="100%"
                 height="100%"
                 src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-            ></iframe>
+            ></iframe> */}
+            <div ref={videoRef} id="player" data-plyr-provider="youtube" data-plyr-embed-id={videoId}></div>
         </div>
     );
 }

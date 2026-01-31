@@ -31,8 +31,8 @@ export default function LikeButton({ productData }) {
             // 선택이 되어있지 않다면 가져온 상품이 있는지 확인
             const isLikedId = savedLikes.some((item) => item.productId === productData.productId);
             if (!isLikedId) {
-                //가져온 ID가 있으면 기존위시리스트 + 해당 상품 추가
-                updatedLikes = [...savedLikes, productData];
+                //가져온 ID가 있으면 해당 상품 + 기존위시리스트 추가
+                updatedLikes = [productData, ...savedLikes];
             } else {
                 // 가져온ID가 없으면 해당 상품그대로 두기
                 updatedLikes = savedLikes;

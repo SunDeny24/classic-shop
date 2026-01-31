@@ -27,7 +27,7 @@ export default function ProductResultDetail() {
         // 기존 데이터에 추가하고 4개 제한함
         const newProduct = [productData, ...prevList.filter((item) => item.productId !== productData.productId)].slice(
             0,
-            4
+            4,
         );
 
         localStorage.setItem('recent_products', JSON.stringify(newProduct));
@@ -54,10 +54,10 @@ export default function ProductResultDetail() {
                     <p className="text-3xl font-bold text-gray-900 mt-4 mb-6">{product.lprice}</p>
 
                     <div className="flex items-center space-x-4 mt-auto pt-6 ">
-                        <div className="flex-1 flex items-center justify-center bg-gray-800 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors">
+                        <div className="flex-1 flex items-center justify-center bg-gray-500 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors">
                             장바구니
                         </div>
-                        <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-800 transition-colors">
                             <a
                                 className="flex items-center justify-center w-full h-full py-4 text-white text-lg font-bold"
                                 href={product.link}
