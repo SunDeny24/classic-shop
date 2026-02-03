@@ -34,7 +34,6 @@ export default function RecentProducts() {
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-6 text-center">최근 본 상품</h2>
             {isEmpty ? (
                 <div className="py-20 text-center">
                     <p className="text-zinc-400 mb-4">아직 본 상품이 없습니다</p>

@@ -1,19 +1,23 @@
+//위시리스트 UI 컴포넌트
 'use client';
 
 import { useState, useEffect } from 'react';
 import ProductCardGrid from './ProductCardGrid';
 
-export default function LikeList() {
+export default function LikeList({ limit = null }) {
     const [wishProducts, setWishProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const gridClass = 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
-
-    // wishlist에 데이터 있는지 확인해서 그것들의 데이터만 그대로 넣어주면됨
+    const gridClass = limit
+        ? 'grid grid-cols-2 md:grid-cols-4 gap-4'
+        : 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10';
+    //limit값에 따라 css 변경 (마이페이지/ 위시리스트)
 
     useEffect(() => {
         const savedLikes = localStorage.getItem('wishList');
         const parseLikes = savedLikes ? JSON.parse(savedLikes) : [];
-        setWishProducts(parseLikes);
+
+        const displayProducts = limit ? parseLikes.slice(0, limit) : parseLikes;
+        setWishProducts(displayProducts);
         setIsLoading(false);
         //console.log(parseLikes);
     }, []);

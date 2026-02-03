@@ -243,10 +243,10 @@ export default function ProductResults({ query, category }) {
 
                     {/* 하단 영역 */}
                     <div className="p-8 border-t border-zinc-100 bg-zinc-50/50 mt-auto">
-                        <p className="text-[9px] text-zinc-400 leading-relaxed font-light tracking-wide italic">
+                        <p className="text-[11px] text-zinc-400 leading-relaxed font-light tracking-wide italic">
                             네이버 쇼핑 API 실시간 데이터를 기반으로
                             <br />
-                            사용자 맞춤형 큐레이션을 제공합니다.
+                            필터를 통한 쇼핑 데이터를 제공합니다.
                         </p>
                     </div>
                 </div>

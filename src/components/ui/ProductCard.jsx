@@ -11,7 +11,7 @@ export default function ProductCard({ productData }) {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     return (
-        <div className="bg-white overflow-hidden group">
+        <div className="overflow-hidden group">
             <Link
                 href={{
                     pathname: `/product/${productData.productId}`,
