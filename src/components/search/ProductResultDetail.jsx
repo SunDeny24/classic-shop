@@ -2,15 +2,17 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { useShopping } from '@/context/ShoppingContext';
 
 export default function ProductResultDetail() {
+    const { cart, setCart, wishList, setWishList } = useShopping([]);
+
     const searchParams = useSearchParams();
     const dataParams = searchParams.get('data');
     if (!dataParams) {
         return <div>상품 상세 페이지를 불러오지 못했습니다.</div>;
     }
     const product = JSON.parse(decodeURIComponent(dataParams));
-
     //최근 본 상품 상품데이터 포맷저장 객체생성
     const productData = {
         productId: product.productId,
@@ -18,12 +20,14 @@ export default function ProductResultDetail() {
         title: product.title,
         image: product.image,
         lprice: product.lprice,
+        link: product.link,
+        rawPrice: product.rawPrice,
     };
 
     useEffect(() => {
         // 1. 최근 본 상품에 상세페이지 들어갔던 이력 저장
-        const saved = localStorage.getItem('recent_products');
-        const prevList = saved ? JSON.parse(saved) : [];
+        const savedProducts = localStorage.getItem('recent_products');
+        const prevList = savedProducts ? JSON.parse(savedProducts) : [];
         // 기존 데이터에 추가하고 4개 제한함
         const newProduct = [productData, ...prevList.filter((item) => item.productId !== productData.productId)].slice(
             0,
@@ -41,6 +45,36 @@ export default function ProductResultDetail() {
         }
     }, [product.productId]);
 
+    const handleAddCart = () => {
+        //로컬에서 장바구니에 이미 있는 상품인지 확인
+        const isExist = cart.find((item) => item.productId === productData.productId);
+        if (isExist) {
+            alert('이미 장바구니에 담긴 상품입니다.');
+            return;
+        }
+        //새로운 상품 추가
+        setCart([...cart, { ...productData, quantity: 1 }]);
+        alert('장바구니에 상품을 담았습니다.');
+        // 추후 팝업 로직 추가
+    };
+
+    // 해당 상품ID가 맞으면 TRUE 아니면 FALSE 토글처리
+    const isLiked = wishList.some((item) => item.productId === productData.productId);
+
+    const toggleLike = (e) => {
+        e.preventDefault(); // 링크 이동 방지 (부모가 Link일 경우)
+        e.stopPropagation(); // 부모 요소(카드 링크) 클릭 방지
+
+        if (isLiked) {
+            // 선택이 되어있다면 선택된 상품과 다른 상품들만 가져옴
+            const updatedLikes = wishList.filter((item) => item.productId !== productData.productId);
+            setWishList(updatedLikes);
+        } else {
+            // 선택이 되어있지 않다면 추가
+            setWishList([productData, ...wishList]);
+        }
+    };
+
     return (
         <div className="max-w-screen-xl mx-auto p-5 bg-white">
             <div className="flex flex-col md:flex-row gap-12">
@@ -54,7 +88,10 @@ export default function ProductResultDetail() {
                     <p className="text-3xl font-bold text-gray-900 mt-4 mb-6">{product.lprice}</p>
 
                     <div className="flex items-center space-x-4 mt-auto pt-6 ">
-                        <div className="flex-1 flex items-center justify-center bg-gray-500 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors">
+                        <div
+                            onClick={handleAddCart}
+                            className="flex-1 flex items-center justify-center bg-gray-500 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors"
+                        >
                             장바구니
                         </div>
                         <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-800 transition-colors">
@@ -63,15 +100,16 @@ export default function ProductResultDetail() {
                                 href={product.link}
                                 target="_blank"
                             >
-                                바로 주문
+                                바로 구매
                             </a>
                         </div>
                         <div
+                            onClick={toggleLike}
                             data-like-button
                             className="flex items-center justify-center border border-gray-300 rounded-lg w-[60px] h-[60px] hover:bg-gray-100 transition-colors"
                         >
                             <svg
-                                className="w-7 h-7 text-gray-500"
+                                className={`w-7 h-7 text-gray-500  ${isLiked ? 'text-red-500 fill-current' : 'text-gray-400'}`}
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"

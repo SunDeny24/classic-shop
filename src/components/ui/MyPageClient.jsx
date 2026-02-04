@@ -3,18 +3,11 @@
 
 import LikeList from './LikeList';
 import RecentProducts from './RecentProducts';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useShopping } from '@/context/ShoppingContext';
 
 export default function MyPageClient() {
-    const [likesCount, setLikesCount] = useState([]);
-
-    useEffect(() => {
-        const savedLikes = localStorage.getItem('wishList');
-        const parseLikes = savedLikes ? JSON.parse(savedLikes) : [];
-        const savedCount = parseLikes.length;
-        setLikesCount(savedCount);
-    }, []);
+    const { wishList, cart } = useShopping([]);
 
     return (
         <div>
@@ -42,32 +35,36 @@ export default function MyPageClient() {
                 {/* 위시리스트, 장바구니 갯수 안내 카드 */}
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-2">
+                        {/* <div className="absolute top-0 right-0 p-2">
                             <svg className="w-4 h-4 text-red-400 fill-current" viewBox="0 0 20 20">
                                 <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                             </svg>
-                        </div>
+                        </div> */}
                         <span className="text-gray-400 text-xs font-medium mb-1 uppercase tracking-wider">
                             Wishlist
                         </span>
                         <div className="flex items-baseline space-x-1">
-                            <span className="text-2xl font-black text-gray-800">{likesCount}</span>
+                            <span className="text-2xl font-black text-gray-800">{wishList.length}</span>
                             <span className="text-gray-400 text-sm">개</span>
                         </div>
                     </div>
 
-                    <button className="bg-blue-600 p-5 rounded-2xl shadow-md shadow-blue-100 flex flex-col items-center justify-center relative active:scale-95 transition-transform">
-                        <div className="absolute top-2 right-3">
-                            <div className="bg-white text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
-                                GO
+                    <Link href="/cart" className="text-gray-600 hover:text-black">
+                        <div className="bg-blue-600 p-5 rounded-2xl shadow-md shadow-blue-100 flex flex-col items-center justify-center relative active:scale-95 transition-transform">
+                            {/* <div className="absolute top-2 right-3">
+                                <div className="bg-white text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                                    GO
+                                </div>
+                            </div> */}
+                            <span className="text-blue-100 text-xs font-medium mb-1 uppercase tracking-wider">
+                                Cart
+                            </span>
+                            <div className="flex items-baseline space-x-1">
+                                <span className="text-2xl font-black text-white">{cart.length}</span>
+                                <span className="text-blue-100 text-sm">개</span>
                             </div>
                         </div>
-                        <span className="text-blue-100 text-xs font-medium mb-1 uppercase tracking-wider">Cart</span>
-                        <div className="flex items-baseline space-x-1">
-                            <span className="text-2xl font-black text-white">3</span>
-                            <span className="text-blue-100 text-sm">개</span>
-                        </div>
-                    </button>
+                    </Link>
                 </div>
 
                 {/* 위시리스트 */}
