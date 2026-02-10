@@ -28,7 +28,7 @@ export default function LikeButton({ productData }) {
         <div>
             <button onClick={toggleLike} className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md">
                 <svg
-                    className={`w-5 h-5 transition-colors ${isLiked ? 'text-red-500 fill-current' : 'text-gray-400'}`}
+                    className={`w-5 h-5 transition-colors ${isLiked ? 'text-blue-500 fill-current' : 'text-gray-400'}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
