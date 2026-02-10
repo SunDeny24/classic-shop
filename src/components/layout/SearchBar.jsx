@@ -7,7 +7,7 @@ export default function SearchBar({ open, setOpen }) {
         <div onClick={handleChange} className="relative w-full">
             <input
                 type="text"
-                placeholder="찾으시는 상품을 검색해보세요"
+                placeholder="원하시는 스타일의 키워드를 입력해보세요"
                 onFocus={handleChange}
                 readOnly
                 className="w-full bg-gray-100 border-none rounded-full py-3 pl-12 pr-6 focus:outline-none cursor-pointer hover:bg-gray-200 transition-colors"

@@ -42,8 +42,15 @@ export default function RecommendedVideos() {
 
     return (
         <section className="my-10">
-            <h2 className="text-xl font-bold mb-4">
-                {keyword ? `"${keyword}" 관련 추천 영상` : '지금 뜨는 트렌드 영상'}
+            <h2 className="text-xl font-bold mb-8 font-medium text-zinc-800">
+                {keyword ? (
+                    <>
+                        <span className="text-blue-700 text-2xl">{keyword}</span>{' '}
+                        <span>키워드에 추천하는 영상이에요</span>
+                    </>
+                ) : (
+                    '지금 뜨는 트렌드 영상 확인해볼까요?'
+                )}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Array.isArray(videos) && videos.length > 0

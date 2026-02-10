@@ -145,19 +145,17 @@ export default function ProductResults({ query, category }) {
                 <div className="flex flex-col h-full">
                     {/* 상단 필터 옵션 영역 */}
                     <div className="p-8 flex-1">
-                        <h1 className="text-xl font-bold tracking-tighter mb-12 uppercase font-mono text-zinc-900">
-                            필터
+                        <h1 className="text-xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
+                            Picker's Option
                         </h1>
 
-                        <div className="space-y-10">
+                        <div className="space-y-15">
                             <div>
-                                <h2 className="text-[15px] font-bold text-stone-700 uppercase tracking-[0.2em] mb-8">
-                                    카테고리
-                                </h2>
+                                <h2 className="text-[15px] font-bold text-stone-700 mb-6">CATEGORY</h2>
                                 {/* 중분류 (Category 2) */}
                                 <div className="flex flex-col gap-2">
                                     <select
-                                        className="text-xs border-b border-zinc-200 py-2 focus:outline-none"
+                                        className="text-sm py-2 focus:outline-none"
                                         value={selectedCategory.cat2}
                                         onChange={(e) =>
                                             setSelectedCategory({ cat2: e.target.value, cat3: '', cat4: '' })
@@ -173,7 +171,7 @@ export default function ProductResults({ query, category }) {
                                     {/* 소분류 (Category 3) : 중분류 선택되었고 데이터 있으면 표시 */}
                                     {selectedCategory.cat2 && categoryMenu.cat3.length > 0 && (
                                         <select
-                                            className="text-xs border-b border-zinc-200 py-2 focus:outline-none ml-2"
+                                            className="text-xs  py-2 focus:outline-none ml-2"
                                             value={selectedCategory.cat3}
                                             onChange={(e) =>
                                                 setSelectedCategory((prev) => ({
@@ -195,11 +193,11 @@ export default function ProductResults({ query, category }) {
                                     {/* 세분류 (cat4): 소분류가 선택되었고 데이터가 있으면 표시 */}
                                     {selectedCategory.cat3 && categoryMenu.cat4.length > 0 && (
                                         <div className="flex flex-col gap-1 animate-in fade-in slide-in-from-top-1 duration-300">
-                                            <label className="text-[9px] text-zinc-400 uppercase font-bold tracking-wider">
+                                            <label className="text-[11px] text-zinc-400 uppercase font-bold tracking-wider">
                                                 세분류
                                             </label>
                                             <select
-                                                className="text-xs border-b border-zinc-200 py-2 focus:outline-none bg-transparent cursor-pointer hover:border-zinc-900 transition-colors"
+                                                className="text-xs py-2 focus:outline-none bg-transparent cursor-pointer hover:border-zinc-900 transition-colors"
                                                 value={selectedCategory.cat4}
                                                 onChange={(e) =>
                                                     setSelectedCategory((prev) => ({ ...prev, cat4: e.target.value }))
@@ -217,22 +215,38 @@ export default function ProductResults({ query, category }) {
                                 </div>
                             </div>
                             <div>
-                                <h2 className="text-[15px] font-bold text-stone-700 uppercase tracking-[0.2em] mb-8">
-                                    상품 옵션
-                                </h2>
-                                <div className="space-y-6">
+                                {/* 가이드 섹션 */}
+                                <div className="mb-6">
+                                    <h2 className="text-[15px] font-bold text-stone-700 mb-3 \">DETAIL OPTION</h2>
+                                    <div className="p-4 bg-zinc-50 border-zinc-900 rounded-r-md">
+                                        <p className="text-[12px] text-zinc-500 leading-5">
+                                            <span className="text-stone-700 font-bold block mb-1">Picker's Guide</span>
+                                            빠른 선택을 위해{' '}
+                                            <span className="text-stone-700  font-semibold">새 상품</span> 위주로 먼저
+                                            정리해 두었습니다.
+                                            <br />
+                                            빈티지나 해외 직구 상품까지 넓게 보고 싶다면 토글을 꺼주세요!
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* 토글 스위치 리스트 */}
+                                <div className="space-y-5 px-1">
                                     <FilterToggle
-                                        label="중고 제품 제외"
+                                        label="신상품만 보기"
+                                        subLabel="중고/구제 아이템 제외"
                                         checked={filters.excludeUsed}
                                         onChange={() => handleToggle('excludeUsed')}
                                     />
                                     <FilterToggle
-                                        label="단종 제품 제외"
+                                        label="판매 중인 상품만"
+                                        subLabel="단종된 모델 제외"
                                         checked={filters.excludeDiscontinued}
                                         onChange={() => handleToggle('excludeDiscontinued')}
                                     />
                                     <FilterToggle
-                                        label="해외직구 제외"
+                                        label="국내 배송 상품만"
+                                        subLabel="해외 직구/대행 제외"
                                         checked={filters.excludeGlobal}
                                         onChange={() => handleToggle('excludeGlobal')}
                                     />
@@ -253,9 +267,14 @@ export default function ProductResults({ query, category }) {
             </aside>
 
             {/* [MAIN] 상품 결과 영역 */}
-            <main className="flex-1 p-5 md:p-10">
+            <main className="flex-1 p-5 md:p-10 ">
                 {/* 정렬 셀렉트 */}
-                <div className="flex items-center gap-2">
+                <div className="grid justify-items-end">
+                    <span className="text-xs text-zinc-500">
+                        가장 정확도 높은 상위 100개의 아이템을 먼저 엄선했습니다. 'More'를 눌러 탐색을 이어가세요.
+                    </span>
+                </div>
+                <div className="flex items-center gap-2 ">
                     <span className="text-2xl font-bold text-zinc-900">{curatedProducts.length}</span>
                     <span className="text-sm text-zinc-500 font-light">Products Found</span>
                 </div>
