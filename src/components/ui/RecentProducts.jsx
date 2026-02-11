@@ -2,10 +2,11 @@
 // 최근 본 상품 컴포넌트
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import ProductCardGrid from './ProductCardGrid';
 
-export default function RecentProducts() {
+export default function RecentProducts({ emptyAction = 'scroll', emptyHref = '/category' }) {
     const [recentProducts, setRecentProducts] = useState([]); //최근 본상품 상태관리
     const gridClass = 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
@@ -31,16 +32,26 @@ export default function RecentProducts() {
 
         window.scrollTo({ top: y, behavior: 'smooth' });
     };
-
     return (
         <div>
             {isEmpty ? (
-                <div className="py-20 text-center">
-                    <p className="text-zinc-400 mb-4">아직 본 상품이 없습니다</p>
-                    <p className="text-sm text-zinc-500">카테고리에서 상품을 둘러보세요</p>
-                    <button onClick={scrollToCategory} className="text-sm text-blue-500 underline">
-                        카테고리 둘러보기
-                    </button>
+                <div className="flex flex-col items-center py-24 ">
+                    <p className="text-zinc-500 mb-6 text-lg">최근에 조회한 상품이 아직 없습니다</p>
+                    {emptyAction === 'link' ? (
+                        <Link
+                            href="/"
+                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors cursor-pointer "
+                        >
+                            카테고리 보러가기
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={scrollToCategory}
+                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors cursor-pointer"
+                        >
+                            카테고리 둘러보기
+                        </button>
+                    )}
                 </div>
             ) : (
                 <ProductCardGrid gridClass={gridClass} productInfo={recentProducts} isLoading={false} />

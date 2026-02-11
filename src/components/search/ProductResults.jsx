@@ -145,8 +145,8 @@ export default function ProductResults({ query, category }) {
                 <div className="flex flex-col h-full">
                     {/* 상단 필터 옵션 영역 */}
                     <div className="p-8 flex-1">
-                        <h1 className="text-xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
-                            Picker's Option
+                        <h1 className="text-2xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
+                            필터
                         </h1>
 
                         <div className="space-y-15">

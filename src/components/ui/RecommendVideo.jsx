@@ -42,11 +42,11 @@ export default function RecommendedVideos() {
 
     return (
         <section className="my-10">
-            <h2 className="text-xl font-bold mb-8 font-medium text-zinc-800">
+            <h2 className="text-xl mb-8 font-medium text-zinc-800">
                 {keyword ? (
                     <>
                         <span className="text-blue-700 text-2xl">{keyword}</span>{' '}
-                        <span>키워드에 추천하는 영상이에요</span>
+                        <span>키워드와 연결되는 영상 콘텐츠를 추천드려요.</span>
                     </>
                 ) : (
                     '지금 뜨는 트렌드 영상 확인해볼까요?'

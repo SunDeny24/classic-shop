@@ -1,15 +1,23 @@
 //상세페이지 데이터 보여주는 클라이언트 컴포넌트
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { useShopping } from '@/context/ShoppingContext';
+import PopupMessage from '../layout/PopupMessage';
+import ImageZoom from '../ui/ImageZoom';
 
 export default function ProductResultDetail() {
-    const { cart, setCart, wishList, setWishList } = useShopping([]);
+    const { cart, setCart, wishList, setWishList } = useShopping();
     const searchParams = useSearchParams();
+    const router = useRouter();
 
+    //상품
     const [product, setProduct] = useState(null);
     const [mounted, setMounted] = useState(false);
+
+    //팝업
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupConfig, setPopupConfig] = useState({ title: '', message: '', type: '' });
 
     //렌더시 서버와 결과값 맞추기 위해 useEffect내에서 마운트시 searchParams 사용
     useEffect(() => {
@@ -67,13 +75,28 @@ export default function ProductResultDetail() {
         //로컬에서 장바구니에 이미 있는 상품인지 확인
         const isExist = cart.find((item) => item.productId === productData.productId);
         if (isExist) {
-            alert('이미 장바구니에 담긴 상품입니다.');
-            return;
+            //이미 담긴 상품에 경우 팝업 오픈
+            setPopupConfig({
+                title: '이미 담긴 상품',
+                message: '이미 장바구니에 있는 상품입니다. 장바구니로 이동하시겠습니까?',
+                type: 'EXIST',
+            });
+        } else {
+            //새로운 상품 추가, 팝업 오픈
+            setCart([...cart, { ...productData, quantity: 1 }]);
+            setPopupConfig({
+                title: '장바구니 담기 성공',
+                message: '상품이 장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?',
+                type: 'SUCCESS',
+            });
         }
-        //새로운 상품 추가
-        setCart([...cart, { ...productData, quantity: 1 }]);
-        alert('장바구니에 상품을 담았습니다.');
-        // 추후 팝업 로직 추가
+        setShowPopup(true);
+    };
+
+    //팝업에서 확인 클릭시 이벤트(장바구니로 이동)
+    const goToCart = () => {
+        router.push('/cart');
+        setShowPopup(false);
     };
 
     // 해당 상품ID가 맞으면 TRUE 아니면 FALSE 토글처리
@@ -100,16 +123,17 @@ export default function ProductResultDetail() {
     }
 
     return (
-        <div className="max-w-screen-xl mx-auto p-5 bg-white">
+        <div className="max-w-screen-xl mx-auto bg-white">
             <div className="flex flex-col md:flex-row gap-12">
                 <div className="md:w-1/2">
                     <img src={product.image} alt={product.title} className="w-full rounded-lg shadow-lg" />
+                    {/* <ImageZoom src ={product.image} alt={product.title}/> */}
                 </div>
 
-                <div className="md:w-1/2 flex flex-col">
-                    <p className="text-lg font-semibold text-gray-600">{product.brand}</p>
-                    <h1 className="text-2xl font-bold text-gray-900 mt-2">{product.title}</h1>
-                    <p className="text-3xl font-bold text-gray-900 mt-4 mb-6">
+                <div className="md:w-1/2 flex flex-col font-sans">
+                    <p className="text-lg font-base text-gray-600">{product.brand}</p>
+                    <h1 className="text-xl font-bold text-gray-900 mt-2">{product.title}</h1>
+                    <p className="text-3xl font-semibold text-gray-900 mt-4 mb-6">
                         {product.lprice}
                         <span className="text-2xl">원</span>
                     </p>
@@ -117,7 +141,7 @@ export default function ProductResultDetail() {
                     <div className="flex items-center space-x-4 mt-auto pt-6 ">
                         <div
                             onClick={handleAddCart}
-                            className="flex-1 flex items-center justify-center bg-gray-500 text-white text-lg font-bold py-4 rounded-lg hover:bg-black transition-colors"
+                            className="flex-1 flex items-center border border-zinc-300 justify-center text-lg font-bold py-4 rounded-lg hover:bg-zinc-100 transition-colors"
                         >
                             장바구니
                         </div>
@@ -153,6 +177,17 @@ export default function ProductResultDetail() {
                     </div>
                 </div>
             </div>
+
+            {/* 장바구니 안내 팝업 */}
+            <PopupMessage
+                isOpen={showPopup}
+                title={popupConfig.title}
+                message={popupConfig.message}
+                confirmText="장바구니 이동"
+                cancelText="쇼핑 계속하기"
+                onConfirm={goToCart}
+                onCancel={() => setShowPopup(false)}
+            />
         </div>
     );
 }

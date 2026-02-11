@@ -31,7 +31,7 @@ export default function CategoryList() {
                 <h2 className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-1">
                     Browse by Category
                 </h2>
-                <h3 className="text-3xl font-bold text-zinc-900 tracking-tighter">카테고리</h3>
+                <h3 className="text-3xl font-bold text-zinc-900 ">카테고리</h3>
             </div>
 
             {/* 그리드 설정 수정: 기본 2열 / md 5열로 배치하여 크기 축소 */}
@@ -54,7 +54,7 @@ export default function CategoryList() {
                             </span>
 
                             {/* 텍스트 영역 */}
-                            <span className="block text-sm font-bold text-zinc-800 tracking-tight">{cat.name}</span>
+                            <span className="block text-sm font-bold text-zinc-800 ">{cat.name}</span>
                         </div>
                         {/* 우측 상단 화살표 장식 */}
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">

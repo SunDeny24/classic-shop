@@ -1,6 +1,7 @@
 //위시리스트 UI 컴포넌트
 'use client';
 
+import Link from 'next/link';
 import ProductCardGrid from './ProductCardGrid';
 import { useShopping } from '@/context/ShoppingContext';
 
@@ -19,15 +20,18 @@ export default function LikeList({ limit = null }) {
     return (
         <div>
             {isEmpty ? (
-                <div className="">
-                    <p className="text-zinc-400 mb-4">아직 좋아요 버튼을 누른 상품이 없습니다</p>
+                <div className="flex flex-col items-center py-20 ">
+                    <div className="text-6xl mb-4">🤍</div>
+                    <p className="text-zinc-500 text-lg font-medium mb-4">아직 좋아요 버튼을 누른 상품이 없습니다.</p>
+                    <Link
+                        href="/"
+                        className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors"
+                    >
+                        상품 보러가기
+                    </Link>
                 </div>
             ) : (
-                <ProductCardGrid
-                    gridClass={gridClass}
-                    productInfo={displayProducts}
-                    isLoading={false} // 여기서 isLoading을 그대로 전달!
-                />
+                <ProductCardGrid gridClass={gridClass} productInfo={displayProducts} isLoading={false} />
             )}
         </div>
     );

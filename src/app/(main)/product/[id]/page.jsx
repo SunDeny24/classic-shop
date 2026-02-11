@@ -7,15 +7,15 @@ import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
 
 export default async function ProductDetail() {
     return (
-        <div className="max-w-5xl mx-auto px-4 space-y-10">
-            <nav className="py-4">
+        <div className="max-w-5xl mx-auto px-4 ">
+            <nav className="pt-5 pb-5">
                 <BackButton />
             </nav>
 
-            <section className="p-5">
+            <section className="pb-5 px-5">
                 <ProductResultDetail />
             </section>
-            <section className="p-5">
+            <section className="py-5">
                 <RecentKeywordRecommend />
             </section>
         </div>

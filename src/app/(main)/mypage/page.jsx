@@ -3,7 +3,7 @@ import MyPageClient from '@/components/ui/MyPageClient';
 
 export default function Mypage() {
     return (
-        <div className="bg-zinc-50 font-sans">
+        <div className="bg-zinc-50 font-sans w-full ">
             <MyPageClient />
         </div>
     );
