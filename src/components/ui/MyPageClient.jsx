@@ -88,8 +88,8 @@ export default function MyPageClient() {
 
             <div className="bg-gray-100 p-4 text-center mt-15">
                 <p className="text-xs text-gray-500 leading-relaxed">
-                    마이페이지 보관함 데이터는 브라우저 쿠키/로컬 스토리지를 기반으로 합니다. 브라우저를 초기화하거나
-                    다른 기기에서 접속하면 데이터가 보이지 않을 수 있습니다.
+                    마이페이지 보관함 데이터는 현재 브라우저에 안전하게 보관 중이에요. 다만, 기기를 바꾸거나 브라우저
+                    초기화시엔 데이터가 보이지 않을 수 있습니다.
                 </p>
             </div>
         </div>

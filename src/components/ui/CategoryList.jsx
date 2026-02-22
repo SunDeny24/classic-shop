@@ -40,7 +40,7 @@ export default function CategoryList() {
                     <button
                         key={cat.id}
                         onClick={() => handleCategoryClick(cat.name)}
-                        className="group relative overflow-hidden rounded-xl border border-zinc-100 bg-white p-4 py-6 transition-all duration-300 hover:border-zinc-900 hover:shadow-md hover:-translate-y-1"
+                        className="group relative overflow-hidden rounded-xl  bg-white p-4 py-6 transition-all duration-300 hover:border-zinc-900 hover:shadow-md hover:-translate-y-1"
                     >
                         {/* 배경 효과 */}
                         <div

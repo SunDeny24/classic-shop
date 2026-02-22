@@ -83,7 +83,7 @@ export default function CartPage() {
 
                     <div className="lg:w-1/3">
                         <div className="bg-white rounded-lg shadow-md p-6 sticky top-28">
-                            <h2 className="text-xl font-semibold mb-4 border-b border-gray-200  pb-3">결제 정보</h2>
+                            <h2 className="text-xl font-semibold mb-4 border-b border-gray-200 pb-3">결제 정보</h2>
                             <div className="space-y-3">
                                 {/* 상품금액 */}
                                 <div className="flex justify-between">

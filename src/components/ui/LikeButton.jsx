@@ -5,30 +5,23 @@
 import { useShopping } from '@/context/ShoppingContext';
 
 export default function LikeButton({ productData }) {
-    const { wishList, setWishList } = useShopping([]);
+    const { wishList, toggleWishList } = useShopping([]);
 
     // 해당 상품ID가 맞으면 TRUE 아니면 FALSE 토글처리
     const isLiked = wishList.some((item) => item.productId === productData.productId);
 
     const toggleLike = (e) => {
-        e.preventDefault(); // 링크 이동 방지 (부모가 Link일 경우)
+        e.preventDefault(); // 링크 이동 방지
         e.stopPropagation(); // 부모 요소(카드 링크) 클릭 방지
 
-        if (isLiked) {
-            // 선택이 되어있다면 선택된 상품과 다른 상품들만 가져옴
-            const updatedLikes = wishList.filter((item) => item.productId !== productData.productId);
-            setWishList(updatedLikes);
-        } else {
-            // 선택이 되어있지 않다면 추가
-            setWishList([productData, ...wishList]);
-        }
+        toggleWishList(productData);
     };
 
     return (
         <div>
             <button onClick={toggleLike} className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md">
                 <svg
-                    className={`w-5 h-5 transition-colors ${isLiked ? 'text-blue-500 fill-current' : 'text-gray-400'}`}
+                    className={`w-5 h-5 transition-colors ${isLiked ? 'text-blue-600 fill-current' : 'text-gray-400'}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

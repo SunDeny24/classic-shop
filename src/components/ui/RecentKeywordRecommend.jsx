@@ -33,7 +33,8 @@ export default function RecentKeywordRecommend() {
         <div className="w-full ">
             <div className="flex flex-wrap items-center gap-4 mb-8">
                 <h3 className="text-xl font-medium text-zinc-800">
-                    최근 관심을 보이신 <span className="text-2xl text-blue-700">{keyword}</span> 테마에요
+                    최근 관심을 보이신 <span className="text-2xl text-blue-700">{keyword}</span> 키워드에 관련된
+                    상품이에요
                 </h3>
                 {/* 조건: 로딩 중이 아니고, 데이터가 4개를 초과할 때만 '더보기' 노출 */}
                 {!loading && products.length > 6 && (

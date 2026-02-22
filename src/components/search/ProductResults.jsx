@@ -149,7 +149,7 @@ export default function ProductResults({ query, category }) {
                             필터
                         </h1>
 
-                        <div className="space-y-15">
+                        <div className="space-y-14">
                             <div>
                                 <h2 className="text-[15px] font-bold text-stone-700 mb-6">CATEGORY</h2>
                                 {/* 중분류 (Category 2) */}
@@ -225,7 +225,7 @@ export default function ProductResults({ query, category }) {
                                             <span className="text-stone-700  font-semibold">새 상품</span> 위주로 먼저
                                             정리해 두었습니다.
                                             <br />
-                                            빈티지나 해외 직구 상품까지 넓게 보고 싶다면 토글을 꺼주세요!
+                                            빈티지나 해외 직구 상품까지 넓게 보고 싶다면 왼쪽으로 토글을 꺼주세요!
                                         </p>
                                     </div>
                                 </div>
@@ -275,7 +275,7 @@ export default function ProductResults({ query, category }) {
                     </span>
                 </div>
                 <div className="flex items-center gap-2 ">
-                    <span className="text-2xl font-bold text-zinc-900">{curatedProducts.length}</span>
+                    <span className="text-2xl font-bold text-stone-700">{curatedProducts.length}</span>
                     <span className="text-sm text-zinc-500 font-light">Products Found</span>
                 </div>
                 {(selectedCategory.cat2 || selectedCategory.cat3) && (
@@ -358,9 +358,13 @@ function FilterToggle({ label, checked, onChange }) {
             <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900 transition-colors">
                 {label}
             </span>
+            {/* 토글버튼 */}
             <div className="relative">
+                {/* checkbox 접근성 */}
                 <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} />
+                {/* 토글 몸체 */}
                 <div className="block bg-zinc-200 w-10 h-5 rounded-full transition-colors peer-checked:bg-zinc-900"></div>
+                {/* 토글 원 */}
                 <div className="absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform peer-checked:translate-x-5"></div>
             </div>
         </label>

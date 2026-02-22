@@ -3,21 +3,16 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { useShopping } from '@/context/ShoppingContext';
-import PopupMessage from '../layout/PopupMessage';
 import ImageZoom from '../ui/ImageZoom';
 
 export default function ProductResultDetail() {
-    const { cart, setCart, wishList, setWishList } = useShopping();
+    const { wishList, addItemToCart, toggleWishList } = useShopping();
     const searchParams = useSearchParams();
-    const router = useRouter();
+    //const router = useRouter();
 
     //상품
     const [product, setProduct] = useState(null);
     const [mounted, setMounted] = useState(false);
-
-    //팝업
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupConfig, setPopupConfig] = useState({ title: '', message: '', type: '' });
 
     //렌더시 서버와 결과값 맞추기 위해 useEffect내에서 마운트시 searchParams 사용
     useEffect(() => {
@@ -69,36 +64,6 @@ export default function ProductResultDetail() {
         }
     }, [productData]);
 
-    const handleAddCart = () => {
-        if (!productData) return;
-
-        //로컬에서 장바구니에 이미 있는 상품인지 확인
-        const isExist = cart.find((item) => item.productId === productData.productId);
-        if (isExist) {
-            //이미 담긴 상품에 경우 팝업 오픈
-            setPopupConfig({
-                title: '이미 담긴 상품',
-                message: '이미 장바구니에 있는 상품입니다. 장바구니로 이동하시겠습니까?',
-                type: 'EXIST',
-            });
-        } else {
-            //새로운 상품 추가, 팝업 오픈
-            setCart([...cart, { ...productData, quantity: 1 }]);
-            setPopupConfig({
-                title: '장바구니 담기 성공',
-                message: '상품이 장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?',
-                type: 'SUCCESS',
-            });
-        }
-        setShowPopup(true);
-    };
-
-    //팝업에서 확인 클릭시 이벤트(장바구니로 이동)
-    const goToCart = () => {
-        router.push('/cart');
-        setShowPopup(false);
-    };
-
     // 해당 상품ID가 맞으면 TRUE 아니면 FALSE 토글처리
     const isLiked = productData ? wishList.some((item) => item.productId === productData.productId) : false;
 
@@ -106,16 +71,7 @@ export default function ProductResultDetail() {
         e.preventDefault(); // 링크 이동 방지 (부모가 Link일 경우)
         e.stopPropagation(); // 부모 요소(카드 링크) 클릭 방지
 
-        if (!productData) return;
-
-        if (isLiked) {
-            // 선택이 되어있다면 선택된 상품과 다른 상품들만 가져옴
-            const updatedLikes = wishList.filter((item) => item.productId !== productData.productId);
-            setWishList(updatedLikes);
-        } else {
-            // 선택이 되어있지 않다면 추가
-            setWishList([productData, ...wishList]);
-        }
+        toggleWishList(productData);
     };
 
     if (!mounted || !product) {
@@ -140,12 +96,12 @@ export default function ProductResultDetail() {
 
                     <div className="flex items-center space-x-4 mt-auto pt-6 ">
                         <div
-                            onClick={handleAddCart}
-                            className="flex-1 flex items-center border border-zinc-300 justify-center text-lg font-bold py-4 rounded-lg hover:bg-zinc-100 transition-colors"
+                            onClick={() => addItemToCart(product)}
+                            className="flex-1 cursor-pointer flex items-center border border-zinc-300 justify-center text-lg font-bold py-4 rounded-lg hover:bg-zinc-100 transition-colors"
                         >
                             장바구니
                         </div>
-                        <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-800 transition-colors">
+                        <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                             <a
                                 className="flex items-center justify-center w-full h-full py-4 text-white text-lg font-bold"
                                 href={product.link}
@@ -160,7 +116,7 @@ export default function ProductResultDetail() {
                             className="flex items-center justify-center border border-gray-300 rounded-lg w-[60px] h-[60px] hover:bg-gray-100 transition-colors"
                         >
                             <svg
-                                className={`w-7 h-7 text-gray-500  ${isLiked ? 'text-red-500 fill-current' : 'text-gray-400'}`}
+                                className={`w-7 h-7  transition-colors  ${isLiked ? 'text-blue-600 fill-current' : 'text-gray-400'}`}
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -177,17 +133,6 @@ export default function ProductResultDetail() {
                     </div>
                 </div>
             </div>
-
-            {/* 장바구니 안내 팝업 */}
-            <PopupMessage
-                isOpen={showPopup}
-                title={popupConfig.title}
-                message={popupConfig.message}
-                confirmText="장바구니 이동"
-                cancelText="쇼핑 계속하기"
-                onConfirm={goToCart}
-                onCancel={() => setShowPopup(false)}
-            />
         </div>
     );
 }

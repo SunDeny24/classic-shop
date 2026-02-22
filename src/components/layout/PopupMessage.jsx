@@ -29,7 +29,7 @@ export default function PopupMessage({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* 배경 레이어 (어둡게 처리) */}
             <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/20 backdrop-blur-sm"
                 onClick={onCancel} // 배경 클릭 시 취소 처리
             />
 
@@ -46,14 +46,14 @@ export default function PopupMessage({
                     {onCancel && (
                         <button
                             onClick={onCancel}
-                            className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+                            className="flex-1 cursor-pointer py-3 px-4 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
                         >
                             {cancelText}
                         </button>
                     )}
                     <button
                         onClick={onConfirm}
-                        className="flex-1 py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
+                        className="flex-1 cursor-pointer py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
                     >
                         {confirmText}
                     </button>
