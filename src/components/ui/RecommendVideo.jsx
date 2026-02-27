@@ -13,22 +13,19 @@ export default function RecommendedVideos() {
     useEffect(() => {
         // 클라이언트 사이드에서만 실행됨
         const savedSearches = localStorage.getItem('recent_searches'); //최근 검색어
-        if (savedSearches) {
+        let selectedKeyword;
+        if (Array.isArray(savedSearches).length > 0) {
             try {
                 const parseList = JSON.parse(savedSearches);
-
-                if (Array.isArray(parseList) && parseList.length > 0) {
-                    // const randomIndex = Math.floor(Math.random() * searchList.length);
-                    // const selectedKeyword = searchList[randomIndex];
-
-                    setKeyword(parseList[0]);
-                }
+                selectedKeyword = parseList[0];
             } catch (e) {
-                console.log('로컬스토리지 데이터 파싱 에러', e);
+                console.log('로컬스토리지 최근검색어 데이터 파싱 에러', e);
             }
+            selectedKeyword = keyword;
         } else {
-            setKeyword('');
+            selectedKeyword = null;
         }
+        setKeyword();
     }, []);
 
     // 검색어가 있으면 search 모드, 없으면 trend 모드
@@ -41,8 +38,8 @@ export default function RecommendedVideos() {
     if (error) return <div>영상을 불러올 수 없습니다.</div>;
 
     return (
-        <section className="my-10">
-            <h2 className="text-xl mb-8 font-medium text-zinc-800">
+        <section className="">
+            <h2 className="text-xl mb-6 font-medium text-zinc-800">
                 {keyword ? (
                     <>
                         <span className="text-blue-700 text-2xl">{keyword}</span>{' '}

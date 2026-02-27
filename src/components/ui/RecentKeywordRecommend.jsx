@@ -3,7 +3,7 @@
 
 'use client';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from './ProductCardGrid';
 
@@ -24,14 +24,22 @@ export default function RecentKeywordRecommend() {
         }
     }, []);
 
+    // 랜덤상품 표시
+    const randomProducts = useMemo(() => {
+        if (!products || products.length === 0) return [];
+        const random = [...products].sort(() => Math.random() - 0.5);
+        return random.slice(0, 6);
+    }, [products]); //데이터가 있을때 바꿔줘야된다
+
     // 최근 검색어 없는 경우
     if (!keyword || (!loading && products.length === 0)) {
+        console.log('최근검색어 없음');
         return null;
     }
 
     return (
-        <div className="w-full ">
-            <div className="flex flex-wrap items-center gap-4 mb-8">
+        <div className="w-full">
+            <div className=" flex flex-wrap items-center gap-4 mb-8">
                 <h3 className="text-xl font-medium text-zinc-800">
                     최근 관심을 보이신 <span className="text-2xl text-blue-700">{keyword}</span> 키워드에 관련된
                     상품이에요
@@ -60,7 +68,7 @@ export default function RecentKeywordRecommend() {
                 //로딩중이면 스켈레톤만 보여줌
                 <ProductCardGrid gridClass={gridClass} productInfo={[]} isLoading={true} skeletonCount={4} />
             ) : products.length > 0 ? (
-                <ProductCardGrid gridClass={gridClass} productInfo={products.slice(0, 6)} isLoading={false} />
+                <ProductCardGrid gridClass={gridClass} productInfo={randomProducts} isLoading={false} />
             ) : (
                 /* 로딩이 끝났는데 데이터가 0개인 경우 */
                 <div className="py-20 text-center border-2 border-dashed border-zinc-100 rounded-2xl">

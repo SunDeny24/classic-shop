@@ -9,12 +9,14 @@ export function useYoutube(type, query) {
     const [videos, setvideos] = useState([]); //영상들 state
     const [loading, setLoading] = useState(true); //로딩여부 state
     const [error, setError] = useState(null); //에러 state
+
     const load = async () => {
         if (!type) return;
         //const activeType = !query && type === 'search' ? 'trend' : type;
         // console.log('[useYoutube]activeType : ', activeType);
         // console.log('[useYoutube]query : ', query);
 
+        // type - trend(쿼리없을 경우) : search(쿼리가 있을경우)
         setvideos([]);
         setLoading(true);
         setError(null);
@@ -30,7 +32,6 @@ export function useYoutube(type, query) {
                 setvideos(formattedVideo);
             }
         } catch (e) {
-            console.log('[useYoutube]e : ', e);
             setError(e.message ?? '유튜브 데이터 가져오는데 실패했습니다.');
         } finally {
             setLoading(false);

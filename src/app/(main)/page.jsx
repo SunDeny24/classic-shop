@@ -12,8 +12,8 @@ export default function Home() {
             <section className="max-w-screen-xl mx-auto ">
                 <CategoryList />
             </section>
-            <section className="w-full bg-zinc-100 mt-8 py-12">
-                <div className="max-w-screen-xl mx-auto px-5">
+            <section className="w-full bg-zinc-100 mt-8 py-12 ">
+                <div className="max-w-screen-xl mx-auto px-5 space-y-5">
                     <RecentKeywordRecommend />
                     <RecommendedVideos />
                 </div>
