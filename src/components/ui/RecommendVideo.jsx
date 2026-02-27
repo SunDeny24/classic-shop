@@ -13,19 +13,18 @@ export default function RecommendedVideos() {
     useEffect(() => {
         // 클라이언트 사이드에서만 실행됨
         const savedSearches = localStorage.getItem('recent_searches'); //최근 검색어
-        let selectedKeyword;
-        if (Array.isArray(savedSearches).length > 0) {
+        let selectedKeyword = '';
+        if (savedSearches) {
             try {
                 const parseList = JSON.parse(savedSearches);
                 selectedKeyword = parseList[0];
             } catch (e) {
                 console.log('로컬스토리지 최근검색어 데이터 파싱 에러', e);
             }
-            selectedKeyword = keyword;
         } else {
-            selectedKeyword = null;
+            selectedKeyword = '';
         }
-        setKeyword();
+        setKeyword(selectedKeyword);
     }, []);
 
     // 검색어가 있으면 search 모드, 없으면 trend 모드
