@@ -4,12 +4,14 @@
 // 추후 수정
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import YoutubePlayer from './YoutubePlayer';
 import { useYoutube } from '@/hooks/useYoutube';
+import RecommendVideoSkeleton from './skeleton/RecommendVideoSkeleton';
 
-export default function RecommendedVideos() {
-    const [keyword, setKeyword] = useState(null);
+export default function RecommendedVideos({ onDataEmpty, onDataFull }) {
+    const [keyword, setKeyword] = useState(null); // 검색어
+
     useEffect(() => {
         // 클라이언트 사이드에서만 실행됨
         const savedSearches = localStorage.getItem('recent_searches'); //최근 검색어
@@ -31,10 +33,24 @@ export default function RecommendedVideos() {
     //keyword가 null이면 null로 훅호출하지않음, 있다면 검색어있으니까 search모드로, 아니면 trend모드로
     const type = keyword === null ? null : keyword ? 'search' : 'trend';
 
-    const { videos, loading, error } = useYoutube(type, keyword);
+    const { videos, loading, error } = useYoutube(type, keyword); //유튜브 영상 가져옴
 
-    if (loading) return <div>추천 영상 로딩 중...</div>;
-    if (error) return <div>영상을 불러올 수 없습니다.</div>;
+    // 데이터 유무에 따른 부모 상태 업데이트
+    useEffect(() => {
+        if (!loading) {
+            if (error || !videos || !videos.length) {
+                onDataEmpty?.();
+            } else {
+                onDataFull?.();
+            }
+        }
+    }, [videos, error, loading, onDataEmpty, onDataFull]);
+
+    // 로딩중일때 스켈레톤
+    if (loading) return <RecommendVideoSkeleton />;
+
+    //에러거나 데이터 없을 경우엔 멘트 노출
+    if (error || !videos || !videos.length) return null;
 
     return (
         <section className="">

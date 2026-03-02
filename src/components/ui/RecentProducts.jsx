@@ -40,14 +40,14 @@ export default function RecentProducts({ emptyAction = 'scroll', emptyHref = '/c
                     {emptyAction === 'link' ? (
                         <Link
                             href="/"
-                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors cursor-pointer "
+                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors cursor-pointer "
                         >
                             카테고리 보러가기
                         </Link>
                     ) : (
                         <button
                             onClick={scrollToCategory}
-                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors cursor-pointer"
+                            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors cursor-pointer"
                         >
                             카테고리 둘러보기
                         </button>

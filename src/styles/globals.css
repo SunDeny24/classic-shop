@@ -10,6 +10,26 @@
     --color-foreground: var(--foreground);
     --font-sans: var(--font-montserrat), var(--font-asta-sans);
     --font-mono: var(--font-geist-mono);
+
+    /* 애니메이션 reveal 설정 */
+    @keyframes reveal {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        5%,
+        95% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+
+    /* 애니메이션 reveal 정의 */
+    --animate-msg-reveal: reveal 7s ease-in-out infinite;
 }
 
 :root {

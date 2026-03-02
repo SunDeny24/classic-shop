@@ -25,7 +25,7 @@ export default function LikeList({ limit = null }) {
                     <p className="text-zinc-500 text-lg font-medium mb-4">아직 좋아요 버튼을 누른 상품이 없습니다.</p>
                     <Link
                         href="/"
-                        className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-800 transition-colors"
+                        className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors"
                     >
                         상품 보러가기
                     </Link>

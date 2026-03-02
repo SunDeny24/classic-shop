@@ -66,8 +66,21 @@ export default function MyPageClient() {
                 <section>
                     <div className="flex justify-between items-end m-3 mb-5 py-3 px-3">
                         <h3 className="text-2xl font-bold text-gray-800 ">내가 찜한 상품</h3>
-                        <Link href="/wishlist" className="text-sm text-gray-400 hover:text-blue-500">
+                        <Link
+                            href="/wishlist"
+                            className="group flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
+                        >
                             전체보기
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
                         </Link>
                     </div>
                     <div className="rounded-xl bg-white p-5 m-3">

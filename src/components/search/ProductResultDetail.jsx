@@ -3,29 +3,36 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { useShopping } from '@/context/ShoppingContext';
-import ImageZoom from '../ui/ImageZoom';
 
 export default function ProductResultDetail() {
     const { wishList, addItemToCart, toggleWishList } = useShopping();
     const searchParams = useSearchParams();
-    //const router = useRouter();
+    const router = useRouter();
 
     //상품
     const [product, setProduct] = useState(null);
     const [mounted, setMounted] = useState(false);
+    const [error, setError] = useState(false);
 
     //렌더시 서버와 결과값 맞추기 위해 useEffect내에서 마운트시 searchParams 사용
     useEffect(() => {
         setMounted(true);
         const dataParams = searchParams.get('data');
-        if (!dataParams) return;
+        if (!dataParams) {
+            setError(true);
+        }
         try {
-            const product = JSON.parse(decodeURIComponent(dataParams));
-            setProduct(product);
+            const decodeData = decodeURIComponent(dataParams);
+            const parseProduct = JSON.parse(decodeData);
+            if (!parseProduct || !parseProduct.productId) {
+                throw new Error('Invalid Products data');
+            }
+            setProduct(parseProduct);
         } catch (e) {
             console.error('상품 데이터 파싱 실패 :', e);
+            setError(true);
         }
-    }, []);
+    }, [searchParams]);
 
     //최근 본 상품 상품데이터 포맷저장 객체생성
     const productData = useMemo(() => {
@@ -74,6 +81,21 @@ export default function ProductResultDetail() {
         toggleWishList(productData);
     };
 
+    if (error) {
+        return (
+            <div className="p-20 text-center">
+                <h2 className="text-2xl font-bold">상품 정보를 찾을 수 없습니다.</h2>
+                <p className="text-gray-500 mt-2 mb-6">이미 삭제되었거나 잘못된 접근입니다.</p>
+                <button
+                    onClick={() => router.push('/')}
+                    className="cursor-pointer px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors"
+                >
+                    홈으로 돌아가기
+                </button>
+            </div>
+        );
+    }
+
     if (!mounted || !product) {
         return <div className="p-20 text-center">상품 정보를 불러오는 중입니다...</div>;
     }
@@ -83,7 +105,6 @@ export default function ProductResultDetail() {
             <div className="flex flex-col md:flex-row gap-12">
                 <div className="md:w-1/2">
                     <img src={product.image} alt={product.title} className="w-full rounded-lg shadow-lg" />
-                    {/* <ImageZoom src ={product.image} alt={product.title}/> */}
                 </div>
 
                 <div className="md:w-1/2 flex flex-col font-sans">

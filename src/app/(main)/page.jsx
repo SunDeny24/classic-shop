@@ -2,22 +2,21 @@
 //app/(main)/page.jsx
 
 import RecentProducts from '@/components/ui/RecentProducts';
-import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
+import RecommendSection from '@/components/ui/RecommendSection';
 import CategoryList from '@/components/ui/CategoryList';
-import RecommendedVideos from '@/components/ui/RecommendVideo';
 
 export default function Home() {
     return (
         <div className="w-full bg-white">
+            {/* 카테고리 섹션 */}
             <section className="max-w-screen-xl mx-auto ">
                 <CategoryList />
             </section>
+            {/* 추천상품 섹션 */}
             <section className="w-full bg-zinc-100 mt-8 py-12 ">
-                <div className="max-w-screen-xl mx-auto px-5 space-y-5">
-                    <RecentKeywordRecommend />
-                    <RecommendedVideos />
-                </div>
+                <RecommendSection />
             </section>
+            {/* 최근 본 상품 섹션 */}
             <section className="max-w-screen-xl mx-auto mt-8 p-8">
                 <div className="flex flex-col mb-8">
                     <h2 className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-1">
