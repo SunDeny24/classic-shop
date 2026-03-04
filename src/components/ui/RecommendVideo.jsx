@@ -5,6 +5,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 //import YoutubePlayer from './YoutubePlayer';
+import dynamic from 'next/dynamic';
+
 const YoutubePlayer = dynamic(() => import('./YoutubePlayer'), {
     ssr: false,
     loading: () => <div className="aspect-video bg-gray-200 animate-pulse rounded-xl" />,
