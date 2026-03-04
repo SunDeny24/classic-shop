@@ -1,7 +1,6 @@
 // 추천영상 컴포넌트 - 어떤영상을 가져올지 결정
 // src/components/ui/RecommendVideo.jsx
 
-// 추후 수정
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';

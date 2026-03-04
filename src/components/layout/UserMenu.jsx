@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useShopping } from '@/context/ShoppingContext';
 export default function UserMenu() {
     const { cart, wishList } = useShopping([]);
-    const wishListCount = wishList.length;
-    const cartCount = cart.length;
+    const wishListCount = wishList.length || 0;
+    const cartCount = cart.length || 0;
 
     return (
         <div className="hidden md:flex items-center space-x-5">
