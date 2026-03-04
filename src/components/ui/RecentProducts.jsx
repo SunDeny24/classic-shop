@@ -20,6 +20,9 @@ export default function RecentProducts({ emptyAction = 'scroll', emptyHref = '/c
 
     // 카테고리섹션으로 이동하는 함수
     const scrollToCategory = () => {
+        // 브라우저 환경이 아니면 실행하지 않음
+        if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
         const headerElement = document.querySelector('header');
         const categoryElement = document.getElementById('category-section');
         if (!categoryElement) return;
