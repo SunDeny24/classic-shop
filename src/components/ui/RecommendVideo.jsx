@@ -4,7 +4,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import YoutubePlayer from './YoutubePlayer';
+//import YoutubePlayer from './YoutubePlayer';
+const YoutubePlayer = dynamic(() => import('./YoutubePlayer'), {
+    ssr: false,
+    loading: () => <div className="aspect-video bg-gray-200 animate-pulse rounded-xl" />,
+});
 import { useYoutube } from '@/hooks/useYoutube';
 import RecommendVideoSkeleton from './skeleton/RecommendVideoSkeleton';
 
