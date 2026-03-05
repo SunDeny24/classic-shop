@@ -35,7 +35,7 @@ export default function CategoryList() {
             </div>
 
             {/* 그리드 설정 수정: 기본 2열 / md 5열로 배치하여 크기 축소 */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                 {NAVER_DISPLAY_CATEGORIES.map((cat) => (
                     <button
                         key={cat.id}
@@ -54,7 +54,7 @@ export default function CategoryList() {
                             </span>
 
                             {/* 텍스트 영역 */}
-                            <span className="block text-sm font-bold text-zinc-800 ">{cat.name}</span>
+                            <span className="block text-xs sm:text-sm font-bold text-zinc-800 ">{cat.name}</span>
                         </div>
                         {/* 우측 상단 화살표 장식 */}
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">

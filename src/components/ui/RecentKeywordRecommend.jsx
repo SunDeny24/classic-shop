@@ -10,7 +10,7 @@ import ProductCardGrid from './ProductCardGrid';
 export default function RecentKeywordRecommend() {
     const [keyword, setKeyword] = useState('');
     const { products, loading, error } = useProducts(keyword);
-    const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10'; //상품그리드 css 설정
+    const gridClass = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
     useEffect(() => {
         //로컬스토리지에서 최근 검색어 배열에 최신 키워드 가져옴
@@ -40,15 +40,21 @@ export default function RecentKeywordRecommend() {
     return (
         <div className="w-full">
             <div className="flex flex-wrap items-center gap-4 mb-8">
-                <h3 className="text-xl font-medium text-zinc-800">
-                    최근 관심을 보이신 <span className="text-2xl text-blue-700">{keyword}</span> 키워드에 관련된
-                    상품이에요
-                </h3>
+                <div className="flex flex-col gap-1 ">
+                    <h3 className="text-lg sm:text-xl font-medium text-zinc-800">
+                        <span className="text-xl sm:text-2xl font-bold text-blue-700 px-2 py-1 "># {keyword}</span>관련
+                        추천 상품
+                    </h3>
+                </div>
                 {/* 조건: 로딩 중이 아니고, 데이터가 4개를 초과할 때만 '더보기' 노출 */}
                 {!loading && products.length > 6 && (
+                    // <Link
+                    //     href={`/search/${encodeURIComponent(keyword)}`}
+                    //     className="group flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
+                    // >
                     <Link
                         href={`/search/${encodeURIComponent(keyword)}`}
-                        className="group flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
+                        className="group flex items-center gap-1 px-3 py-1.5 rounded-md bg-blue-600 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200"
                     >
                         더보기
                         <svg

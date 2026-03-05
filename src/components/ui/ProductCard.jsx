@@ -32,10 +32,10 @@ export default function ProductCard({ productData }) {
                     />
                     <LikeButton productData={productData} />
                 </div>
-                <div className="pt-5 pb-8 px-1">
-                    <p className="text-[12px] font-semibold text-gray-600 mb-1">{productData.brand}</p>
-                    <h3 className="text-[15px] font-normal text-gray-900 ">{productData.title}</h3>
-                    <p className="text-xl font-semibold text-gray-950 mt-1">{productData.lprice}</p>
+                <div className="py-5 px-1">
+                    <p className="text-[12px]  sm:text-[12px] font-semibold text-gray-600 mb-1">{productData.brand}</p>
+                    <h3 className="text-[12px] sm:text-[14px] font-normal text-gray-900 ">{productData.title}</h3>
+                    <p className="text-lg sm:text-xl font-semibold text-gray-950 mt-1">{productData.lprice}</p>
                 </div>
             </Link>
         </div>

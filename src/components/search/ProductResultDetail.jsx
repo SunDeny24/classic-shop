@@ -54,10 +54,10 @@ export default function ProductResultDetail() {
         // 1. 최근 본 상품에 상세페이지 들어갔던 이력 저장
         const savedProducts = localStorage.getItem('recent_products');
         const prevList = savedProducts ? JSON.parse(savedProducts) : [];
-        // 기존 데이터에 추가하고 4개 제한함
+        // 기존 데이터에 추가하고 5개 제한함
         const newProduct = [productData, ...prevList.filter((item) => item.productId !== productData.productId)].slice(
             0,
-            4,
+            5,
         );
 
         localStorage.setItem('recent_products', JSON.stringify(newProduct));

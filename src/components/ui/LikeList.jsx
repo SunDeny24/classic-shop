@@ -11,9 +11,9 @@ export default function LikeList({ limit = null }) {
     const displayProducts = limit ? wishList.slice(0, limit) : wishList;
 
     const gridClass = limit
-        ? 'grid grid-cols-2 md:grid-cols-4 gap-4'
-        : 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10';
-    //limit값에 따라 css 변경 (마이페이지/ 위시리스트)
+        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4'
+        : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10';
+    //limit값에 따라 css 변경 (마이페이지 4/ 위시리스트 50)
 
     const isEmpty = wishList.length === 0;
 

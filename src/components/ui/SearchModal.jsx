@@ -73,20 +73,20 @@ export default function SearchModal({ closeSearch }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-white z-[999] p-4 md:p-8 overflow-y-auto">
+        <div className="fixed inset-0 bg-white z-[999] px-8 overflow-y-auto">
             {/* 닫기 버튼: 화면 우측 상단 고정 */}
             <button
                 onClick={closeSearch}
                 className="fixed top-6 right-6 md:top-10 md:right-10 text-gray-400 hover:text-black transition-colors z-[1000]"
             >
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
 
-            <div className="max-w-3xl mx-auto pt-20">
+            <div className="max-w-3xl mx-auto pt-20 ">
                 {/* 검색창 폼 */}
-                <div className="relative mt-8">
+                <div className="relative mt-8 ">
                     <form onSubmit={handlerSubmit}>
                         <input
                             type="text"

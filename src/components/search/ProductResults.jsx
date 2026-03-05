@@ -5,7 +5,9 @@ import ProductCardGrid from '@/components/ui/ProductCardGrid';
 
 export default function ProductResults({ query, category }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
-    const gridClass = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'; //상품그리드 css 설정
+    const gridClass = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10'; //상품그리드 css 설정
+    // 모바일 필터 펼침 상태 (기본값: 닫힘)
+    const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
     // 카테고리 상태관리
     const [selectedCategory, setSelectedCategory] = useState({
@@ -140,67 +142,80 @@ export default function ProductResults({ query, category }) {
 
     return (
         <div className="flex flex-col md:flex-row w-full bg-white min-h-screen">
-            {/* [SIDEBAR] 필터 영역 */}
-            <aside className="w-full md:w-80 flex-shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:h-screen md:sticky md:top-0">
-                <div className="flex flex-col h-full">
-                    {/* 상단 필터 옵션 영역 */}
-                    <div className="p-8 flex-1">
-                        <h1 className="text-2xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
-                            필터
-                        </h1>
+            {/* [SIDEBAR/TOPBAR] md 이상은 왼쪽 고정, 미만은 상단 접이식 */}
+            <aside className="w-full md:w-64 flex-shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:sticky md:top-28 md:h-[calc(100vh-112px)] overflow-y-auto">
+                {/* 모바일 전용: 필터 요약 바 (sm 이하에서만 노출) */}
+                <div
+                    className="md:hidden flex items-center justify-between p-4 bg-white cursor-pointer"
+                    onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+                >
+                    <span className="text-sm font-bold text-zinc-900 ">상세 필터 설정 열기</span>
+                    <button className="text-xs text-zinc-600 font-semibold">
+                        {isFilterExpanded ? '닫기 ▲' : '열기 ▼'}
+                    </button>
+                </div>
+                <div className="flex flex-col md:h-full">
+                    {/* 필터 본문: md 이상은 항상 표시, md 미만은 isFilterExpanded 상태에 따라 표시 */}
+                    <div className={`${isFilterExpanded ? 'block' : 'hidden'} md:block flex flex-col md:h-full`}>
+                        <div className="px-5 py-2 flex-1 md:pb-8">
+                            <h1 className=" hidden md:block text-2xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
+                                필터
+                            </h1>
 
-                        <div className="space-y-14">
-                            <div>
-                                <h2 className="text-[15px] font-bold text-stone-700 mb-6">CATEGORY</h2>
-                                {/* 중분류 (Category 2) */}
-                                <div className="flex flex-col gap-2">
-                                    <select
-                                        className="text-sm py-2 focus:outline-none"
-                                        value={selectedCategory.cat2}
-                                        onChange={(e) =>
-                                            setSelectedCategory({ cat2: e.target.value, cat3: '', cat4: '' })
-                                        }
-                                    >
-                                        <option value="">중분류 전체 ({products.length})</option>
-                                        {categoryMenu.cat2.map((item) => (
-                                            <option key={item.name} value={item.name}>
-                                                {item.name}({item.count})
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* 소분류 (Category 3) : 중분류 선택되었고 데이터 있으면 표시 */}
-                                    {selectedCategory.cat2 && categoryMenu.cat3.length > 0 && (
+                            <div className="">
+                                {/* ------- CATEGORY 섹션 ------- */}
+                                <div className="mb-6">
+                                    <h2 className="text-sm md:text-[15px] font-bold text-stone-700 mb-3 md:mb-6">
+                                        CATEGORY
+                                    </h2>
+                                    {/* 중분류 (Category 2) */}
+                                    <div className="flex flex-col gap-2">
                                         <select
-                                            className="text-xs  py-2 focus:outline-none ml-2"
-                                            value={selectedCategory.cat3}
+                                            className="text-sm py-1.5 sm:py-2 focus:outline-none px-2 "
+                                            value={selectedCategory.cat2}
                                             onChange={(e) =>
-                                                setSelectedCategory((prev) => ({
-                                                    ...prev,
-                                                    cat3: e.target.value,
-                                                    cat4: '',
-                                                }))
+                                                setSelectedCategory({ cat2: e.target.value, cat3: '', cat4: '' })
                                             }
                                         >
-                                            <option value="">소분류 전체</option>
-                                            {categoryMenu.cat3.map((item) => (
+                                            <option value="">중분류 전체 ({products.length})</option>
+                                            {categoryMenu.cat2.map((item) => (
                                                 <option key={item.name} value={item.name}>
                                                     {item.name}({item.count})
                                                 </option>
                                             ))}
                                         </select>
-                                    )}
-
-                                    {/* 세분류 (cat4): 소분류가 선택되었고 데이터가 있으면 표시 */}
-                                    {selectedCategory.cat3 && categoryMenu.cat4.length > 0 && (
-                                        <div className="flex flex-col gap-1 animate-in fade-in slide-in-from-top-1 duration-300">
-                                            <label className="text-[11px] text-zinc-400 uppercase font-bold tracking-wider">
-                                                세분류
-                                            </label>
+                                        {/* 소분류 (Category 3) : 중분류 선택되었고 데이터 있으면 표시 */}
+                                        {selectedCategory.cat2 && categoryMenu.cat3.length > 0 && (
                                             <select
-                                                className="text-xs py-2 focus:outline-none bg-transparent cursor-pointer hover:border-zinc-900 transition-colors"
+                                                className="text-sm py-1.5 sm:py-2 focus:outline-none ml-2 px-2 "
+                                                value={selectedCategory.cat3}
+                                                onChange={(e) =>
+                                                    setSelectedCategory((prev) => ({
+                                                        ...prev,
+                                                        cat3: e.target.value,
+                                                        cat4: '',
+                                                    }))
+                                                }
+                                            >
+                                                <option value="">소분류 전체</option>
+                                                {categoryMenu.cat3.map((item) => (
+                                                    <option key={item.name} value={item.name}>
+                                                        {item.name}({item.count})
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        )}
+
+                                        {/* 세분류 (cat4): 소분류가 선택되었고 데이터가 있으면 표시 */}
+                                        {selectedCategory.cat3 && categoryMenu.cat4.length > 0 && (
+                                            <select
+                                                className="text-sm py-1.5 sm:py-2 focus:outline-none px-2 ml-4 "
                                                 value={selectedCategory.cat4}
                                                 onChange={(e) =>
-                                                    setSelectedCategory((prev) => ({ ...prev, cat4: e.target.value }))
+                                                    setSelectedCategory((prev) => ({
+                                                        ...prev,
+                                                        cat4: e.target.value,
+                                                    }))
                                                 }
                                             >
                                                 <option value="">세분류 전체 </option>
@@ -210,58 +225,59 @@ export default function ProductResults({ query, category }) {
                                                     </option>
                                                 ))}
                                             </select>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div>
-                                {/* 가이드 섹션 */}
-                                <div className="mb-6">
-                                    <h2 className="text-[15px] font-bold text-stone-700 mb-3 \">DETAIL OPTION</h2>
-                                    <div className="p-4 bg-zinc-50 border-zinc-900 rounded-r-md">
-                                        <p className="text-[12px] text-zinc-500 leading-5">
-                                            <span className="text-stone-700 font-bold block mb-1">Picker's Guide</span>
-                                            빠른 선택을 위해{' '}
-                                            <span className="text-stone-700  font-semibold">새 상품</span> 위주로 먼저
-                                            정리해 두었습니다.
-                                            <br />
-                                            빈티지나 해외 직구 상품까지 넓게 보고 싶다면 왼쪽으로 토글을 꺼주세요!
-                                        </p>
+                                        )}
                                     </div>
                                 </div>
+                                {/* ------- Detail Option 섹션 ------- */}
+                                <div className="mb-3">
+                                    <div className="mb-6">
+                                        <h2 className="text-[15px] font-bold text-stone-700 mb-3 ">DETAIL OPTION</h2>
+                                        <div className="p-4 bg-zinc-50 border-zinc-900 rounded-r-md">
+                                            <p className="text-[12px] text-zinc-500 leading-5">
+                                                <span className="text-stone-700 font-bold block mb-1">
+                                                    Picker's Guide
+                                                </span>
+                                                빠른 선택을 위해{' '}
+                                                <span className="text-stone-700 font-semibold">새 상품</span> 위주로
+                                                먼저 정리해 두었습니다.
+                                                <br />
+                                                빈티지나 해외 직구 상품까지 넓게 보고 싶다면 왼쪽으로 토글을 꺼주세요!
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                {/* 토글 스위치 리스트 */}
-                                <div className="space-y-5 px-1">
-                                    <FilterToggle
-                                        label="신상품만 보기"
-                                        subLabel="중고/구제 아이템 제외"
-                                        checked={filters.excludeUsed}
-                                        onChange={() => handleToggle('excludeUsed')}
-                                    />
-                                    <FilterToggle
-                                        label="판매 중인 상품만"
-                                        subLabel="단종된 모델 제외"
-                                        checked={filters.excludeDiscontinued}
-                                        onChange={() => handleToggle('excludeDiscontinued')}
-                                    />
-                                    <FilterToggle
-                                        label="국내 배송 상품만"
-                                        subLabel="해외 직구/대행 제외"
-                                        checked={filters.excludeGlobal}
-                                        onChange={() => handleToggle('excludeGlobal')}
-                                    />
+                                    {/* 토글 스위치 리스트 */}
+                                    <div className="space-y-5 px-1">
+                                        <FilterToggle
+                                            label="신상품만 보기"
+                                            subLabel="중고/구제 아이템 제외"
+                                            checked={filters.excludeUsed}
+                                            onChange={() => handleToggle('excludeUsed')}
+                                        />
+                                        <FilterToggle
+                                            label="판매 중인 상품만"
+                                            subLabel="단종된 모델 제외"
+                                            checked={filters.excludeDiscontinued}
+                                            onChange={() => handleToggle('excludeDiscontinued')}
+                                        />
+                                        <FilterToggle
+                                            label="국내 배송 상품만"
+                                            subLabel="해외 직구/대행 제외"
+                                            checked={filters.excludeGlobal}
+                                            onChange={() => handleToggle('excludeGlobal')}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* 하단 영역 */}
-                    <div className="p-8 border-t border-zinc-100 bg-zinc-50/50 mt-auto">
-                        <p className="text-[11px] text-zinc-400 leading-relaxed font-light tracking-wide italic">
-                            네이버 쇼핑 API 실시간 데이터를 기반으로
-                            <br />
-                            필터를 통한 쇼핑 데이터를 제공합니다.
-                        </p>
+                        {/* 하단 영역 */}
+                        <div className="px-4 py-4 md:p-6 border-t border-zinc-100 bg-zinc-50/50 md:mt-auto">
+                            <p className="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed font-light tracking-wide italic">
+                                네이버 쇼핑 API 실시간 데이터를 기반으로 <br className="hidden md:block" />
+                                필터를 통한 쇼핑 데이터를 제공합니다.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -270,11 +286,12 @@ export default function ProductResults({ query, category }) {
             <main className="flex-1 p-5 md:p-10 ">
                 {/* 정렬 셀렉트 */}
                 <div className="grid justify-items-end">
-                    <span className="text-xs text-zinc-500">
-                        가장 정확도 높은 상위 100개의 아이템을 먼저 엄선했습니다. 'More'를 눌러 탐색을 이어가세요.
+                    <span className="text-[11px] sm:text-xs text-zinc-500">
+                        가장 정확도 높은 상위 100개의 아이템을 먼저 엄선했습니다. <br className="sm:hidden" />
+                        'More' 를 눌러 탐색을 이어가세요.
                     </span>
                 </div>
-                <div className="flex items-center gap-2 ">
+                <div className="flex items-center gap-2 my-2">
                     <span className="text-2xl font-bold text-stone-700">{curatedProducts.length}</span>
                     <span className="text-sm text-zinc-500 font-light">Products Found</span>
                 </div>
@@ -290,6 +307,12 @@ export default function ProductResults({ query, category }) {
                                 {selectedCategory.cat3}
                             </span>
                         )}
+
+                        {selectedCategory.cat4 && (
+                            <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+                                {selectedCategory.cat4}
+                            </span>
+                        )}
                         <button
                             onClick={() => setSelectedCategory({ cat2: '', cat3: '', cat4: '' })}
                             className="text-[10px] text-zinc-400 underline underline-offset-4 hover:text-zinc-900"
@@ -300,11 +323,11 @@ export default function ProductResults({ query, category }) {
                 )}
 
                 <div className="mb-8 border-b border-zinc-100 pb-4 flex justify-end">
-                    <div className="relative inline-block w-40">
+                    <div className="relative inline-block w-30 md:w-40">
                         <select
                             value={sortType}
                             onChange={(e) => setSortType(e.target.value)}
-                            className="block w-full cursor-pointer appearance-none rounded-lg border border-zinc-200 bg-white px-4 py-2 pr-8 text-sm text-zinc-700 transition-all hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100"
+                            className="block w-full cursor-pointer appearance-none rounded-lg border border-zinc-200 bg-white px-4 py-1.5 md:py-2 pr-8 text-xs md:text-sm text-zinc-700 transition-all hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100"
                         >
                             <option value="default">정확도순</option>
                             <option value="low">낮은가격순</option>

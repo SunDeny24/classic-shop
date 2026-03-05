@@ -13,7 +13,7 @@ export default function Home() {
                 <CategoryList />
             </section>
             {/* 추천상품 섹션 */}
-            <section className="w-full bg-zinc-100 mt-8 py-12 ">
+            <section className="w-full bg-zinc-100 mt-8 py-10 ">
                 <RecommendSection />
             </section>
             {/* 최근 본 상품 섹션 */}

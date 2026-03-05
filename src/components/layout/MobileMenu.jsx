@@ -13,7 +13,7 @@ export default function MobileMenu({ setOpen, isSearchOpen, setIsSearchOpen }) {
     const cartCount = cart.length || 0;
 
     return (
-        <div className="flex flex-col bg-white">
+        <div className="flex flex-col bg-white font-sans">
             {/* 기존 SearchBar 컴포넌트 */}
             <div className="p-4 border-b border-gray-100 md:hidden">
                 <SearchBar open={isSearchOpen} setOpen={setIsSearchOpen} />

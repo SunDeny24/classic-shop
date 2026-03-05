@@ -58,12 +58,12 @@ export default function RecommendedVideos({ onDataEmpty, onDataFull }) {
     if (error || !videos || !videos.length) return null;
 
     return (
-        <section className="">
-            <h2 className="text-xl mb-6 font-medium text-zinc-800">
+        <section className="w-full">
+            <h2 className="text-lg sm:text-xl mb-6 font-medium text-zinc-800">
                 {keyword ? (
                     <>
-                        <span className="text-blue-700 text-2xl">{keyword}</span>{' '}
-                        <span>키워드와 연결되는 영상 콘텐츠를 추천드려요.</span>
+                        <span className="text-blue-700 text-xl sm:text-2xl font-bold"># {keyword}</span>{' '}
+                        <span> 관련 추천 영상 </span>
                     </>
                 ) : (
                     '지금 뜨는 트렌드 영상 확인해볼까요?'

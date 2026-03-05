@@ -39,7 +39,7 @@ export default function RecommendSection() {
 
     return (
         <div>
-            <div className="max-w-screen-xl mx-auto px-5">
+            <div className="max-w-screen-xl mx-auto px-5 space-y-5">
                 <RecentKeywordRecommend />
                 {/* 추천 영상 컴포넌트: 영상이 없으면 내부에서 null을 반환하도록 설정 */}
                 <RecommendedVideos onDataEmpty={() => setHasVideos(false)} onDataFull={() => setHasVideos(true)} />
