@@ -5,6 +5,10 @@ import { Montserrat, Asta_Sans } from 'next/font/google';
 export const metadata = {
     title: 'Skipick',
     description: 'Skipick 빠른선택을 위한 쇼핑몰',
+    icons: {
+        icon: '/icon.png',
+        apple: '/apple-icon.png',
+    },
 };
 
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
