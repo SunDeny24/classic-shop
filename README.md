@@ -44,10 +44,11 @@ src/
 │   ├── (main)/         # 메인 레이아웃 그룹 (Home, Wishlist, Cart, MyPage)
 │   ├── product/[id]/   # 상품 상세 (Dynamic Routes)
 │   └── search/[query]/ # 검색 결과 페이지
+│   └── api/            # 서버 API 라우트
 ├── components/         # UI 및 기능별 컴포넌트 (UI, Layout, Pages)
 ├── context/            # 전역 상태 관리 (ShoppingContext, AppProvider)
 ├── hooks/              # API 통신 및 비즈니스 로직 커스텀 훅
-├── lib/                # API 서비스 레이어 및 공통 fetch 로직 (http.js)
+├── lib/                # API 서비스 레이어 및 공통 fetch 로직 (http.js, services)
 └── utils/              # 데이터 포맷팅 유틸리티 (가격 콤마 표시 등)
 ```
 ---
