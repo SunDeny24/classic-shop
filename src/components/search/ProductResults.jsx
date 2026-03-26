@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from '@/components/ui/ProductCardGrid';
+import formatPrice from '@/utils/formatPrice';
 
 export default function ProductResults({ query, category }) {
     const { products, loading, error, sortType, setSortType, loadMore } = useProducts(query); //useProduct 훅 데이터
@@ -21,6 +22,12 @@ export default function ProductResults({ query, category }) {
         excludeUsed: true,
         excludeDiscontinued: true,
         excludeGlobal: true,
+    });
+
+    // 가격 필터 상태 (rawPrice: 숫자 기준)
+    const [priceRange, setPriceRange] = useState({
+        min: '',
+        max: '',
     });
 
     /* -------카테고리 추출 및 계층화------- */
@@ -65,11 +72,6 @@ export default function ProductResults({ query, category }) {
         };
     }, [products, selectedCategory.cat2, selectedCategory.cat3]);
 
-    // 상위 카테고리를 바뀔때 하위 카테고리는 초기화
-    const handleCat2Click = (name) => {
-        setSelectedCategory({ cat2: name, cat3: '', cat4: '' });
-    };
-
     /* -------최근 행동 추천상품 섹션------- */
     useEffect(() => {
         if (query) {
@@ -91,6 +93,9 @@ export default function ProductResults({ query, category }) {
     /* -------데이터 정제 로직------- */
     const curatedProducts = useMemo(() => {
         if (!products) return [];
+
+        const minPrice = priceRange.min !== '' ? Number(priceRange.min) : null;
+        const maxPrice = priceRange.max !== '' ? Number(priceRange.max) : null;
 
         return products.filter((item) => {
             const type = Number(item.productType); //타입 숫자로 변환
@@ -134,9 +139,17 @@ export default function ProductResults({ query, category }) {
                 return false;
             }
 
+            // 가격 필터
+            if (minPrice !== null && !Number.isNaN(minPrice) && item.rawPrice < minPrice) {
+                return false;
+            }
+            if (maxPrice !== null && !Number.isNaN(maxPrice) && item.rawPrice > maxPrice) {
+                return false;
+            }
+
             return true;
         });
-    }, [products, filters, category, selectedCategory]);
+    }, [products, filters, priceRange, category, selectedCategory]);
 
     if (error) return <p className="p-10 text-center text-red-400">에러: {error}</p>;
 
@@ -158,18 +171,16 @@ export default function ProductResults({ query, category }) {
                     {/* 필터 본문: md 이상은 항상 표시, md 미만은 isFilterExpanded 상태에 따라 표시 */}
                     <div className={`${isFilterExpanded ? 'block' : 'hidden'} md:block flex flex-col md:h-full`}>
                         <div className="px-5 py-2 flex-1 md:pb-8">
-                            <h1 className=" hidden md:block text-2xl font-semibold text-center mb-12 text-zinc-900 border-b border-zinc-200 pb-4">
+                            <h1 className=" hidden md:block text-2xl font-semibold text-center mb-6 text-zinc-900 border-b border-zinc-200 pb-4">
                                 필터
                             </h1>
 
                             <div className="">
                                 {/* ------- CATEGORY 섹션 ------- */}
                                 <div className="mb-6">
-                                    <h2 className="text-sm md:text-[15px] font-bold text-stone-700 mb-3 md:mb-6">
-                                        CATEGORY
-                                    </h2>
+                                    <h2 className="text-sm md:text-[15px] font-bold text-stone-700 mb-3 ">CATEGORY</h2>
                                     {/* 중분류 (Category 2) */}
-                                    <div className="flex flex-col gap-2">
+                                    <div className="flex flex-col gap-2 border border-zinc-200 rounded-lg pr-2">
                                         <select
                                             className="text-sm py-1.5 sm:py-2 focus:outline-none px-2 "
                                             value={selectedCategory.cat2}
@@ -229,6 +240,45 @@ export default function ProductResults({ query, category }) {
                                     </div>
                                 </div>
                                 {/* ------- Detail Option 섹션 ------- */}
+                                <div className="mb-6 ">
+                                    <div className="mb-6">
+                                        <h2 className="text-[15px] font-bold text-stone-700 mb-3 ">PRICE</h2>
+                                        <div className="text-[12px] text-zinc-500 leading-5">
+                                            최저가/최대가를 입력해 조건에 맞는 상품만 보여줍니다.
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 px-1">
+                                        <div className="flex flex-col w-1/2">
+                                            <span className="text-[11px] text-zinc-500 mb-1">최소</span>
+                                            <input
+                                                type="number"
+                                                inputMode="numeric"
+                                                min={0}
+                                                placeholder="예) 20000"
+                                                value={priceRange.min}
+                                                onChange={(e) =>
+                                                    setPriceRange((prev) => ({ ...prev, min: e.target.value }))
+                                                }
+                                                className="text-xs px-3 py-2 rounded-lg border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-100"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col w-1/2">
+                                            <span className="text-[11px] text-zinc-500 mb-1">최대</span>
+                                            <input
+                                                type="number"
+                                                inputMode="numeric"
+                                                min={0}
+                                                placeholder="예) 500000"
+                                                value={priceRange.max}
+                                                onChange={(e) =>
+                                                    setPriceRange((prev) => ({ ...prev, max: e.target.value }))
+                                                }
+                                                className="text-xs px-3 py-2 rounded-lg border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-100"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="mb-3">
                                     <div className="mb-6">
                                         <h2 className="text-[15px] font-bold text-stone-700 mb-3 ">DETAIL OPTION</h2>
@@ -295,7 +345,11 @@ export default function ProductResults({ query, category }) {
                     <span className="text-2xl font-bold text-stone-700">{curatedProducts.length}</span>
                     <span className="text-sm text-zinc-500 font-light">Products Found</span>
                 </div>
-                {(selectedCategory.cat2 || selectedCategory.cat3) && (
+                {(selectedCategory.cat2 ||
+                    selectedCategory.cat3 ||
+                    selectedCategory.cat4 ||
+                    priceRange.min ||
+                    priceRange.max) && (
                     <div className="flex gap-2 flex-wrap">
                         {selectedCategory.cat2 && (
                             <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
@@ -313,8 +367,21 @@ export default function ProductResults({ query, category }) {
                                 {selectedCategory.cat4}
                             </span>
                         )}
+                        {priceRange.min && (
+                            <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+                                최소 {formatPrice(priceRange.min)}원
+                            </span>
+                        )}
+                        {priceRange.max && (
+                            <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+                                최대 {formatPrice(priceRange.max)}원
+                            </span>
+                        )}
                         <button
-                            onClick={() => setSelectedCategory({ cat2: '', cat3: '', cat4: '' })}
+                            onClick={() => {
+                                setSelectedCategory({ cat2: '', cat3: '', cat4: '' });
+                                setPriceRange({ min: '', max: '' });
+                            }}
                             className="text-[10px] text-zinc-400 underline underline-offset-4 hover:text-zinc-900"
                         >
                             필터 초기화
