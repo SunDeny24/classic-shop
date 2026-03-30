@@ -4,6 +4,11 @@ import { Montserrat, Asta_Sans } from 'next/font/google';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://my-skipick-project.vercel.app/';
 
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+};
+
 export const metadata = {
     metadataBase: new URL(siteUrl),
     title: 'Skipick',
@@ -58,11 +63,6 @@ const astaSans = Asta_Sans({
 export default function RootLayout({ children }) {
     return (
         <html lang="ko" className={`${montserrat.variable} ${astaSans.variable}`}>
-            <head>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                {/* favicon, 추가 head 요소도 여기에 */}
-            </head>
             <body>{children}</body>
         </html>
     );
