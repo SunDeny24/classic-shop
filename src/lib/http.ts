@@ -1,11 +1,14 @@
-// 공통 fetch 유틸 : 공통 헤더 설정, 에러처리 담당 재사용
-// src/lib/http.js
+// src/lib/http.ts
 
-const DEFAULT_HEADERS = {
+const DEFAULT_HEADERS: HeadersInit = {
     'Content-Type': 'application/json',
 };
 
-export async function httpGet(url, options = {}) {
+interface HttpGetOptions {
+    headers?: HeadersInit;
+}
+
+export async function httpGet<T>(url: string, options: HttpGetOptions = {}): Promise<T> {
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -19,5 +22,6 @@ export async function httpGet(url, options = {}) {
         const text = await res.text();
         throw new Error(`[${res.status}] ${text}`);
     }
-    return res.json();
+
+    return (await res.json()) as T;
 }

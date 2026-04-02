@@ -1,15 +1,19 @@
-// Route Handler (서버 > 유튜브 호출로 엔드포인트 구현)
-// src/app/api/youtube/route.js
+// src/app/api/youtube/route.ts
 
-export async function GET(request) {
+import { NextRequest, NextResponse } from 'next/server';
+import { YoutubeResponse } from '@/types/youtube';
+
+export async function GET(request: NextRequest) {
+    // URL 파라미터 추출
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || ''; //type
     const query = searchParams.get('query') || ''; //검색어
 
+    // 유튜브 API 호출 주소
     const API_KEY = process.env.YOUTUBE_API_KEY;
     const currentYear = new Date().getFullYear();
 
-    //제외키워드들
+    // 제외키워드들
     const excludeKeywords = ' -뉴스 -news -방송 -예능 -TV -티비';
 
     let finalQuery = '';
@@ -32,12 +36,14 @@ export async function GET(request) {
 
     try {
         const res = await fetch(apiUrl, { cache: 'no-store' });
-        const data = await res.json();
+
         if (!res.ok) {
-            return Response.json({ error: data.error }, { status: res.status });
+            return NextResponse.json({ message: 'Youtube API Error' }, { status: res.status });
         }
-        return Response.json(data);
+        const data: YoutubeResponse = await res.json();
+
+        return NextResponse.json(data);
     } catch (error) {
-        return Response.json({ error: '서버 내부 오류' }, { status: 500 });
+        return NextResponse.json({ error: '서버 내부 오류' }, { status: 500 });
     }
 }

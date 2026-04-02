@@ -1,26 +1,26 @@
-//네이버 상품목록 조회 커스텀 훅
-//src/hooks/useProducts.js
+// 네이버 상품목록 조회 커스텀 훅
+// src/hooks/useProducts.ts
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { fetchFashionProducts } from '@/lib/services/fashionService';
 import formatPrice from '@/utils/formatPrice';
+import { FashionProduct, FashionResponse, CuratedProduct } from '@/types/fashion';
 
 const DISPLAY = 100;
 
 /**
- * 네이버 쇼핑 API 응답 데이터 가공
- * @param {object} apiResponse - 네이버 쇼핑 API 응답객체
- * @returns {Array} 큐레이션된 상품 목록 배열
+ *  네이버 쇼핑 API 응답 데이터 가공
  */
-const processNaverData = (apiResponse, keyword) => {
-    //맞는 배열검증
-    if (!apiResponse || !Array.isArray(apiResponse.items)) {
-        return [];
-    }
-    const curatedProductMap = new Map();
 
-    apiResponse.items.forEach((item) => {
+const processNaverData = (items: FashionProduct[], keyword: string) => {
+    //맞는 배열검증 -- 없애나?
+    // if (!apiResponse || !Array.isArray(apiResponse.items)) {
+    //     return [];
+    // }
+    const curatedProductMap = new Map<string, CuratedProduct>();
+
+    items.forEach((item) => {
         const key = item.productId; //키는 네이버의 productId
         const currentPrice = parseInt(item.lprice, 10); //최저가 10진수 변환
 
@@ -52,8 +52,8 @@ const processNaverData = (apiResponse, keyword) => {
         } else {
             //기존상품의 최저가 셋팅
             const existProduct = curatedProductMap.get(key);
-            //현재최저가<기존최저가 일시 더 낮은 가격으로 변경
-            if (currentPrice < existProduct.lprice) {
+            //현재최저가< 기존최저가 일시 더 낮은 가격으로 변경
+            if (existProduct && currentPrice < existProduct.rawPrice) {
                 existProduct.lprice = formatPrice(currentPrice); //더 낮은 가격의 현재최저가로 변경
                 existProduct.rawPrice = currentPrice;
                 existProduct.link = item.link;
@@ -64,13 +64,16 @@ const processNaverData = (apiResponse, keyword) => {
     return Array.from(curatedProductMap.values());
 };
 
-export function useProducts(query, options = {}) {
+//문자열 리터럴타입지정
+type SortType = 'default' | 'low' | 'high';
+
+export function useProducts(query: string, options = {}) {
     //상태관리 정의
-    const [rawProducts, setrawProducts] = useState([]); //상품데이터 배열 state
-    const [loading, setLoading] = useState(true); //로딩여부 state
-    const [error, setError] = useState(null); //에러 state
-    const [page, setPage] = useState(1); //현재 페이지 state
-    const [sortType, setSortType] = useState('default'); //정렬 state
+    const [rawProducts, setrawProducts] = useState<CuratedProduct[]>([]); //상품데이터 배열 state
+    const [loading, setLoading] = useState<boolean>(true); //로딩여부 state
+    const [error, setError] = useState<string | null>(null); //에러 state
+    const [page, setPage] = useState<number>(1); //현재 페이지 state
+    const [sortType, setSortType] = useState<SortType>('default'); //정렬 state
 
     //데이터 가져와서 api fetch함수 호출시킴
     const load = async (nextPage = 1) => {
@@ -85,8 +88,13 @@ export function useProducts(query, options = {}) {
         try {
             //처음 100개 요청
             const start = (nextPage - 1) * DISPLAY + 1;
-            const data = await fetchFashionProducts(query, { ...options, start, display: DISPLAY, sort: 'sim' });
-            const curatedData = processNaverData({ items: data.items ?? [] }, query);
+            const data = await fetchFashionProducts(query, {
+                ...options,
+                start: String(start),
+                display: String(DISPLAY),
+                sort: 'sim',
+            });
+            const curatedData = processNaverData(data.items ?? [], query);
             if (nextPage === 1) {
                 //첫페이지에서는 그대로 데이터 가져옴
                 setrawProducts(curatedData);
@@ -101,7 +109,7 @@ export function useProducts(query, options = {}) {
             }
 
             setPage(nextPage); //페이지 셋팅
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message ?? '알수없는 에러 등장');
         } finally {
             setLoading(false);
