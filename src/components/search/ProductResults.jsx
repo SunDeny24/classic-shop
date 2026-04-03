@@ -285,7 +285,7 @@ export default function ProductResults({ query, category }) {
                                         <div className="p-4 bg-zinc-50 border-zinc-900 rounded-r-md">
                                             <p className="text-[12px] text-zinc-500 leading-5">
                                                 <span className="text-stone-700 font-bold block mb-1">
-                                                    Picker's Guide
+                                                    Picker&apos;s Guide
                                                 </span>
                                                 빠른 선택을 위해{' '}
                                                 <span className="text-stone-700 font-semibold">새 상품</span> 위주로
@@ -338,7 +338,7 @@ export default function ProductResults({ query, category }) {
                 <div className="grid justify-items-end">
                     <span className="text-[11px] sm:text-xs text-zinc-500">
                         가장 정확도 높은 상위 100개의 아이템을 먼저 엄선했습니다. <br className="sm:hidden" />
-                        'More' 를 눌러 탐색을 이어가세요.
+                        &apos;More&apos; 를 눌러 탐색을 이어가세요.
                     </span>
                 </div>
                 <div className="flex items-center gap-2 my-2">

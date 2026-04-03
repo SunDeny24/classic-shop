@@ -3,54 +3,15 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-//import YoutubePlayer from './YoutubePlayer';
 import dynamic from 'next/dynamic';
 
 const YoutubePlayer = dynamic(() => import('./YoutubePlayer'), {
     ssr: false,
     loading: () => <div className="aspect-video bg-gray-200 animate-pulse rounded-xl" />,
 });
-import { useYoutube } from '@/hooks/useYoutube';
 import RecommendVideoSkeleton from './skeleton/RecommendVideoSkeleton';
 
-export default function RecommendedVideos({ onDataEmpty, onDataFull }) {
-    const [keyword, setKeyword] = useState(null); // 검색어
-
-    useEffect(() => {
-        // 클라이언트 사이드에서만 실행됨
-        const savedSearches = localStorage.getItem('recent_searches'); //최근 검색어
-        let selectedKeyword = '';
-        if (savedSearches) {
-            try {
-                const parseList = JSON.parse(savedSearches);
-                selectedKeyword = parseList[0];
-            } catch (e) {
-                console.log('로컬스토리지 최근검색어 데이터 파싱 에러', e);
-            }
-        } else {
-            selectedKeyword = '';
-        }
-        setKeyword(selectedKeyword);
-    }, []);
-
-    // 검색어가 있으면 search 모드, 없으면 trend 모드
-    //keyword가 null이면 null로 훅호출하지않음, 있다면 검색어있으니까 search모드로, 아니면 trend모드로
-    const type = keyword === null ? null : keyword ? 'search' : 'trend';
-
-    const { videos, loading, error } = useYoutube(type, keyword); //유튜브 영상 가져옴
-
-    // 데이터 유무에 따른 부모 상태 업데이트
-    useEffect(() => {
-        if (!loading) {
-            if (error || !videos || !videos.length) {
-                onDataEmpty?.();
-            } else {
-                onDataFull?.();
-            }
-        }
-    }, [videos, error, loading, onDataEmpty, onDataFull]);
-
+export default function RecommendedVideos({ videos, loading, error, keyword }) {
     // 로딩중일때 스켈레톤
     if (loading) return <RecommendVideoSkeleton />;
 

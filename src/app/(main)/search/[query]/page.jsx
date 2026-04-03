@@ -23,7 +23,8 @@ export default async function SearchPage({ params, searchParams }) {
                             </>
                         ) : (
                             <>
-                                "{keyword}" <span className="text-lg md:text-xl">의 검색결과</span>
+                                &quot;{keyword}&quot;{' '}
+                                <span className="text-lg md:text-xl">의 검색결과</span>
                             </>
                         )
                     }

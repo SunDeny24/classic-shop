@@ -2,7 +2,7 @@
 // src/hooks/useProducts.ts
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchFashionProducts } from '@/lib/services/fashionService';
 import formatPrice from '@/utils/formatPrice';
 import { FashionProduct, FashionResponse, CuratedProduct } from '@/types/fashion';
@@ -75,46 +75,52 @@ export function useProducts(query: string, options = {}) {
     const [page, setPage] = useState<number>(1); //현재 페이지 state
     const [sortType, setSortType] = useState<SortType>('default'); //정렬 state
 
-    //데이터 가져와서 api fetch함수 호출시킴
-    const load = async (nextPage = 1) => {
-        if (!query) {
-            setLoading(false);
-            return;
-        }
+    // 데이터 가져와서 api fetch함수 호출시킴
+    // useCallback으로 메모리 주소 고정
+    const optionsString = JSON.stringify(options); //options를 객체 아닌 문자열로 변환하여 의존성 배열에 추가
 
-        setLoading(true);
-        setError(null);
-
-        try {
-            //처음 100개 요청
-            const start = (nextPage - 1) * DISPLAY + 1;
-            const data = await fetchFashionProducts(query, {
-                ...options,
-                start: String(start),
-                display: String(DISPLAY),
-                sort: 'sim',
-            });
-            const curatedData = processNaverData(data.items ?? [], query);
-            if (nextPage === 1) {
-                //첫페이지에서는 그대로 데이터 가져옴
-                setrawProducts(curatedData);
-            } else {
-                //다음 페이지부터는 기존값에 추가
-                //+ 데이터 합칠때 productId 중복체크로직 추가
-                setrawProducts((prev) => {
-                    const existingIds = new Set(prev.map((item) => item.productId));
-                    const uniqueNewData = curatedData.filter((item) => !existingIds.has(item.productId));
-                    return [...prev, ...uniqueNewData];
-                });
+    const load = useCallback(
+        async (nextPage = 1) => {
+            if (!query) {
+                setLoading(false);
+                return;
             }
 
-            setPage(nextPage); //페이지 셋팅
-        } catch (e: any) {
-            setError(e.message ?? '알수없는 에러 등장');
-        } finally {
-            setLoading(false);
-        }
-    };
+            setLoading(true);
+            setError(null);
+
+            try {
+                //처음 100개 요청
+                const start = (nextPage - 1) * DISPLAY + 1;
+                const data = await fetchFashionProducts(query, {
+                    ...options,
+                    start: String(start),
+                    display: String(DISPLAY),
+                    sort: 'sim',
+                });
+                const curatedData = processNaverData(data.items ?? [], query);
+                if (nextPage === 1) {
+                    //첫페이지에서는 그대로 데이터 가져옴
+                    setrawProducts(curatedData);
+                } else {
+                    //다음 페이지부터는 기존값에 추가
+                    //+ 데이터 합칠때 productId 중복체크로직 추가
+                    setrawProducts((prev) => {
+                        const existingIds = new Set(prev.map((item) => item.productId));
+                        const uniqueNewData = curatedData.filter((item) => !existingIds.has(item.productId));
+                        return [...prev, ...uniqueNewData];
+                    });
+                }
+
+                setPage(nextPage); //페이지 셋팅
+            } catch (e: any) {
+                setError(e.message ?? '알수없는 에러 등장');
+            } finally {
+                setLoading(false);
+            }
+        },
+        [query, optionsString], // query나 options가 바뀔 때만 함수를 새로 만듦
+    );
 
     //정렬 로직(가격순)
     const products = useMemo(() => {
@@ -131,11 +137,8 @@ export function useProducts(query: string, options = {}) {
 
     //검색어 바뀌면 1페이지부터 load처리
     useEffect(() => {
-        if (!query) {
-            return; //query없이 호출 x
-        }
         load(1);
-    }, [query]);
+    }, [load]);
 
     //다음 페이지 요청
     const loadMore = () => load(page + 1);

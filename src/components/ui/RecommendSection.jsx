@@ -1,13 +1,23 @@
+// 추천섹션 wrapper
+// src/components/ui/RecommendSection.jsx
+
 'use client';
 
 import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
 import RecommendedVideos from '@/components/ui/RecommendVideo';
 import { useState, useMemo, useEffect } from 'react';
+import { useYoutube } from '@/hooks/useYoutube';
 
 export default function RecommendSection() {
-    const [keyword, setKeyword] = useState(null);
+    const [keyword, setKeyword] = useState(() => {
+        // 키워드 초기화
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('recent_searches');
+            return saved ? JSON.parse(saved)[0] || '' : '';
+        }
+        return '';
+    });
     const [msgIndex, setMsgIndex] = useState(0); // 검색어, 트렌드영상 없을 경우 멘트 상태관리
-    const [hasVideos, setHasVideos] = useState(true); // 영상 존재 여부 상태
 
     // 랜덤 멘트 리스트
     const messages = useMemo(
@@ -25,24 +35,31 @@ export default function RecommendSection() {
         // 로컬스토리지에서 키워드 가져오기
         const savedSearches = localStorage.getItem('recent_searches');
         const selectedKeyword = savedSearches ? JSON.parse(savedSearches)[0] || '' : '';
-        setKeyword(selectedKeyword);
+        queueMicrotask(() => setKeyword(selectedKeyword));
 
         // 7초마다 멘트 인덱스 변경
         const interval = setInterval(() => {
-            setMsgIndex((prev) => (prev + 1) % messages.length); //배열만큼 인터벌 돌려줌
+            queueMicrotask(() => setMsgIndex((prev) => (prev + 1) % messages.length)); //배열만큼 인터벌 돌려줌
         }, 7000);
         return () => clearInterval(interval); //인터벌 초기화
     }, [messages.length]);
 
+    // 유튜브 데이터 직접 호출 (상태 끌어올리기)
+    const type = keyword ? 'search' : 'trend';
+    const { videos, loading, error } = useYoutube(type, keyword);
+
+    // 영상 유무 판단 (상태 변수 대신 계산된 변수 사용)
+    const hasVideos = !loading && !error && videos.length > 0;
+
     // 검색어가 없고 + 영상도 없을 때만 멘트 노출
-    const showMessage = !keyword && !hasVideos;
+    const showMessage = !keyword && !hasVideos && !loading;
 
     return (
         <div>
             <div className="max-w-screen-xl mx-auto px-5 space-y-5">
                 <RecentKeywordRecommend />
                 {/* 추천 영상 컴포넌트: 영상이 없으면 내부에서 null을 반환하도록 설정 */}
-                <RecommendedVideos onDataEmpty={() => setHasVideos(false)} onDataFull={() => setHasVideos(true)} />
+                <RecommendedVideos videos={videos} loading={loading} error={error} keyword={keyword} />
 
                 {/* 검색어, 영상없을때 멘트 노출  */}
                 {showMessage && (
@@ -51,7 +68,7 @@ export default function RecommendSection() {
                             key={msgIndex}
                             className="text-zinc-500 text-2xl font-medium animate-msg-reveal px-6 transition-all"
                         >
-                            "{messages[msgIndex]}"
+                            &quot;{messages[msgIndex]}&quot;
                         </p>
                     </div>
                 )}

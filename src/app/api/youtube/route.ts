@@ -44,6 +44,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(data);
     } catch (error) {
+        console.error('Youtube API Error:', error);
         return NextResponse.json({ error: '서버 내부 오류' }, { status: 500 });
     }
 }

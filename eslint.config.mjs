@@ -1,38 +1,27 @@
 // eslint.config.mjs
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
-import { defineConfig } from 'eslint/config'; // [1] ESLint 순정 설정 도구 도입
-import tseslint from 'typescript-eslint';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import tseslint from 'typescript-eslint'; // 반드시 포함되어야 함!
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const eslintConfig = [
+    // 1. Next.js 기본 설정 (펼쳐서 넣기)
+    ...nextVitals,
 
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-});
-
-export default defineConfig([
-    // [2] Next.js 구식 설정을 신식(Flat)으로 변환 후 펼침
-    ...compat.extends('next/core-web-vitals'),
-
-    // [3] TS 권장 설정들을 명시적으로 펼쳐서 삽입
+    // 2. TypeScript 권장 설정 (펼쳐서 넣기 - 서비스단 TS를 위해 필수!)
     ...tseslint.configs.recommended,
 
+    // 3. 무시 설정 (globalIgnores 대신 이 방식을 쓰면 순환 참조 에러가 안 납니다)
     {
-        // [4] 무시할 파일 설정
         ignores: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
     },
 
+    // 4. TS 파일 전용 규칙 (우리가 약속한 설정)
     {
-        // [5] TS 파일 전용 규칙 커스텀
         files: ['**/*.ts', '**/*.tsx'],
-        languageOptions: {
-            parser: tseslint.parser, // TS 구문 분석기 명시
-        },
         rules: {
             '@typescript-eslint/no-unused-vars': 'warn',
             '@typescript-eslint/no-explicit-any': 'warn',
         },
     },
-]);
+];
+
+export default eslintConfig;

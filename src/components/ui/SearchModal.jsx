@@ -1,25 +1,24 @@
 'use client';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SearchModal({ closeSearch }) {
     const router = useRouter();
     const [inputQuery, setInputQuery] = useState('');
-    const [recentSearches, setRecentSearches] = useState([]);
+    const [recentSearches, setRecentSearches] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('recent_searches');
+            return saved ? JSON.parse(saved) : [];
+        }
+        return [];
+    });
 
     //검색어 입력 이벤트처리
     const onInputSearch = (e) => {
         const { value } = e.target;
         setInputQuery(value);
     };
-    //컴포넌트가 초기 로드시 로컬스토리지 확인
-    useEffect(() => {
-        const saved = localStorage.getItem('recent_searches');
-        if (saved) {
-            setRecentSearches(JSON.parse(saved));
-        }
-    }, []);
 
     //검색어 저장 함수
     const saveRecentSearch = (query) => {
@@ -67,9 +66,6 @@ export default function SearchModal({ closeSearch }) {
         } catch (err) {
             console.error('router.push 에러:', err);
         }
-
-        router.push(`/search/${encodeURIComponent(queryTrim)}`);
-        closeSearch();
     };
 
     return (

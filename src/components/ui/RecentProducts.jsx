@@ -13,7 +13,7 @@ export default function RecentProducts({ emptyAction = 'scroll', emptyHref = '/c
     useEffect(() => {
         const items = localStorage.getItem('recent_products');
         const parseItems = items ? JSON.parse(items) : [];
-        setRecentProducts(parseItems);
+        queueMicrotask(() => setRecentProducts(parseItems));
     }, []);
 
     const isEmpty = recentProducts.length === 0;
@@ -42,7 +42,7 @@ export default function RecentProducts({ emptyAction = 'scroll', emptyHref = '/c
                     <p className="text-zinc-500 mb-6 text-lg">최근에 조회한 상품이 아직 없습니다</p>
                     {emptyAction === 'link' ? (
                         <Link
-                            href="/"
+                            href={emptyHref}
                             className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors cursor-pointer "
                         >
                             카테고리 보러가기

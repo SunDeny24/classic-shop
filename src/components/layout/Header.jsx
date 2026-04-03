@@ -17,12 +17,15 @@ export default function Header() {
     useEffect(() => {
         // 검색 모달 닫기
         if (isSearchOpen) {
-            setIsSearchOpen(false);
+            // lint: effect 내부에서 setState 동기 호출 금지 대응
+            queueMicrotask(() => setIsSearchOpen(false));
         }
         // 햄버거 메뉴(모바일 메뉴)도 함께 닫기
         if (isMenuOpen) {
-            setIsMenuOpen(false);
+            // lint: effect 내부에서 setState 동기 호출 금지 대응
+            queueMicrotask(() => setIsMenuOpen(false));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathName]);
 
     return (

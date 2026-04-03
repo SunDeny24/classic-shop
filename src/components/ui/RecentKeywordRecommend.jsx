@@ -3,13 +3,14 @@
 
 'use client';
 import Link from 'next/link';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCardGrid from './ProductCardGrid';
 
 export default function RecentKeywordRecommend() {
     const [keyword, setKeyword] = useState('');
-    const { products, loading, error } = useProducts(keyword);
+    const [randomProducts, setRandomProducts] = useState([]);
+    const { products, loading } = useProducts(keyword);
     const gridClass = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10'; //상품그리드 css 설정
 
     useEffect(() => {
@@ -19,21 +20,26 @@ export default function RecentKeywordRecommend() {
         if (saved) {
             const parse = JSON.parse(saved);
             if (Array.isArray(parse) && parse.length > 0) {
-                setKeyword(parse[0]);
+                // lint: effect 내부에서 setState 동기 호출 금지 대응
+                queueMicrotask(() => setKeyword(parse[0]));
             }
         }
     }, []);
 
-    // 랜덤상품 표시
-    const randomProducts = useMemo(() => {
-        if (!products || products.length === 0) return [];
-        const random = [...products].sort(() => Math.random() - 0.5);
-        return random.slice(0, 6);
-    }, [products]); //데이터가 있을때 바꿔줘야된다
+    // 랜덤상품 표시 (products가 바뀔 때만 갱신)
+    useEffect(() => {
+        if (!products || products.length === 0) {
+            queueMicrotask(() => setRandomProducts([]));
+            return;
+        }
+
+        const shuffled = [...products].sort(() => Math.random() - 0.5);
+        queueMicrotask(() => setRandomProducts(shuffled.slice(0, 6)));
+    }, [products]);
 
     // 최근 검색어 없는 경우
     if (!keyword || (!loading && products.length === 0)) {
-        console.log('최근검색어 없음');
+        //console.log('최근검색어 없음');
         return null;
     }
 
@@ -79,7 +85,7 @@ export default function RecentKeywordRecommend() {
                 /* 로딩이 끝났는데 데이터가 0개인 경우 */
                 <div className="py-20 text-center border-2 border-dashed border-zinc-100 rounded-2xl">
                     <p className="text-zinc-600 font-light italic">
-                        "{keyword}" 에 대한 추천 상품 데이터가 충분하지 않습니다.
+                        &quot;{keyword}&quot; 에 대한 추천 상품 데이터가 충분하지 않습니다.
                     </p>
                     <p className="text-xs text-zinc-500 mt-2">다른 키워드로 검색해 보세요.</p>
                 </div>

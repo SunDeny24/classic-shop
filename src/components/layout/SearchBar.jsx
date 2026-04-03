@@ -1,5 +1,4 @@
-import Link from 'next/link';
-export default function SearchBar({ open, setOpen }) {
+export default function SearchBar({ setOpen }) {
     const handleChange = () => {
         setOpen(true);
     };
