@@ -1,7 +1,7 @@
 // src/lib/services/youtubeService.ts
 
 import { httpGet } from '../http';
-import { YoutubeResponse } from 'src/types/youtube';
+import { YoutubeResponse } from '@/types/youtube';
 
 /**
  * 유튜브 영상을 가져오는 서비스 함수

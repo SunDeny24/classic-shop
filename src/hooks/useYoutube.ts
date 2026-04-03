@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchYoutubeService } from '@/lib/services/youtubeService';
-import { CuratedVideo } from '@/types/youtube';
+import { CuratedVideo, YoutubeVideo } from '@/types/youtube';
 
 export function useYoutube(type: string, query?: string) {
     const [videos, setvideos] = useState<CuratedVideo[]>([]); //영상들 state
@@ -24,7 +24,7 @@ export function useYoutube(type: string, query?: string) {
 
             //console.log('검색 타입:', type, '응답 데이터:', data);
             if (data.items && data.items.length > 0) {
-                const formattedVideo: CuratedVideo[] = data.items.slice(0, 4).map((item) => ({
+                const formattedVideo: CuratedVideo[] = data.items.slice(0, 4).map((item: YoutubeVideo) => ({
                     id: typeof item.id === 'string' ? item.id : item.id.videoId,
                     title: item.snippet.title,
                     thumbnail: item.snippet.thumbnails.medium.url,
