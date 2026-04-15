@@ -11,7 +11,7 @@ export default function CartPage() {
 
     /* 장바구니 상품 삭제 함수 */
     const hadleRemoveItem = (productId) => {
-        const updatedCart = cart.filter((item) => item.productId != productId);
+        const updatedCart = cart.filter((item) => item.productId !== productId);
         setCart(updatedCart);
     };
 

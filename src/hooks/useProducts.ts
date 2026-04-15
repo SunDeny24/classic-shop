@@ -5,7 +5,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchFashionProducts } from '@/lib/services/fashionService';
 import formatPrice from '@/utils/formatPrice';
-import { FashionProduct, FashionResponse, CuratedProduct } from '@/types/fashion';
+import { FashionProduct, CuratedProduct } from '@/types/fashion';
 
 const DISPLAY = 100;
 
