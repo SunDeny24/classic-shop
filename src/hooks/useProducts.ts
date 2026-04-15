@@ -14,7 +14,6 @@ const DISPLAY = 100;
  */
 
 const processNaverData = (items: FashionProduct[], keyword: string) => {
-    //맞는 배열검증 -- 없애나?
     // if (!apiResponse || !Array.isArray(apiResponse.items)) {
     //     return [];
     // }

@@ -43,7 +43,7 @@ export default function CartPage() {
                                     <img
                                         src={item.image}
                                         alt={item.title}
-                                        className="w-18 h-18 sm:w-24 sm:h-24 rounded-lg object-cover flex-shrink-0"
+                                        className="w-18 h-18 sm:w-24 sm:h-24 rounded-lg object-cover shrink-0"
                                     />
                                     {/* 2. 상품정보 : 브랜드, 상품명, 가격, (모바일 바로구매버튼) */}
                                     <div className="flex-1 ml-3 sm:ml-4 ">

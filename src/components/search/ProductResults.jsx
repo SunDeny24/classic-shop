@@ -156,7 +156,7 @@ export default function ProductResults({ query, category }) {
     return (
         <div className="flex flex-col md:flex-row w-full bg-white min-h-screen">
             {/* [SIDEBAR/TOPBAR] md 이상은 왼쪽 고정, 미만은 상단 접이식 */}
-            <aside className="w-full md:w-64 flex-shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:sticky md:top-28 md:h-[calc(100vh-112px)] overflow-y-auto">
+            <aside className="w-full md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:sticky md:top-28 md:h-[calc(100vh-112px)] overflow-y-auto">
                 {/* 모바일 전용: 필터 요약 바 (sm 이하에서만 노출) */}
                 <div
                     className="md:hidden flex items-center justify-between p-4 bg-white cursor-pointer"
