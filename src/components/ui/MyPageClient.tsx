@@ -1,0 +1,130 @@
+// 마이페이지 UI 컴포넌트
+"use client";
+
+import LikeList from "./LikeList";
+import RecentProducts from "./RecentProducts";
+import Link from "next/link";
+import { useShoppingStore } from "@/store/useShoppingStore";
+
+export default function MyPageClient() {
+  const wishList = useShoppingStore((state) => state.wishList);
+  const cart = useShoppingStore((state) => state.cart);
+
+  return (
+    <div>
+      {/* 헤더 */}
+      <div className="px-4 py-6 ">
+        <div className="max-w-7xl mx-auto flex items-center space-x-4 ">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-blue-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">
+              반가워요, 스키퍼님!{" "}
+            </h2>
+            <p className="text-sm text-gray-500">
+              로그인 없이 사용 중입니다 (데이터는 브라우저에 저장됨)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto py-6 space-y-8 ">
+        {/* 위시리스트, 장바구니 갯수 안내 카드 */}
+        <div className="grid grid-cols-2 gap-4 m-3 px-3  mb-10 ">
+          {/* 위시리스트 카드 */}
+          <Link href="/wishlist" className="text-gray-600 hover:text-black">
+            <div className="bg-white p-5 rounded-2xl shadow-md border border-gray-100 flex flex-col items-center justify-center relative active:scale-95 transition-transform">
+              <span className="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
+                Wishlist
+              </span>
+              <div className="flex items-baseline space-x-1">
+                <span className="text-2xl font-bold text-gray-800">
+                  {wishList.length}
+                </span>
+                <span className="text-gray-400 text-sm">개</span>
+              </div>
+            </div>
+          </Link>
+
+          {/* 장바구니 카드*/}
+          <Link href="/cart" className="text-gray-600 hover:text-black">
+            <div className="bg-blue-600 p-5 rounded-2xl shadow-md shadow-blue-100 flex flex-col items-center justify-center relative active:scale-95 transition-transform">
+              <span className="text-blue-100 text-sm font-medium mb-1 uppercase tracking-wider">
+                Cart
+              </span>
+              <div className="flex items-baseline space-x-1">
+                <span className="text-2xl font-bold text-white">
+                  {cart.length}
+                </span>
+                <span className="text-blue-100 text-sm">개</span>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* 위시리스트 */}
+        <section>
+          <div className="flex justify-between items-end m-3 mb-5 py-3 px-3">
+            <h3 className="text-2xl font-bold text-gray-800 ">
+              내가 찜한 상품
+            </h3>
+            <Link
+              href="/wishlist"
+              className="group flex items-center gap-1 px-3 py-1.5 bg-white border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
+            >
+              전체보기
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </Link>
+          </div>
+          <div className="rounded-xl bg-white p-5 m-3">
+            <LikeList limit={5} />
+          </div>
+        </section>
+
+        {/* 최근 본 상품 */}
+        <section>
+          <div className="flex text-center m-3 mb-5 py-3 px-3">
+            <h3 className="text-2xl font-bold text-gray-800">최근 본 상품</h3>
+          </div>
+          <div className="rounded-xl p-5 m-3 bg-white">
+            <RecentProducts emptyAction="link" emptyHref="/" />
+          </div>
+        </section>
+      </div>
+
+      <div className="bg-gray-100 p-4 text-center mt-15">
+        <p className="text-xs text-gray-500 leading-relaxed">
+          마이페이지 보관함 데이터는 현재 브라우저에 안전하게 보관 중이에요.
+          다만, 기기를 바꾸거나 브라우저 초기화시엔 데이터가 보이지 않을 수
+          있습니다.
+        </p>
+      </div>
+    </div>
+  );
+}

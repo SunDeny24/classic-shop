@@ -1,0 +1,48 @@
+//위시리스트 UI 컴포넌트
+"use client";
+
+import Link from "next/link";
+import ProductCardGrid from "./ProductCardGrid";
+import { useShoppingStore } from "@/store/useShoppingStore";
+
+interface LikeListProps {
+  limit?: number | null; // 숫자일 수도 있고, 기본값인 null일 수도 있음
+}
+
+export default function LikeList({ limit = null }: LikeListProps) {
+  const wishList = useShoppingStore((state) => state.wishList);
+
+  const displayProducts = limit ? wishList.slice(0, limit) : wishList;
+
+  //limit값에 따라 css 변경 (마이페이지 4/ 위시리스트 50)
+  const gridClass = limit
+    ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"
+    : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10";
+
+  const isEmpty = wishList.length === 0;
+
+  return (
+    <div>
+      {isEmpty ? (
+        <div className="flex flex-col items-center py-20 ">
+          <div className="text-6xl mb-4">🤍</div>
+          <p className="text-zinc-500 text-lg font-medium mb-4">
+            아직 좋아요 버튼을 누른 상품이 없습니다.
+          </p>
+          <Link
+            href="/"
+            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-700 transition-colors"
+          >
+            상품 보러가기
+          </Link>
+        </div>
+      ) : (
+        <ProductCardGrid
+          gridClass={gridClass}
+          productInfo={displayProducts}
+          isLoading={false}
+        />
+      )}
+    </div>
+  );
+}

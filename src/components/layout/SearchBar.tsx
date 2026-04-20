@@ -1,0 +1,37 @@
+// src/components/layout/SearchBar.tsx
+"use client";
+
+interface SearchBarProps {
+  open?: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export default function SearchBar({ setOpen }: SearchBarProps) {
+  const handleChange = () => {
+    setOpen(true);
+  };
+  return (
+    <div onClick={handleChange} className="relative w-full">
+      <input
+        type="text"
+        placeholder="원하시는 스타일의 키워드를 입력해보세요"
+        onFocus={handleChange}
+        readOnly
+        className="w-full text-sm md:text-[16px] bg-gray-100 border-none rounded-full py-3 pl-12 pr-6 focus:outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+      />
+      <svg
+        className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-blue-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        ></path>
+      </svg>
+    </div>
+  );
+}
