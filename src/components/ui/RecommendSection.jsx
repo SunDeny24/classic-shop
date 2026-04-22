@@ -1,78 +1,90 @@
 // 추천섹션 wrapper
 // src/components/ui/RecommendSection.jsx
 
-'use client';
+"use client";
 
-import RecentKeywordRecommend from '@/components/ui/RecentKeywordRecommend';
-import RecommendedVideos from '@/components/ui/RecommendVideo';
-import { useState, useMemo, useEffect } from 'react';
-import { useYoutube } from '@/hooks/useYoutube';
+import RecentKeywordRecommend from "@/components/ui/RecentKeywordRecommend";
+import RecommendedVideos from "@/components/ui/RecommendVideo";
+import { useState, useMemo, useEffect } from "react";
+import { useYoutube } from "@/hooks/useYoutube";
 
 export default function RecommendSection() {
-    const [keyword, setKeyword] = useState(() => {
-        // 키워드 초기화
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('recent_searches');
-            return saved ? JSON.parse(saved)[0] || '' : '';
-        }
-        return '';
-    });
-    const [msgIndex, setMsgIndex] = useState(0); // 검색어, 트렌드영상 없을 경우 멘트 상태관리
+  const [keyword, setKeyword] = useState(() => {
+    // 키워드 초기화
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("recent_searches");
+      return saved ? JSON.parse(saved)[0] || "" : "";
+    }
+    return "";
+  });
+  const [msgIndex, setMsgIndex] = useState(0); // 검색어, 트렌드영상 없을 경우 멘트 상태관리
 
-    // 랜덤 멘트 리스트
-    const messages = useMemo(
-        () => [
-            '편하게! 빠르게! 선택할수있는 쇼핑몰 Skipick 입니다.',
-            '찾으시는 상품 검색시 관련된 추천영상과 추천템을 보여드려요.',
-            '상품 검색시 카테고리와 디테일 옵션을 활용해보세요!',
-            '최근 본 상품은 홈화면 하단 리스트에서 언제든 다시 확인할 수 있습니다.',
-            '마음에 드는 상품은 하트를 눌러 위시리스트에 담아보세요.',
-            'Skipick은 당신의 스마트하고 즐거운 쇼핑 경험을 함께합니다.',
-        ],
-        [],
-    );
-    useEffect(() => {
-        // 로컬스토리지에서 키워드 가져오기
-        const savedSearches = localStorage.getItem('recent_searches');
-        const selectedKeyword = savedSearches ? JSON.parse(savedSearches)[0] || '' : '';
-        queueMicrotask(() => setKeyword(selectedKeyword));
+  // 랜덤 멘트 리스트
+  const messages = useMemo(
+    () => [
+      "편하게! 빠르게! 선택할수있는 쇼핑몰 Skipick 입니다.",
+      "찾으시는 상품 검색시 관련된 추천영상과 추천템을 보여드려요.",
+      "상품 검색시 카테고리와 디테일 옵션을 활용해보세요!",
+      "최근 본 상품은 홈화면 하단 리스트에서 언제든 다시 확인할 수 있습니다.",
+      "마음에 드는 상품은 하트를 눌러 위시리스트에 담아보세요.",
+      "Skipick은 당신의 스마트하고 즐거운 쇼핑 경험을 함께합니다.",
+    ],
+    [],
+  );
+  useEffect(() => {
+    // 로컬스토리지에서 키워드 가져오기
+    const savedSearches = localStorage.getItem("recent_searches");
+    const selectedKeyword = savedSearches
+      ? JSON.parse(savedSearches)[0] || ""
+      : "";
+    queueMicrotask(() => setKeyword(selectedKeyword));
 
-        // 7초마다 멘트 인덱스 변경
-        const interval = setInterval(() => {
-            queueMicrotask(() => setMsgIndex((prev) => (prev + 1) % messages.length)); //배열만큼 인터벌 돌려줌
-        }, 7000);
-        return () => clearInterval(interval); //인터벌 초기화
-    }, [messages.length]);
+    // 7초마다 멘트 인덱스 변경
+    const interval = setInterval(() => {
+      queueMicrotask(() => setMsgIndex((prev) => (prev + 1) % messages.length)); //배열만큼 인터벌 돌려줌
+    }, 7000);
+    return () => clearInterval(interval); //인터벌 초기화
+  }, [messages.length]);
 
-    // 유튜브 데이터 직접 호출 (상태 끌어올리기)
-    const type = keyword ? 'search' : 'trend';
-    const { videos, loading, error } = useYoutube(type, keyword);
+  // 유튜브 데이터 직접 호출 (상태 끌어올리기)
+  const type = keyword ? "search" : "trend";
+  const {
+    data: videos = [],
+    isLoading,
+    isError,
+    error,
+  } = useYoutube(type, keyword);
 
-    // 영상 유무 판단 (상태 변수 대신 계산된 변수 사용)
-    const hasVideos = !loading && !error && videos.length > 0;
+  // 영상 유무 판단 (상태 변수 대신 계산된 변수 사용)
+  const hasVideos = !isLoading && !isError && videos.length > 0;
 
-    // 검색어가 없고 + 영상도 없을 때만 멘트 노출
-    const showMessage = !keyword && !hasVideos && !loading;
+  // 검색어가 없고 + 영상도 없을 때만 멘트 노출
+  const showMessage = !keyword && !hasVideos && !isLoading;
 
-    return (
-        <div>
-            <div className="max-w-screen-xl mx-auto px-5 space-y-5">
-                <RecentKeywordRecommend />
-                {/* 추천 영상 컴포넌트: 영상이 없으면 내부에서 null을 반환하도록 설정 */}
-                <RecommendedVideos videos={videos} loading={loading} error={error} keyword={keyword} />
+  return (
+    <div>
+      <div className="max-w-screen-xl mx-auto px-5 space-y-5">
+        <RecentKeywordRecommend />
+        {/* 추천 영상 컴포넌트: 영상이 없으면 내부에서 null을 반환하도록 설정 */}
+        <RecommendedVideos
+          videos={videos}
+          loading={isLoading}
+          error={error}
+          keyword={keyword}
+        />
 
-                {/* 검색어, 영상없을때 멘트 노출  */}
-                {showMessage && (
-                    <div className="w-full py-3 text-center mt-5 overflow-hidden mb-5 ">
-                        <p
-                            key={msgIndex}
-                            className="text-zinc-500 text-2xl font-medium animate-msg-reveal px-6 transition-all"
-                        >
-                            &quot;{messages[msgIndex]}&quot;
-                        </p>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+        {/* 검색어, 영상없을때 멘트 노출  */}
+        {showMessage && (
+          <div className="w-full py-3 text-center mt-5 overflow-hidden mb-5 ">
+            <p
+              key={msgIndex}
+              className="text-zinc-500 text-2xl font-medium animate-msg-reveal px-6 transition-all"
+            >
+              &quot;{messages[msgIndex]}&quot;
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
