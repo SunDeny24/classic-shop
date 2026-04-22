@@ -1,154 +1,82 @@
 // 네이버 상품목록 조회 커스텀 훅
 // src/hooks/useProducts.ts
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { fetchFashionProducts } from '@/lib/services/fashionService';
-import formatPrice from '@/utils/formatPrice';
-import { FashionProduct, CuratedProduct } from '@/types/fashion';
+import { useState, useMemo } from "react";
+import { fetchFashionProducts } from "@/lib/services/fashionService";
+import processNaverData from "@/utils/processNaverData";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-const DISPLAY = 100;
+export function useProducts(query: string) {
+  //정렬 state
+  const [sortType, setSortType] = useState<"default" | "low" | "high">(
+    "default",
+  );
+  const {
+    data, //전체데이터
+    fetchNextPage, //다음페이지 가져오는 함수
+    hasNextPage, //다음 페이지가 있는지 여부 확인
+    isFetchingNextPage, //다음 페이지 추가로 불러오는 중인지
+    isLoading, //처음 로딩중인지
+    isError, //에러났는지
+    error, //에러객체
+    refetch, //재요청 함수
+  } = useInfiniteQuery({
+    queryKey: ["products", query], //요청의 고유 키 - query가 바뀌면 새로운 데이터 요청
+    //실제 데이터 가져오는 함수
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await fetchFashionProducts(query, pageParam);
+      return {
+        ...response,
+        curatedItems: processNaverData(response.items ?? [], query), //가공데이터 추가
+        originalCount: response.items?.length ?? 0, //원본데이터 갯수 추가 - 필터안된 데이터 갯수로 다음페이지 여부 판단하기 위함
+      };
+    },
+    initialPageParam: 1, //첫요청 페이지 1
+    //다음 페이지번호결정하는 함수(필수)
+    getNextPageParam: (lastPage, allPages) => {
+      const DISPLAY_COUNT = 20; //한페이지당 보여줄 갯수
+      const hasMore = lastPage.originalCount === DISPLAY_COUNT; //원본데이터 갯수가 한페이지당 보여줄 갯수와 같다면 다음페이지 존재
+      return hasMore ? allPages.length + 1 : undefined; //다음 페이지번호는 현재까지 불러온 페이지 수 + 1, 다음 페이지 없으면 undefined 반환
+    },
+  });
 
-/**
- *  네이버 쇼핑 API 응답 데이터 가공
- */
+  //정렬 로직(가격순)
+  const products = useMemo(() => {
+    if (!data) return [];
 
-const processNaverData = (items: FashionProduct[], keyword: string) => {
-    // if (!apiResponse || !Array.isArray(apiResponse.items)) {
-    //     return [];
-    // }
-    const curatedProductMap = new Map<string, CuratedProduct>();
+    //모든 페이지를 돌며 가공된 상품데이터만 뽑아서 하나의 배열로 합치기
+    const allItems = data.pages.flatMap((page) => page.curatedItems);
 
-    items.forEach((item) => {
-        const key = item.productId; //키는 네이버의 productId
-        const currentPrice = parseInt(item.lprice, 10); //최저가 10진수 변환
-
-        //상품ID없거나, 가격유효하지않은 경우, 상품이름, 상품이미지가 없는 경우 검증
-        if (!key || isNaN(currentPrice) || !item.title || !item.image) {
-            return;
-        }
-        //title <b>태그제거
-        const cleanTitle = item.title.replace(/<b>/g, '').replace(/<\/b>/g, '');
-
-        //대표상품으로 묶기
-        if (!curatedProductMap.has(key)) {
-            curatedProductMap.set(key, {
-                productId: key,
-                title: cleanTitle,
-                image: item.image,
-                brand: item.brand || item.mallName || '알수없음',
-                link: item.link,
-                lprice: formatPrice(currentPrice),
-                rawPrice: currentPrice,
-                productType: item.productType,
-                mallName: item.mallName,
-                keyword: keyword,
-                category1: item.category1,
-                category2: item.category2,
-                category3: item.category3,
-                category4: item.category4,
-            });
-        } else {
-            //기존상품의 최저가 셋팅
-            const existProduct = curatedProductMap.get(key);
-            //현재최저가< 기존최저가 일시 더 낮은 가격으로 변경
-            if (existProduct && currentPrice < existProduct.rawPrice) {
-                existProduct.lprice = formatPrice(currentPrice); //더 낮은 가격의 현재최저가로 변경
-                existProduct.rawPrice = currentPrice;
-                existProduct.link = item.link;
-                existProduct.mallName = item.mallName;
-            }
-        }
+    //중복제거
+    const uniqueMap = new Map();
+    allItems.forEach((item) => {
+      if (!uniqueMap.has(item.productId)) {
+        uniqueMap.set(item.productId, item);
+      }
     });
-    return Array.from(curatedProductMap.values());
-};
+    const uniqueProducts = Array.from(uniqueMap.values());
 
-//문자열 리터럴타입지정
-type SortType = 'default' | 'low' | 'high';
+    const sorted = [...uniqueProducts];
+    // 최저가 최고가 비교
+    if (sortType === "low") {
+      sorted.sort((a, b) => a.rawPrice - b.rawPrice);
+    }
+    if (sortType === "high") {
+      sorted.sort((a, b) => b.rawPrice - a.rawPrice);
+    }
+    return sorted;
+  }, [data, sortType]);
 
-export function useProducts(query: string, options = {}) {
-    //상태관리 정의
-    const [rawProducts, setrawProducts] = useState<CuratedProduct[]>([]); //상품데이터 배열 state
-    const [loading, setLoading] = useState<boolean>(true); //로딩여부 state
-    const [error, setError] = useState<string | null>(null); //에러 state
-    const [page, setPage] = useState<number>(1); //현재 페이지 state
-    const [sortType, setSortType] = useState<SortType>('default'); //정렬 state
-
-    // 데이터 가져와서 api fetch함수 호출시킴
-    // useCallback으로 메모리 주소 고정
-    const optionsString = JSON.stringify(options); //options를 객체 아닌 문자열로 변환하여 의존성 배열에 추가
-
-    const load = useCallback(
-        async (nextPage = 1) => {
-            if (!query) {
-                setLoading(false);
-                return;
-            }
-
-            setLoading(true);
-            setError(null);
-
-            try {
-                //처음 100개 요청
-                const start = (nextPage - 1) * DISPLAY + 1;
-                const data = await fetchFashionProducts(query, {
-                    ...options,
-                    start: String(start),
-                    display: String(DISPLAY),
-                    sort: 'sim',
-                });
-                const curatedData = processNaverData(data.items ?? [], query);
-                if (nextPage === 1) {
-                    //첫페이지에서는 그대로 데이터 가져옴
-                    setrawProducts(curatedData);
-                } else {
-                    //다음 페이지부터는 기존값에 추가
-                    //+ 데이터 합칠때 productId 중복체크로직 추가
-                    setrawProducts((prev) => {
-                        const existingIds = new Set(prev.map((item) => item.productId));
-                        const uniqueNewData = curatedData.filter((item) => !existingIds.has(item.productId));
-                        return [...prev, ...uniqueNewData];
-                    });
-                }
-
-                setPage(nextPage); //페이지 셋팅
-            } catch (e: any) {
-                setError(e.message ?? '알수없는 에러 등장');
-            } finally {
-                setLoading(false);
-            }
-        },
-        [query, optionsString], // query나 options가 바뀔 때만 함수를 새로 만듦
-    );
-
-    //정렬 로직(가격순)
-    const products = useMemo(() => {
-        const sorted = [...rawProducts];
-
-        if (sortType === 'low') {
-            sorted.sort((a, b) => a.rawPrice - b.rawPrice);
-        }
-        if (sortType === 'high') {
-            sorted.sort((a, b) => b.rawPrice - a.rawPrice);
-        }
-        return sorted;
-    }, [rawProducts, sortType]);
-
-    //검색어 바뀌면 1페이지부터 load처리
-    useEffect(() => {
-        load(1);
-    }, [load]);
-
-    //다음 페이지 요청
-    const loadMore = () => load(page + 1);
-
-    return {
-        products,
-        loading,
-        error,
-        sortType,
-        setSortType,
-        refetch: () => load(page),
-        loadMore,
-    };
+  return {
+    products, //가공된 상품리스트
+    loading: isLoading || isFetchingNextPage, //초기 로딩 또는 추가 데이터 로딩 상태
+    error: isError ? (error as Error).message : null,
+    sortType,
+    setSortType,
+    refetch,
+    loadMore: fetchNextPage, //다음 페이지 가져오는 함수
+    hasNextPage, // 더 가져올 데이터 있는지 여부
+    isFetchingNextPage, // 추가 데이터를 가져오는 중인지 알려주는 상태
+  };
 }
