@@ -1,6 +1,7 @@
 //전체 provider 설정 최상위지점
 import "@/styles/globals.css";
-import { Montserrat, Asta_Sans } from "next/font/google";
+import { Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import TanstackProvider from "@/providers/TanstackProvider";
 
 const siteUrl =
@@ -62,9 +63,20 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-const astaSans = Asta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "700"],
+// 폰트 안정화 위해 로컬로 호스팅
+const astaSans = localFont({
+  src: [
+    {
+      path: "../fonts/AstaSans-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/AstaSans-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-asta-sans",
   display: "swap",
 });
@@ -72,15 +84,6 @@ const astaSans = Asta_Sans({
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={`${montserrat.variable} ${astaSans.variable}`}>
-      <head>
-        {/* 폰트 최적화 위해 preconnect */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body>
         <TanstackProvider>{children}</TanstackProvider>
       </body>
