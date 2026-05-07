@@ -55,20 +55,32 @@ export const metadata = {
   },
 };
 
+// 폰트 최적화 위해 display: "swap" 옵션 추가
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
 });
 
 const astaSans = Asta_Sans({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-asta-sans",
+  display: "swap",
 });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={`${montserrat.variable} ${astaSans.variable}`}>
+      <head>
+        {/* 폰트 최적화 위해 preconnect */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <TanstackProvider>{children}</TanstackProvider>
       </body>
