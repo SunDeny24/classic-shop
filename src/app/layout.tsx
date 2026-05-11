@@ -3,6 +3,11 @@ import "@/styles/globals.css";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import TanstackProvider from "@/providers/TanstackProvider";
+import { ReactNode } from "react";
+
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://my-skipick-project.vercel.app/";
@@ -81,7 +86,7 @@ const astaSans = localFont({
   display: "swap",
 });
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="ko" className={`${montserrat.variable} ${astaSans.variable}`}>
       <body>
