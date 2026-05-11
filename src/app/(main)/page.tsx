@@ -1,5 +1,5 @@
 //홈페이지 메인 콘텐츠 정의
-//app/(main)/page.jsx
+//app/(main)/page.tsx
 
 import RecentProducts from "@/components/ui/RecentProducts";
 import RecommendSection from "@/components/ui/RecommendSection";
