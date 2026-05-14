@@ -1,11 +1,39 @@
 "use client";
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, ChangeEvent } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import ProductCardGrid from "@/components/ui/ProductCardGrid";
 import formatPrice from "@/utils/formatPrice";
 import { useInView } from "react-intersection-observer";
+import type { CuratedProduct } from "@/types/fashion";
 
-export default function ProductResults({ query, category }) {
+/* Props 타입 정의 */
+type ProductResultProps = {
+  query: string;
+  category: string | null;
+};
+
+/* state를 위한 interface정의 */
+interface CategoryState {
+  cat2: string;
+  cat3: string;
+  cat4: string;
+}
+
+interface PriceRange {
+  min: string;
+  max: string;
+}
+
+interface FilterToggleProps {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}
+
+export default function ProductResults({
+  query,
+  category,
+}: ProductResultProps) {
   const {
     products,
     loading,
@@ -23,13 +51,13 @@ export default function ProductResults({ query, category }) {
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   // 카테고리 상태관리
-  const [selectedCategory, setSelectedCategory] = useState({
+  const [selectedCategory, setSelectedCategory] = useState<CategoryState>({
     cat2: "", // 중분류
     cat3: "", // 소분류
     cat4: "", // 세분류
   });
 
-  // 필터 상태 관리 (중고, 단종, 판매예정)
+  // 필터 상태 관리 (중고, 단종, 해외직구)
   const [filters, setFilters] = useState({
     excludeUsed: true,
     excludeDiscontinued: true,
@@ -37,7 +65,7 @@ export default function ProductResults({ query, category }) {
   });
 
   // 가격 필터 상태 (rawPrice: 숫자 기준)
-  const [priceRange, setPriceRange] = useState({
+  const [priceRange, setPriceRange] = useState<PriceRange>({
     min: "",
     max: "",
   });
@@ -111,7 +139,7 @@ export default function ProductResults({ query, category }) {
   useEffect(() => {
     if (query) {
       const saved = localStorage.getItem("recent_searches");
-      const prevSearches = saved ? JSON.parse(saved) : [];
+      const prevSearches: string[] = saved ? JSON.parse(saved) : [];
 
       // 현재 키워드를 맨 앞으로 보내고 중복 제거 (최대 10개)
       const updatedSearches = [
@@ -124,12 +152,12 @@ export default function ProductResults({ query, category }) {
   }, [query]);
 
   // 토글 핸들러 함수
-  const handleToggle = (key) => {
+  const handleToggle = (key: keyof typeof filters) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   /* -------데이터 정제 로직------- */
-  const curatedProducts = useMemo(() => {
+  const curatedProducts = useMemo<CuratedProduct[]>(() => {
     if (!products) return [];
 
     const minPrice = priceRange.min !== "" ? Number(priceRange.min) : null;
@@ -178,18 +206,11 @@ export default function ProductResults({ query, category }) {
       }
 
       // 가격 필터
-      if (
-        minPrice !== null &&
-        !Number.isNaN(minPrice) &&
-        item.rawPrice < minPrice
-      ) {
+      if (minPrice !== null && item.rawPrice < minPrice) {
         return false;
       }
-      if (
-        maxPrice !== null &&
-        !Number.isNaN(maxPrice) &&
-        item.rawPrice > maxPrice
-      ) {
+
+      if (maxPrice !== null && item.rawPrice > maxPrice) {
         return false;
       }
 
@@ -257,7 +278,7 @@ export default function ProductResults({ query, category }) {
                       <select
                         className="text-sm py-1.5 sm:py-2 focus:outline-none ml-2 px-2 "
                         value={selectedCategory.cat3}
-                        onChange={(e) =>
+                        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                           setSelectedCategory((prev) => ({
                             ...prev,
                             cat3: e.target.value,
@@ -373,20 +394,17 @@ export default function ProductResults({ query, category }) {
                   {/* 토글 스위치 리스트 */}
                   <div className="space-y-5 px-1">
                     <FilterToggle
-                      label="신상품만 보기"
-                      subLabel="중고/구제 아이템 제외"
+                      label="신상품만 보기" // 중고/구제 아이템 제외
                       checked={filters.excludeUsed}
                       onChange={() => handleToggle("excludeUsed")}
                     />
                     <FilterToggle
-                      label="판매 중인 상품만"
-                      subLabel="단종된 모델 제외"
+                      label="판매 중인 상품만" // 단종된 모델 제외
                       checked={filters.excludeDiscontinued}
                       onChange={() => handleToggle("excludeDiscontinued")}
                     />
                     <FilterToggle
-                      label="국내 배송 상품만"
-                      subLabel="해외 직구/대행 제외"
+                      label="국내 배송 상품만" // 해외 직구/대행 제외
                       checked={filters.excludeGlobal}
                       onChange={() => handleToggle("excludeGlobal")}
                     />
@@ -467,7 +485,9 @@ export default function ProductResults({ query, category }) {
           <div className="relative inline-block w-30 md:w-40">
             <select
               value={sortType}
-              onChange={(e) => setSortType(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setSortType(e.target.value as "default" | "low" | "high")
+              }
               className="block w-full cursor-pointer appearance-none rounded-lg border border-zinc-200 bg-white px-4 py-1.5 md:py-2 pr-8 text-xs md:text-sm text-zinc-700 transition-all hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100"
             >
               <option value="default">정확도순</option>
@@ -525,17 +545,6 @@ export default function ProductResults({ query, category }) {
         )}
         {/* 순수 센서 역할의 Sentinel (투명 노드) - 시각적 요소가 없으며 무조건 리스트의 "진짜 바닥"에 존재합니다. */}
         <div ref={ref} className="w-full h-0" aria-hidden="true" />
-
-        {/* 더보기 버튼 - 무한스크롤로 변경
-        <div className="flex justify-center mt-16 mb-10">
-          <button
-            onClick={loadMore}
-            disabled={loading}
-            className="px-10 py-3 rounded border border-zinc-200 text-xs font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-20"
-          >
-            {loading ? "불러오는 중..." : "More"}
-          </button>
-        </div>*/}
       </main>
     </div>
   );
@@ -544,7 +553,7 @@ export default function ProductResults({ query, category }) {
 /**
  * 토글 스위치 컴포넌트
  */
-function FilterToggle({ label, checked, onChange }) {
+function FilterToggle({ label, checked, onChange }: FilterToggleProps) {
   return (
     <label className="flex items-center justify-between cursor-pointer group">
       <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900 transition-colors">
