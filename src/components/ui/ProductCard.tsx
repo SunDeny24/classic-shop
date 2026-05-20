@@ -6,8 +6,13 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "./LikeButton";
+import { ProductCardData } from "@/types/fashion";
 
-export default function ProductCard({ productData }) {
+interface ProductCardProps {
+  productData: ProductCardData;
+}
+
+export default function ProductCard({ productData }: ProductCardProps) {
   //이미지 로딩위한 상태관리
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 

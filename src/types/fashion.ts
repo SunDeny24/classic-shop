@@ -59,3 +59,17 @@ export interface RecentViewData extends Pick<
   | "rawPrice"
   | "keyword"
 > {}
+
+/**
+ * ProductCard용 데이터
+ * */
+export interface ProductCardData {
+  productId: string;
+  title: string;
+  image: string;
+  brand: string;
+  link: string;
+  lprice: string;
+  rawPrice: number;
+  keyword: string;
+}
