@@ -9,7 +9,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useYoutube } from "@/hooks/useYoutube";
 
 export default function RecommendSection() {
-  const [keyword, setKeyword] = useState(() => {
+  const [keyword, setKeyword] = useState<string>(() => {
     // 키워드 초기화
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("recent_searches");
@@ -34,7 +34,7 @@ export default function RecommendSection() {
   useEffect(() => {
     // 로컬스토리지에서 키워드 가져오기
     const savedSearches = localStorage.getItem("recent_searches");
-    const selectedKeyword = savedSearches
+    const selectedKeyword: string = savedSearches
       ? JSON.parse(savedSearches)[0] || ""
       : "";
     queueMicrotask(() => setKeyword(selectedKeyword));
@@ -63,7 +63,7 @@ export default function RecommendSection() {
 
   return (
     <div>
-      <div className="max-w-screen-xl mx-auto px-5 space-y-5">
+      <div className="max-w-7xl mx-auto px-5 space-y-5">
         <RecentKeywordRecommend />
         {/* 추천 영상 컴포넌트: 영상이 없으면 내부에서 null을 반환하도록 설정 */}
         <RecommendedVideos
