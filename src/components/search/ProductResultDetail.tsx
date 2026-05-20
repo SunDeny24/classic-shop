@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useShoppingStore } from "@/store/useShoppingStore";
 import { CuratedProduct, RecentViewData } from "@/types/fashion";
+import Image from "next/image";
 
 export default function ProductResultDetail() {
   const wishList = useShoppingStore((state) => state.wishList);
@@ -27,7 +28,7 @@ export default function ProductResultDetail() {
     }
     try {
       const decodeData = decodeURIComponent(dataParams);
-      const parseProduct = JSON.parse(decodeData);
+      const parseProduct = JSON.parse(decodeData) as CuratedProduct;
       if (!parseProduct || !parseProduct.productId) {
         throw new Error("Invalid Products data");
       }
@@ -122,13 +123,16 @@ export default function ProductResultDetail() {
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto bg-white">
+    <div className="max-w-7xl mx-auto bg-white">
       <div className="flex flex-col md:flex-row gap-12">
         <div className="md:w-1/2">
-          <img
+          <Image
             src={product.image}
             alt={product.title}
             className="w-full rounded-lg shadow-lg"
+            width={600}
+            height={600}
+            priority
           />
         </div>
 
