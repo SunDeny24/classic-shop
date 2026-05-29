@@ -1,16 +1,14 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Logo() {
   return (
     <div className="shrink-0">
       <Link href="/">
-        <Image
+        <img
           src="/images/Skipick.svg"
           alt="Skipick"
-          width={130}
-          height={50}
-          priority
+          fetchPriority="high"
+          style={{ width: "130px", height: "auto" }}
         />
       </Link>
     </div>
