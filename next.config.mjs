@@ -5,6 +5,7 @@ const nextConfig = {
     buildActivity: true,
   },
   images: {
+    qualities: [60, 75], // ProductCard에서 quality={60} 사용 중 → 허용 목록에 등록
     remotePatterns: [
       {
         protocol: "https",

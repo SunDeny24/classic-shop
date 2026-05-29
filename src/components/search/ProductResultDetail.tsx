@@ -1,7 +1,7 @@
 //상세페이지 데이터 보여주는 클라이언트 컴포넌트
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useShoppingStore } from "@/store/useShoppingStore";
 import { CuratedProduct, RecentViewData } from "@/types/fashion";
 import Image from "next/image";
@@ -59,8 +59,8 @@ export default function ProductResultDetail() {
 
     // 1. 최근 본 상품에 상세페이지 들어갔던 이력 저장
     const savedProducts = localStorage.getItem("recent_products");
-    const prevList: CuratedProduct[] = savedProducts
-      ? JSON.parse(savedProducts)
+    const prevList = savedProducts
+      ? (JSON.parse(savedProducts) as RecentViewData[])
       : [];
     // 기존 데이터에 추가하고 5개 제한함
     const newProduct = [
@@ -73,8 +73,8 @@ export default function ProductResultDetail() {
     // 2. 최근 검색어 순서 업데이트
     if (productData.keyword) {
       const savedSearches = localStorage.getItem("recent_searches");
-      const prevSearches: string[] = savedSearches
-        ? JSON.parse(savedSearches)
+      const prevSearches = savedSearches
+        ? (JSON.parse(savedSearches) as string[])
         : [];
       const newSearches = [
         productData.keyword,

@@ -13,7 +13,7 @@ export default function RecommendSection() {
     // 키워드 초기화
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("recent_searches");
-      return saved ? JSON.parse(saved)[0] || "" : "";
+      return saved ? (JSON.parse(saved) as string[])[0] || "" : "";
     }
     return "";
   });
@@ -35,7 +35,7 @@ export default function RecommendSection() {
     // 로컬스토리지에서 키워드 가져오기
     const savedSearches = localStorage.getItem("recent_searches");
     const selectedKeyword: string = savedSearches
-      ? JSON.parse(savedSearches)[0] || ""
+      ? (JSON.parse(savedSearches) as string[])[0] || ""
       : "";
     queueMicrotask(() => setKeyword(selectedKeyword));
 

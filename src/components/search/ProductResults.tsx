@@ -139,7 +139,7 @@ export default function ProductResults({
   useEffect(() => {
     if (query) {
       const saved = localStorage.getItem("recent_searches");
-      const prevSearches: string[] = saved ? JSON.parse(saved) : [];
+      const prevSearches = saved ? (JSON.parse(saved) as string[]) : [];
 
       // 현재 키워드를 맨 앞으로 보내고 중복 제거 (최대 10개)
       const updatedSearches = [
