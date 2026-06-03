@@ -11,6 +11,14 @@ export async function GET(request: NextRequest) {
     const start = searchParams.get('start') || '1';
     const sort = searchParams.get('sort') || 'sim';
 
+    // query가 빈 문자열이면 네이버 API 호출 전에 차단 (네이버는 빈 query로 400 반환)
+    if (!query.trim()) {
+        return NextResponse.json(
+            { message: '검색어(query)는 필수 파라미터입니다.' },
+            { status: 400 },
+        );
+    }
+
     const apiUrl = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
         query,
     )}&display=${display}&start=${start}&sort=${sort}`;

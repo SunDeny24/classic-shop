@@ -33,6 +33,8 @@ export function useProducts(query: string) {
       };
     },
     initialPageParam: 1, //첫요청 페이지 1
+    // query가 비어있으면 API 호출 자체를 차단 (네이버 API는 빈 query로 400 반환)
+    enabled: !!query.trim(),
     //다음 페이지번호결정하는 함수(필수)
     getNextPageParam: (lastPage, allPages) => {
       const DISPLAY_COUNT = 20; //한페이지당 보여줄 갯수
