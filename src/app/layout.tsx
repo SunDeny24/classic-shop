@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import TanstackProvider from "@/providers/TanstackProvider";
+import { headers } from "next/headers"; // 미들웨어가 주입한 x-nonce 헤더 읽기 위해 필요
+import Script from "next/script"; // nonce를 내부 스크립트에 연결하는 역할
 import { ReactNode } from "react";
 
 interface RootLayoutProps {
@@ -86,10 +88,24 @@ const astaSans = localFont({
   display: "swap",
 });
 
-export default function RootLayout({ children }: RootLayoutProps) {
+// header() 비동기 함수이므로 RootLayout을 비동기처리함
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const nonce = (await headers()).get("x-nonce") ?? "";
+  // middleware에서 생성된 nonce 값을 읽어 <Script> 컴포넌트에 주입하여 CSP와 연결
+
   return (
     <html lang="ko" className={`${montserrat.variable} ${astaSans.variable}`}>
       <body>
+        {/*
+            CSP nonce를 적용하기 위한 빈 <Script> 컴포넌트
+        */}
+        {nonce && (
+          <Script
+            id="__nonce_anchor"
+            nonce={nonce}
+            dangerouslySetInnerHTML={{ __html: "" }}
+          />
+        )}
         <TanstackProvider>{children}</TanstackProvider>
       </body>
     </html>
