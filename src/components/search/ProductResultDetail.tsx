@@ -5,6 +5,12 @@ import { useState, useEffect, useMemo } from "react";
 import { useShoppingStore } from "@/store/useShoppingStore";
 import { CuratedProduct, RecentViewData } from "@/types/fashion";
 import Image from "next/image";
+import { getSafeHref } from "@/utils/security"; //xss공격 방지 위해 URL 검증 함수 추가
+import {
+  isCuratedProduct,
+  isRecentViewDataArray,
+  isStringArray,
+} from "@/utils/typeGuards";
 
 export default function ProductResultDetail() {
   const wishList = useShoppingStore((state) => state.wishList);
@@ -28,11 +34,13 @@ export default function ProductResultDetail() {
     }
     try {
       const decodeData = decodeURIComponent(dataParams);
-      const parseProduct = JSON.parse(decodeData) as CuratedProduct;
-      if (!parseProduct || !parseProduct.productId) {
-        throw new Error("Invalid Products data");
+      const parsedData = JSON.parse(decodeData);
+      console.log("parsedData:", parsedData);
+      if (!isCuratedProduct(parsedData)) {
+        //CuratedProduct 타입구조에 맞는지 런타임 검증 추가
+        throw new Error("Invalid Products data format");
       }
-      setProduct(parseProduct);
+      setProduct(parsedData);
     } catch (e) {
       console.error("상품 데이터 파싱 실패 :", e);
       setError(true);
@@ -59,9 +67,17 @@ export default function ProductResultDetail() {
 
     // 1. 최근 본 상품에 상세페이지 들어갔던 이력 저장
     const savedProducts = localStorage.getItem("recent_products");
-    const prevList = savedProducts
-      ? (JSON.parse(savedProducts) as RecentViewData[])
-      : [];
+    let prevList: RecentViewData[] = [];
+    if (savedProducts) {
+      try {
+        const parsed = JSON.parse(savedProducts);
+        if (isRecentViewDataArray(parsed)) {
+          prevList = parsed;
+        }
+      } catch {
+        // parsing error fallback
+      }
+    }
     // 기존 데이터에 추가하고 5개 제한함
     const newProduct = [
       productData,
@@ -73,9 +89,17 @@ export default function ProductResultDetail() {
     // 2. 최근 검색어 순서 업데이트
     if (productData.keyword) {
       const savedSearches = localStorage.getItem("recent_searches");
-      const prevSearches = savedSearches
-        ? (JSON.parse(savedSearches) as string[])
-        : [];
+      let prevSearches: string[] = [];
+      if (savedSearches) {
+        try {
+          const parsed = JSON.parse(savedSearches);
+          if (isStringArray(parsed)) {
+            prevSearches = parsed;
+          }
+        } catch {
+          // parsing error fallback
+        }
+      }
       const newSearches = [
         productData.keyword,
         ...prevSearches.filter((k) => k !== productData.keyword),
@@ -156,8 +180,9 @@ export default function ProductResultDetail() {
             <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
               <a
                 className="flex items-center justify-center w-full h-full py-4 text-white text-lg font-bold"
-                href={product.link}
+                href={getSafeHref(product.link)}
                 target="_blank"
+                rel="noopener noreferrer" //새 탭에서 열 때 보안 강화
               >
                 바로 구매
               </a>

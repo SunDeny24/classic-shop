@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import ProductCardGrid from "./ProductCardGrid";
 import { RecentViewData } from "@/types/fashion";
+import { isRecentViewDataArray } from "@/utils/typeGuards";
 
 interface RecentProductsProps {
   emptyAction?: string;
@@ -22,8 +23,16 @@ export default function RecentProducts({
 
   useEffect(() => {
     const items = localStorage.getItem("recent_products");
-    const parseItems = items ? (JSON.parse(items) as RecentViewData[]) : [];
-    queueMicrotask(() => setRecentProducts(parseItems));
+    if (!items) return;
+    try {
+      const parsed = JSON.parse(items);
+      // as 단언 대신 런타임 타입 가드 적용
+      // localStorage 데이터가 변조되어 있어도 안전하게 빈 배열로 폴백
+      const safeItems = isRecentViewDataArray(parsed) ? parsed : [];
+      queueMicrotask(() => setRecentProducts(safeItems));
+    } catch {
+      // 파싱 실패 시 빈 배열 유지
+    }
   }, []);
 
   const isEmpty = recentProducts.length === 0;

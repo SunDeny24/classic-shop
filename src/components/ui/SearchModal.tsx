@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { isStringArray } from "@/utils/typeGuards";
 
 interface SeacrchModalProps {
   closeSearch: () => void;
@@ -13,7 +14,16 @@ export default function SearchModal({ closeSearch }: SeacrchModalProps) {
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("recent_searches");
-      return saved ? (JSON.parse(saved) as string[]) : [];
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (isStringArray(parsed)) {
+            return parsed;
+          }
+        } catch {
+          // ignore
+        }
+      }
     }
     return [];
   });

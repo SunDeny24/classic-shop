@@ -7,13 +7,23 @@ import RecentKeywordRecommend from "@/components/ui/RecentKeywordRecommend";
 import RecommendedVideos from "@/components/ui/RecommendVideo";
 import { useState, useMemo, useEffect } from "react";
 import { useYoutube } from "@/hooks/useYoutube";
+import { isStringArray } from "@/utils/typeGuards";
 
 export default function RecommendSection() {
   const [keyword, setKeyword] = useState<string>(() => {
     // 키워드 초기화
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("recent_searches");
-      return saved ? (JSON.parse(saved) as string[])[0] || "" : "";
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (isStringArray(parsed) && parsed.length > 0) {
+            return parsed[0];
+          }
+        } catch {
+          // ignore
+        }
+      }
     }
     return "";
   });
@@ -34,9 +44,17 @@ export default function RecommendSection() {
   useEffect(() => {
     // 로컬스토리지에서 키워드 가져오기
     const savedSearches = localStorage.getItem("recent_searches");
-    const selectedKeyword: string = savedSearches
-      ? (JSON.parse(savedSearches) as string[])[0] || ""
-      : "";
+    let selectedKeyword = "";
+    if (savedSearches) {
+      try {
+        const parsed = JSON.parse(savedSearches);
+        if (isStringArray(parsed) && parsed.length > 0) {
+          selectedKeyword = parsed[0];
+        }
+      } catch {
+        // ignore
+      }
+    }
     queueMicrotask(() => setKeyword(selectedKeyword));
 
     // 7초마다 멘트 인덱스 변경

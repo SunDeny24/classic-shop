@@ -5,6 +5,7 @@ import ProductCardGrid from "@/components/ui/ProductCardGrid";
 import formatPrice from "@/utils/formatPrice";
 import { useInView } from "react-intersection-observer";
 import type { CuratedProduct } from "@/types/fashion";
+import { isStringArray } from "@/utils/typeGuards";
 
 /* Props 타입 정의 */
 type ProductResultProps = {
@@ -139,7 +140,15 @@ export default function ProductResults({
   useEffect(() => {
     if (query) {
       const saved = localStorage.getItem("recent_searches");
-      const prevSearches = saved ? (JSON.parse(saved) as string[]) : [];
+      let prevSearches: string[] = [];
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (isStringArray(parsed)) prevSearches = parsed;
+        } catch {
+          // ignore
+        }
+      }
 
       // 현재 키워드를 맨 앞으로 보내고 중복 제거 (최대 10개)
       const updatedSearches = [

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import ProductCardGrid from "./ProductCardGrid";
 import { CuratedProduct } from "@/types/fashion";
+import { isStringArray } from "@/utils/typeGuards";
 
 export default function RecentKeywordRecommend() {
   const [keyword, setKeyword] = useState("");
@@ -20,10 +21,14 @@ export default function RecentKeywordRecommend() {
     const saved = localStorage.getItem("recent_searches");
 
     if (saved) {
-      const parse = JSON.parse(saved) as string[];
-      if (Array.isArray(parse) && parse.length > 0) {
-        // lint: effect 내부에서 setState 동기 호출 금지 대응
-        queueMicrotask(() => setKeyword(parse[0]));
+      try {
+        const parsed = JSON.parse(saved);
+        if (isStringArray(parsed) && parsed.length > 0) {
+          // lint: effect 내부에서 setState 동기 호출 금지 대응
+          queueMicrotask(() => setKeyword(parsed[0]));
+        }
+      } catch {
+        // parsing error fallback
       }
     }
   }, []);
@@ -105,7 +110,7 @@ export default function RecentKeywordRecommend() {
             &quot;{keyword}&quot; 에 대한 추천 상품 데이터가 충분하지 않습니다.
           </p>
           <p className="text-xs text-zinc-500 mt-2">
-            다른 키워드로 검색해 보세요.
+            다른 키워드로 검색하여 관련된 추천 상품을 확인해보세요.
           </p>
         </div>
       )}
