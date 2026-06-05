@@ -21,8 +21,8 @@ export default function processNaverData(
     if (!key || isNaN(currentPrice) || !item.title || !item.image) {
       return;
     }
-    //title <b>태그제거
-    const cleanTitle = item.title.replace(/<b>/g, "").replace(/<\/b>/g, "");
+    // 모든 HTML 태그 및 잠재적인 악성 마크업 문자열을 안전하게 일괄 제거 - XSS 방지
+    const cleanTitle = item.title.replace(/<[^>]*>/g, "");
 
     //대표상품으로 묶기
     if (!curatedProductMap.has(key)) {

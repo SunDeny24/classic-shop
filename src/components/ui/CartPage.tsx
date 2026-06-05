@@ -2,9 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
 import formatPrice from "@/utils/formatPrice";
 import { useShoppingStore } from "@/store/useShoppingStore";
+import { getSafeHref } from "@/utils/security"; //xss공격 방지 위해 URL 검증 함수 추가
+import Image from "next/image";
 
 export default function CartPage() {
   const cart = useShoppingStore((state) => state.cart);
@@ -31,9 +32,11 @@ export default function CartPage() {
                 {/* 상단 : 이미지, 상품정보 */}
                 <div className="flex items-start w-full pt-3 sm:p-0">
                   {/* 1. 이미지 */}
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
+                    width={96}
+                    height={96}
                     className="w-18 h-18 sm:w-24 sm:h-24 rounded-lg object-cover shrink-0"
                   />
                   {/* 2. 상품정보 : 브랜드, 상품명, 가격, (모바일 바로구매버튼) */}
@@ -61,7 +64,8 @@ export default function CartPage() {
                     <div className="mt-3 sm:hidden flex justify-end">
                       <a
                         className="inline-block border border-zinc-300 rounded-lg py-1.5 px-3 whitespace-nowrap text-xs font-medium text-zinc-600 hover:text-blue-600 hover:border-blue-600 transition-all"
-                        href={item.link}
+                        href={getSafeHref(item.link)} //보안 강화된 URL 사용
+                        rel="noopener noreferrer" //새 탭에서 열 때 보안 강화
                         target="_blank"
                       >
                         바로 구매
@@ -94,7 +98,8 @@ export default function CartPage() {
                 <div className="hidden sm:flex flex-col justify-end ml-4">
                   <a
                     className="inline-block border border-zinc-300 rounded-lg py-1.5 px-3 whitespace-nowrap text-sm font-medium text-zinc-600 hover:text-blue-600 hover:border-blue-600 transition-all"
-                    href={item.link}
+                    href={getSafeHref(item.link)} //보안 강화된 URL 사용
+                    rel="noopener noreferrer" //새 탭에서 열 때 보안 강화
                     target="_blank"
                   >
                     바로 구매
@@ -127,9 +132,6 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
-                {/* <button className="mt-6 cursor-not-allowed w-full bg-blue-600 text-white text-lg font-bold py-3 rounded-lg hover:bg-blue-700">
-                                주문하기
-                            </button> */}
               </div>
               <div className="m-5 text-center">
                 <span className="text-gray-600 text-sm ">
