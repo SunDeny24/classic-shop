@@ -35,7 +35,6 @@ export default function ProductResultDetail() {
     try {
       const decodeData = decodeURIComponent(dataParams);
       const parsedData = JSON.parse(decodeData);
-      console.log("parsedData:", parsedData);
       if (!isCuratedProduct(parsedData)) {
         //CuratedProduct 타입구조에 맞는지 런타임 검증 추가
         throw new Error("Invalid Products data format");
