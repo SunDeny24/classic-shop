@@ -34,10 +34,10 @@ export interface CuratedProduct {
   brand: string; // brand가 없으면 mallName으로 대체된 값
   link: string;
   lprice: string; // formatPrice()를 거친 포맷팅된 가격 (예: "15,500")
+  keyword: string; // 검색어 정보 유지
   rawPrice: number; // parseInt()를 거친 숫자형 가격 (정렬/비교용)
   productType: string;
   mallName: string;
-  keyword: string; // 검색어 정보 유지
   category1: string;
   category2: string;
   category3: string;
@@ -45,10 +45,10 @@ export interface CuratedProduct {
 }
 
 /*
- * 사용자의 최근 본 상품 데이터(로컬스토리지 저장용)
+ * 사용자의 상품 데이터(로컬스토리지 저장용)
  *  CuratedProduct에서 필요한 필드만 구성함
  */
-export interface RecentViewData extends Pick<
+export interface ProductStorageData extends Pick<
   CuratedProduct,
   | "productId"
   | "brand"
@@ -59,17 +59,3 @@ export interface RecentViewData extends Pick<
   | "rawPrice"
   | "keyword"
 > {}
-
-/**
- * ProductCard용 데이터
- * */
-export interface ProductCardData {
-  productId: string;
-  title: string;
-  image: string;
-  brand: string;
-  link: string;
-  lprice: string;
-  rawPrice: number;
-  keyword: string;
-}

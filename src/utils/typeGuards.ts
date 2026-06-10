@@ -3,7 +3,7 @@
 // - as 타입 단언은 컴파일 타임에만 동작하므로, 변조된 localStorage 데이터에는 무력함
 // - 타입 가드는 런타임에 실제 객체 구조를 검사하여 타입 안전성을 실질적으로 보장
 
-import { RecentViewData, CuratedProduct } from "@/types/fashion";
+import { ProductStorageData, CuratedProduct } from "@/types/fashion";
 
 /**
  * 1. 단일 객체가 CuratedProduct 구조에 완벽히 부합하는지 런타임에 검사하는 타입 가드
@@ -48,7 +48,7 @@ export function isStringArray(value: unknown): value is string[] {
  * 3. 단일 객체가 최근 본 상품 포맷(RecentViewData) 구조에 부합하는지 검사하는 내부 헬퍼 함수
  * - 파일 외부로 내보내지 않고(export 생략) 아래의 4번 함수인 '배열 검증기'에서 내부 순회용으로만 사용합니다.
  */
-function isRecentViewData(item: unknown): item is RecentViewData {
+function isRecentViewData(item: unknown): item is ProductStorageData {
   // 객체 형태가 아니면 탈락
   if (!item || typeof item !== "object") return false;
   const obj = item as Record<string, unknown>;
@@ -75,6 +75,6 @@ function isRecentViewData(item: unknown): item is RecentViewData {
  */
 export function isRecentViewDataArray(
   value: unknown,
-): value is RecentViewData[] {
+): value is ProductStorageData[] {
   return Array.isArray(value) && value.every(isRecentViewData);
 }

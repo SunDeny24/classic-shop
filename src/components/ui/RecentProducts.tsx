@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import ProductCardGrid from "./ProductCardGrid";
-import { RecentViewData } from "@/types/fashion";
+import { ProductStorageData } from "@/types/fashion";
 import { isRecentViewDataArray } from "@/utils/typeGuards";
 
 interface RecentProductsProps {
@@ -17,7 +17,9 @@ export default function RecentProducts({
   emptyAction = "scroll",
   emptyHref = "/category",
 }) {
-  const [recentProducts, setRecentProducts] = useState<RecentViewData[]>([]); //최근 본상품 상태관리
+  const [recentProducts, setRecentProducts] = useState<ProductStorageData[]>(
+    [],
+  ); //최근 본상품 상태관리
   const gridClass =
     "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-10"; //상품그리드 css 설정
 

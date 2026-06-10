@@ -3,11 +3,11 @@
 
 import ProductCard from "./ProductCard";
 import ProductCardSkeleton from "./skeleton/ProductCardSkeleton";
-import { ProductCardData } from "@/types/fashion";
+import { ProductStorageData } from "@/types/fashion";
 
 interface ProductCardGridProps {
   gridClass: string;
-  productInfo: ProductCardData[];
+  productInfo: ProductStorageData[];
   isLoading: boolean;
   skeletonCount?: number;
 }

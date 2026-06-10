@@ -3,10 +3,10 @@
 "use client";
 
 import { useShoppingStore } from "@/store/useShoppingStore";
-import { ProductCardData } from "@/types/fashion";
+import { ProductStorageData } from "@/types/fashion";
 
 interface LikeButtonProps {
-  productData: ProductCardData;
+  productData: ProductStorageData;
 }
 export default function LikeButton({ productData }: LikeButtonProps) {
   const wishList = useShoppingStore((state) => state.wishList);

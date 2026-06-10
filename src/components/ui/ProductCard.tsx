@@ -6,10 +6,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "./LikeButton";
-import { ProductCardData } from "@/types/fashion";
+import { ProductStorageData } from "@/types/fashion";
 
 interface ProductCardProps {
-  productData: ProductCardData;
+  productData: ProductStorageData;
 }
 
 export default function ProductCard({ productData }: ProductCardProps) {
@@ -41,14 +41,6 @@ export default function ProductCard({ productData }: ProductCardProps) {
             onLoad={() => setIsImageLoaded(true)}
             quality={60}
           />
-          {/*<img
-            src={productData.image}
-            alt={productData.title}
-            className={`w-full h-full object-cover transition-all duration-500 ${
-              isImageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
-            } group-hover:scale-105`}
-            onLoad={() => setIsImageLoaded(true)}
-          />*/}
           <LikeButton productData={productData} />
         </div>
         <div className="py-5 px-1">

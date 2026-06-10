@@ -3,11 +3,11 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ProductCardData } from "@/types/fashion";
+import { ProductStorageData } from "@/types/fashion";
 
 interface ShoppingStore {
-  cart: (ProductCardData & { quantity: number })[];
-  wishList: ProductCardData[];
+  cart: (ProductStorageData & { quantity: number })[];
+  wishList: ProductStorageData[];
   showPopup: boolean;
   popupConfig: {
     title: string;
@@ -17,8 +17,8 @@ interface ShoppingStore {
   };
   setShowPopup: (show: boolean) => void;
   setPopupConfig: (config: Partial<ShoppingStore["popupConfig"]>) => void;
-  addItemToCart: (productData: ProductCardData) => void;
-  toggleWishList: (productData: ProductCardData) => void;
+  addItemToCart: (productData: ProductStorageData) => void;
+  toggleWishList: (productData: ProductStorageData) => void;
   removeItemFromCart: (productId: string) => void;
   getTotalPrice: () => number;
 }
