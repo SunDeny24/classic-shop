@@ -64,12 +64,16 @@ export default function SearchModal({ closeSearch }: SeacrchModalProps) {
     const queryTrim = inputQuery.trim();
 
     if (!queryTrim) {
-      alert("검색어를 입력하세요");
+      alert("검색어를 입력하세요"); //공백 입력 방지
       return;
     }
+    // 한글,영문,숫자 외 특수문자 저장 방지 로직
+    const isInvalidQuery = !/[가-힣a-zA-Z0-9]/.test(queryTrim);
 
     //검색 실행 전 저장 로직 실행
-    saveRecentSearch(queryTrim);
+    if (!isInvalidQuery) {
+      saveRecentSearch(queryTrim);
+    }
 
     //특수문자 및 점(.) 처리 로직
     let encoded = encodeURIComponent(queryTrim); //검색어 인코딩

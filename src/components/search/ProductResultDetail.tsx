@@ -96,27 +96,32 @@ export default function ProductResultDetail() {
 
     // ------2. 최근 검색어 순서 업데이트
     if (productData.keyword) {
-      // localStorage에서 기존 최근 검색어 리스트 불러오기
-      const savedSearches = localStorage.getItem("recent_searches");
-      let prevSearches: string[] = [];
-      if (savedSearches) {
-        try {
-          const parsed = JSON.parse(savedSearches);
-          if (isStringArray(parsed)) {
-            prevSearches = parsed;
-          }
-        } catch {
-          // parsing error fallback
-        }
-      }
-      // 기존 데이터에 추가하고 10개 제한
-      const newSearches = [
-        productData.keyword,
-        ...prevSearches.filter((k) => k !== productData.keyword),
-      ].slice(0, 10);
+      // 한글, 영문, 숫자가 포함되어 있는지 한 번 더 검증 - api에서 이상한 키워드 들어오는 경우 방지
+      const isInvalidKeyword = !/[가-힣a-zA-Z0-9]/.test(productData.keyword);
 
-      // 최근 검색어 업데이트
-      localStorage.setItem("recent_searches", JSON.stringify(newSearches));
+      // localStorage에서 기존 최근 검색어 리스트 불러오기
+      if (!isInvalidKeyword) {
+        const savedSearches = localStorage.getItem("recent_searches");
+        let prevSearches: string[] = [];
+        if (savedSearches) {
+          try {
+            const parsed = JSON.parse(savedSearches);
+            if (isStringArray(parsed)) {
+              prevSearches = parsed;
+            }
+          } catch {
+            // parsing error fallback
+          }
+        }
+        // 기존 데이터에 추가하고 10개 제한
+        const newSearches = [
+          productData.keyword,
+          ...prevSearches.filter((k) => k !== productData.keyword),
+        ].slice(0, 10);
+
+        // 최근 검색어 업데이트
+        localStorage.setItem("recent_searches", JSON.stringify(newSearches));
+      }
     }
   }, [productData]);
 

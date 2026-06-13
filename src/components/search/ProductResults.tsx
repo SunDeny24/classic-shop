@@ -35,6 +35,10 @@ export default function ProductResults({
   query,
   category,
 }: ProductResultProps) {
+  // 한글(가-힣), 영문(a-zA-Z), 숫자(0-9)가 "단 하나도 없는 경우" 무효 처리 - 특수문자만 검색하는 오류 방지
+  const isInvalidQuery = !/[가-힣a-zA-Z0-9]/.test(query);
+
+  //useProduct 훅 데이터
   const {
     products,
     loading,
@@ -44,7 +48,8 @@ export default function ProductResults({
     loadMore,
     hasNextPage,
     isFetchingNextPage,
-  } = useProducts(query); //useProduct 훅 데이터
+  } = useProducts(isInvalidQuery ? "" : query);
+  // 무효한 쿼리일 때는 빈 스트링을 넘겨 완전 차단
 
   const gridClass =
     "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10"; //상품그리드 css 설정
@@ -138,7 +143,7 @@ export default function ProductResults({
 
   /* -------최근 행동 추천상품 섹션------- */
   useEffect(() => {
-    if (query) {
+    if (query && !isInvalidQuery) {
       const saved = localStorage.getItem("recent_searches");
       let prevSearches: string[] = [];
       if (saved) {
@@ -158,7 +163,7 @@ export default function ProductResults({
 
       localStorage.setItem("recent_searches", JSON.stringify(updatedSearches));
     }
-  }, [query]);
+  }, [query, isInvalidQuery]);
 
   // 토글 핸들러 함수
   const handleToggle = (key: keyof typeof filters) => {
@@ -226,6 +231,23 @@ export default function ProductResults({
       return true;
     });
   }, [products, filters, priceRange, category, selectedCategory]);
+
+  if (isInvalidQuery) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-[60vh] bg-white p-6 text-center">
+        <div className="w-16 h-16 bg-zinc-50 border border-dashed border-zinc-200 rounded-full flex items-center justify-center mb-4">
+          <span className="text-zinc-400 text-xl font-light">?</span>
+        </div>
+        <h2 className="text-xl font-medium text-zinc-800 mb-2">
+          올바르지 않은 검색어 패턴입니다.
+        </h2>
+        <p className="text-sm text-zinc-400 max-w-sm leading-relaxed">
+          공백이나 따옴표 대신 원하시는 패션 아이템의 명칭이나 스타일 단어를
+          명확하게 입력해 주세요.
+        </p>
+      </div>
+    );
+  }
 
   if (error)
     return <p className="p-10 text-center text-red-400">에러: {error}</p>;
