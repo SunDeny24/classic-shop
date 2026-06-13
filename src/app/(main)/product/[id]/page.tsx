@@ -3,7 +3,7 @@
 
 import BackButton from "@/components/layout/BackButton";
 import ProductResultDetail from "@/components/search/ProductResultDetail";
-import RecentKeywordRecommend from "@/components/ui/RecentKeywordRecommend";
+import ProductRecommendWrapper from "@/components/ui/ProductRecommendWrapper";
 
 export default async function ProductDetail() {
   return (
@@ -16,7 +16,7 @@ export default async function ProductDetail() {
         <ProductResultDetail />
       </section>
       <section className="py-5">
-        <RecentKeywordRecommend />
+        <ProductRecommendWrapper />
       </section>
     </div>
   );

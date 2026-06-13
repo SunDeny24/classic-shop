@@ -4,34 +4,23 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useProducts } from "@/hooks/useProducts";
 import ProductCardGrid from "./ProductCardGrid";
 import { CuratedProduct } from "@/types/fashion";
-import { isStringArray } from "@/utils/typeGuards";
 
-export default function RecentKeywordRecommend() {
-  const [keyword, setKeyword] = useState("");
+interface RecentKeywordRecommendProps {
+  keyword: string;
+  products: CuratedProduct[];
+  loading: boolean;
+}
+
+export default function RecentKeywordRecommend({
+  keyword,
+  products,
+  loading,
+}: RecentKeywordRecommendProps) {
   const [randomProducts, setRandomProducts] = useState<CuratedProduct[]>([]);
-  const { products, loading } = useProducts(keyword);
   const gridClass =
     "grid grid-" + "cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10"; //상품그리드 css 설정
-
-  useEffect(() => {
-    //로컬스토리지에서 최근 검색어 배열에 최신 키워드 가져옴
-    const saved = localStorage.getItem("recent_searches");
-
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (isStringArray(parsed) && parsed.length > 0) {
-          // lint: effect 내부에서 setState 동기 호출 금지 대응
-          queueMicrotask(() => setKeyword(parsed[0]));
-        }
-      } catch {
-        // parsing error fallback
-      }
-    }
-  }, []);
 
   // 랜덤상품 표시 (products가 바뀔 때만 갱신)
   useEffect(() => {
@@ -46,7 +35,6 @@ export default function RecentKeywordRecommend() {
 
   // 최근 검색어 없는 경우
   if (!keyword || (!loading && products.length === 0)) {
-    //console.log('최근검색어 없음');
     return null;
   }
 
@@ -63,10 +51,6 @@ export default function RecentKeywordRecommend() {
         </div>
         {/* 조건: 로딩 중이 아니고, 데이터가 4개를 초과할 때만 '더보기' 노출 */}
         {!loading && products.length > 6 && (
-          // <Link
-          //     href={`/search/${encodeURIComponent(keyword)}`}
-          //     className="group flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-md text-xs font-medium text-zinc-500 hover:text-blue-600 hover:border-blue-600 transition-all duration-200"
-          // >
           <Link
             href={`/search/${encodeURIComponent(keyword)}`}
             className="group flex items-center gap-1 px-3 py-1.5 rounded-md bg-blue-600 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200"
