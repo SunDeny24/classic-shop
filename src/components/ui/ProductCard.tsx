@@ -13,32 +13,23 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ productData }: ProductCardProps) {
-  //이미지 로딩위한 상태관리
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
   return (
     <div className="overflow-hidden group">
       <Link
         href={{
           pathname: `/product/${productData.productId}`,
-          query: {
-            data: encodeURIComponent(JSON.stringify(productData)),
-          },
         }}
       >
+        {/* 배경 */}
         <div className="relative aspect-[3/4] overflow-hidden bg-zinc-50">
-          {!isImageLoaded && (
-            <div className="absolute inset-0 z-10 animate-pulse bg-zinc-200" />
-          )}
           <Image
             src={productData.image}
             alt={productData.title}
             fill
-            sizes="300px" //sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw,33vw"
-            className={`object-cover transition-all duration-500 ${
-              isImageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
-            } group-hover:scale-105`}
-            onLoad={() => setIsImageLoaded(true)}
+            sizes="300px"
+            className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
             quality={60}
           />
           <LikeButton productData={productData} />
@@ -47,7 +38,7 @@ export default function ProductCard({ productData }: ProductCardProps) {
           <p className="text-[12px]  sm:text-[12px] font-semibold text-gray-600 mb-1">
             {productData.brand}
           </p>
-          <h3 className="text-[12px] sm:text-[14px] font-normal text-gray-900 ">
+          <h3 className="text-[12px] sm:text-[14px] font-normal text-gray-900 min-h-[40px] ">
             {productData.title}
           </h3>
           <p className="text-lg sm:text-xl font-semibold text-gray-950 mt-1">

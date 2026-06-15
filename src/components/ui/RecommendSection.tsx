@@ -62,7 +62,15 @@ export default function RecommendSection() {
     error,
   } = useYoutube(type, keyword);
   // 네이버 상품 데이터 조회 (상태 끌어올리기) - 이중 fetch 방지 위해 키워드 조회해서 있을 때만 조회하도록 수정함
-  const { products = [], loading: isProductLoading } = useProducts(keyword);
+  const { products: rawProducts, loading: isProductLoading } =
+    useProducts(keyword);
+
+  const products = useMemo(() => rawProducts ?? [], [rawProducts]);
+  /* 26.06.15
+  기본값 products = [] -> useMemo 적용으로 참조안정화
+  기존 products = [] 기본값은 렌더마다 새 배열 참조를 생성하여 하위 컴포넌트(RecentKeywordRecommend) useEffect([products])가 불필요하게 재실행됨
+  useMemo로 들어온 데이터를 저장 해두고, rawProducts가 바뀔 때만 새 배열 참조를 생성하도록 최적화하여 하위 컴포넌트의 불필요한 재실행 방지
+  */
 
   // 영상 유무 판단 (상태 변수 대신 계산된 변수 사용)
   const hasVideos = !isYoutubeLoading && !isYoutubeError && videos.length > 0;

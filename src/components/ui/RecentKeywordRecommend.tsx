@@ -1,9 +1,6 @@
-// src/components/ui/RecentKeywordRecommend
-// 최근 검색 기반 추천상품 컴포넌트
-
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProductCardGrid from "./ProductCardGrid";
 import { CuratedProduct } from "@/types/fashion";
 
@@ -20,14 +17,17 @@ export default function RecentKeywordRecommend({
 }: RecentKeywordRecommendProps) {
   const [randomProducts, setRandomProducts] = useState<CuratedProduct[]>([]);
   const gridClass =
-    "grid grid-" + "cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10"; //상품그리드 css 설정
+    "grid grid-" + "cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10";
 
-  // 랜덤상품 표시 (products가 바뀔 때만 갱신)
   useEffect(() => {
     if (!products || products.length === 0) {
       queueMicrotask(() => setRandomProducts([]));
       return;
     }
+    // 되섞임 방지 : products가 바뀔 때마다 무작위로 섞어서 6개만 보여주는데,
+    // 이미 섞인 추천 상품이 존재한다면, TanStack Query가 뒤에서
+    // 최신 데이터를 재요청해서 products의 참조가 바뀌더라도 다시 섞지 않고 락(Lock) 걸기
+    if (randomProducts.length > 0) return;
 
     const shuffled = [...products].sort(() => Math.random() - 0.5);
     queueMicrotask(() => setRandomProducts(shuffled.slice(0, 6)));
