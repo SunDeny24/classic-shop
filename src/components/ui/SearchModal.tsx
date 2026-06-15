@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { isStringArray } from "@/utils/typeGuards";
 
@@ -11,22 +11,23 @@ interface SeacrchModalProps {
 export default function SearchModal({ closeSearch }: SeacrchModalProps) {
   const router = useRouter();
   const [inputQuery, setInputQuery] = useState("");
-  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("recent_searches");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (isStringArray(parsed)) {
-            return parsed;
-          }
-        } catch {
-          // ignore
+  // 초기값을 [] 고정 → 서버/클라이언트 초기 렌더 일치
+  // localStorage 읽기는 useEffect에서만 수행 (Hydration Mismatch 방지)
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("recent_searches");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (isStringArray(parsed)) {
+          queueMicrotask(() => setRecentSearches(parsed));
         }
+      } catch {
+        // ignore
       }
     }
-    return [];
-  });
+  }, []);
 
   //검색어 입력 이벤트처리
   const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

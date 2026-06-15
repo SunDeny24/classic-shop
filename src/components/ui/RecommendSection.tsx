@@ -11,23 +11,10 @@ import { useProducts } from "@/hooks/useProducts";
 import { isStringArray } from "@/utils/typeGuards";
 
 export default function RecommendSection() {
-  const [keyword, setKeyword] = useState<string>(() => {
-    // 키워드 초기화
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("recent_searches");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (isStringArray(parsed) && parsed.length > 0) {
-            return parsed[0];
-          }
-        } catch {
-          // ignore
-        }
-      }
-    }
-    return "";
-  });
+  const [keyword, setKeyword] = useState<string>(""); // 검색어 상태관리
+  // 초기값 "" 고정 → 서버/클라이언트 초기 렌더 일치 (Hydration Mismatch 방지)
+  // localStorage 읽기는 useEffect에서만 수행
+
   const [msgIndex, setMsgIndex] = useState(0); // 검색어, 트렌드영상 없을 경우 멘트 상태관리
 
   // 랜덤 멘트 리스트
@@ -42,8 +29,9 @@ export default function RecommendSection() {
     ],
     [],
   );
+
+  // 로컬스토리지에서 읽기 및 멘트 인덱스 변경을 위한 useEffect - 키워드 가져오기
   useEffect(() => {
-    // 로컬스토리지에서 키워드 가져오기
     const savedSearches = localStorage.getItem("recent_searches");
     let selectedKeyword = "";
     if (savedSearches) {

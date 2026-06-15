@@ -4,27 +4,28 @@
 
 import { useProducts } from "@/hooks/useProducts";
 import RecentKeywordRecommend from "@/components/ui/RecentKeywordRecommend";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isStringArray } from "@/utils/typeGuards";
 
 export default function ProductRecommendWrapper() {
-  const [keyword, setKeyword] = useState<string>(() => {
-    // 키워드 초기화
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("recent_searches");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (isStringArray(parsed) && parsed.length > 0) {
-            return parsed[0];
-          }
-        } catch {
-          // ignore
+  // 초기값 "" 고정 → 서버/클라이언트 초기 렌더 일치 (Hydration Mismatch 방지)
+  // localStorage 읽기는 useEffect에서만 수행
+  const [keyword, setKeyword] = useState<string>("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("recent_searches");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (isStringArray(parsed) && parsed.length > 0) {
+          queueMicrotask(() => setKeyword(parsed[0]));
         }
+      } catch {
+        // ignore
       }
     }
-    return "";
-  });
+  }, []);
+
   // TanStack Query가 내장된 훅에서 데이터를 안전하게 가져옵니다.
   const { products = [], loading: isProductLoading } = useProducts(keyword);
 
