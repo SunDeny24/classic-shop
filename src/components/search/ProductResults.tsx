@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useMemo, useEffect, ChangeEvent } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import ProductCardGrid from "@/components/ui/ProductCardGrid";
 import formatPrice from "@/utils/formatPrice";
@@ -82,22 +82,14 @@ export default function ProductResults({
     rootMargin: "0px 0px 100px 0px",
   });
 
-  // 이전 inView 상태 추적하는 ref
-  const prevInViewRef = useRef(false);
-
   //화면 바닥에 닿았을때 무한스크롤(loadMore)실행
   useEffect(() => {
     //fetch중일땐 로직 시작하지않음
-    if (
-      inView &&
-      !prevInViewRef.current &&
-      !isFetchingNextPage &&
-      hasNextPage
-    ) {
+    if (inView && hasNextPage) {
       loadMore();
     }
-    prevInViewRef.current = inView;
-  }, [inView, hasNextPage, isFetchingNextPage, loadMore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, hasNextPage]);
 
   /* -------카테고리 추출 및 계층화------- */
   const categoryMenu = useMemo(() => {
@@ -575,7 +567,7 @@ export default function ProductResults({
           )
         )}
         {/* 순수 센서 역할의 Sentinel (투명 노드) - 시각적 요소가 없으며 무조건 리스트의 "진짜 바닥"에 존재합니다. */}
-        <div ref={ref} className="w-full h-0" aria-hidden="true" />
+        <div ref={ref} className="w-full h-px" aria-hidden="true" />
       </main>
     </div>
   );

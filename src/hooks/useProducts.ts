@@ -72,7 +72,7 @@ export function useProducts(query: string) {
 
   return {
     products, //가공된 상품리스트
-    loading: isLoading || isFetchingNextPage, //초기 로딩 또는 추가 데이터 로딩 상태
+    loading: isLoading, //처음 로딩중인지
     error: isError ? (error as Error).message : null,
     sortType,
     setSortType,

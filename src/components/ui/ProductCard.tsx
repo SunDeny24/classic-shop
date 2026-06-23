@@ -2,7 +2,6 @@
 // src/components/ui/ProductCard.jsx
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "./LikeButton";
@@ -14,14 +13,14 @@ interface ProductCardProps {
 
 export default function ProductCard({ productData }: ProductCardProps) {
   return (
-    <div className="overflow-hidden group">
+    <div className="overflow-hidden group" data-testid="product-card">
       <Link
         href={{
           pathname: `/product/${productData.productId}`,
         }}
       >
         {/* 배경 */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-zinc-50">
+        <div className="relative aspect-3/4 overflow-hidden bg-zinc-50">
           <Image
             src={productData.image}
             alt={productData.title}
@@ -38,7 +37,7 @@ export default function ProductCard({ productData }: ProductCardProps) {
           <p className="text-[12px]  sm:text-[12px] font-semibold text-gray-600 mb-1">
             {productData.brand}
           </p>
-          <h3 className="text-[12px] sm:text-[14px] font-normal text-gray-900 min-h-[40px] ">
+          <h3 className="text-[12px] sm:text-[14px] font-normal text-gray-900 min-h-10 ">
             {productData.title}
           </h3>
           <p className="text-lg sm:text-xl font-semibold text-gray-950 mt-1">
