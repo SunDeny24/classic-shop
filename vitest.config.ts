@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     // Node.js가 아닌 브라우저 환경에서 테스트 실행
-    environment: "jsdom",
+    environment: "jsdom", // jsdom 설정시 RTL이 dom그릴수 있음
     // 테스트 실행 전 전역 설정 파일 불러오기
     setupFiles: ["./vitest.setup.ts"],
     // describe, it, expect 등을 import 없이 사용
