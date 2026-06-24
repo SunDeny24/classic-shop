@@ -20,7 +20,6 @@ interface ShoppingStore {
   addItemToCart: (productData: ProductStorageData) => void;
   toggleWishList: (productData: ProductStorageData) => void;
   removeItemFromCart: (productId: string) => void;
-  getTotalPrice: () => number;
 }
 
 export const useShoppingStore = create<ShoppingStore>()(
@@ -133,14 +132,8 @@ export const useShoppingStore = create<ShoppingStore>()(
           cart: cart.filter((item) => item.productId !== productId),
         });
       },
-
-      /* 장바구니 총 금액계산 함수 */
-      getTotalPrice: () => {
-        const { cart } = get();
-        return cart.reduce((acc, cur) => acc + Number(cur.rawPrice), 0);
-      },
     }),
-    // 로컬스토리지에 저장될 키 지정
+    // 로컬스토리지에 저장될 키이름 지정
     {
       name: "shopping-storage",
     },

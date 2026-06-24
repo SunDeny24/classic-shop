@@ -14,16 +14,6 @@ const mockProduct1 = {
   rawPrice: 10900,
   keyword: "핸드폰 케이스",
 };
-const mockProduct2 = {
-  productId: "5678",
-  brand: "나이키",
-  title: "남자 드라이핏 기능성 반팔",
-  image: "tshirts.jpg",
-  lprice: "35,900",
-  link: "https://link2",
-  rawPrice: 35900,
-  keyword: "나이키",
-};
 
 // 전체 테스트 그룹 설정
 describe("useShoppingStore 상태 관리 유닛 테스트", () => {
@@ -47,7 +37,7 @@ describe("useShoppingStore 상태 관리 유닛 테스트", () => {
 
       //단언 : 길이 늘었는지 1됐는지, 아이템 productId 동일한지 확인
       expect(cart).toHaveLength(1);
-      expect(cart[0].productId).toBe("90670706143");
+      expect(cart[0].productId).toBe("1234");
     });
 
     it("장바구니에 있는 아이템을 정상적으로 삭제해야 한다.", () => {
@@ -56,22 +46,10 @@ describe("useShoppingStore 상태 관리 유닛 테스트", () => {
       store.addItemToCart(mockProduct1);
 
       // 실행 : 넣은 상품(mockProduct1) 삭제함수로 삭제하기
-      useShoppingStore.getState().removeItemFromCart("90670706143");
+      useShoppingStore.getState().removeItemFromCart("1234");
 
       // 단언 : 상품이 삭제됐는지 0인지 길이 확인하기
       expect(useShoppingStore.getState().cart).toHaveLength(0);
-    });
-
-    it("총 상품 가격(getTotalPrice)을 정확하게 계산해야 한다.", () => {
-      // 준비 : 상품 모두 넣기(mockProduct1,2)
-      const store = useShoppingStore.getState();
-      store.addItemToCart(mockProduct1); // 10,900원
-      store.addItemToCart(mockProduct2); // 35,900원
-
-      // 실행 : 계산 함수 가져오기
-      const totalPrice = useShoppingStore.getState().getTotalPrice();
-      // 단언 : 총 합인 46800원 맞는지 확인
-      expect(totalPrice).toBe(46800);
     });
 
     //방어 로직 테스트

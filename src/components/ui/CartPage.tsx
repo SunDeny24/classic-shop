@@ -12,7 +12,9 @@ export default function CartPage() {
   const removeItemFromCart = useShoppingStore(
     (state) => state.removeItemFromCart,
   );
-  const getTotalPrice = useShoppingStore((state) => state.getTotalPrice());
+
+  // 26.06.23 : getTotalPrice()호출시 get()사용으로 hydration mismatch 발생으로 cart를 계산하는 방식으로 수정
+  const totalPrice = cart.reduce((acc, cur) => acc + Number(cur.rawPrice), 0);
 
   return (
     <div>
@@ -120,7 +122,7 @@ export default function CartPage() {
                   {/* 상품금액 */}
                   <div className="flex justify-between">
                     <span className="text-gray-600">상품 금액</span>
-                    <span className="font-medium">{`${formatPrice(getTotalPrice)} 원`}</span>
+                    <span className="font-medium">{`${formatPrice(totalPrice)} 원`}</span>
                   </div>
                   {/* 총 금액 */}
                   <div className="border-t border-gray-200 pt-4 mt-4">
@@ -128,7 +130,7 @@ export default function CartPage() {
                       <span className="text-lg font-semibold">
                         총 구매 금액
                       </span>
-                      <span className="text-xl sm:text-2xl font-bold text-blue-600">{`${formatPrice(getTotalPrice)} 원`}</span>
+                      <span className="text-xl sm:text-2xl font-bold text-blue-600">{`${formatPrice(totalPrice)} 원`}</span>
                     </div>
                   </div>
                 </div>
