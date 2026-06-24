@@ -11,8 +11,10 @@ export function useYoutube(type: string, query?: string) {
   //useQuery 사용
   return useQuery({
     queryKey: ["youtube", type, query],
+
     queryFn: async () => {
       const data = await fetchYoutubeService(type, query);
+      // 4개만 보여주는 로직
       if (data.items && data.items.length > 0) {
         return data.items.slice(0, 4).map((item: YoutubeVideo) => ({
           id: typeof item.id === "string" ? item.id : item.id.videoId,

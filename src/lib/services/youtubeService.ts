@@ -9,16 +9,12 @@ import { YoutubeResponse } from "@/types/youtube";
  * @param query - 검색어 (선택사항)
  * @param pageParam - 유튜브 nextPageToken (TanStack Query에서 전달)
  */
-export async function fetchYoutubeService(
-  type: string,
-  query?: string,
-  pageParam?: string,
-) {
-  const params = new URLSearchParams({
-    type,
-    ...(query ? { query } : {}),
-    ...(pageParam ? { pageToken: pageParam } : {}), // nextPageToken이 있을 때만 pageToken 쿼리스트링 추가
-  });
+export async function fetchYoutubeService(type: string, query?: string) {
+  const params = new URLSearchParams({ type });
+
+  if (query) {
+    params.append("query", query);
+  }
 
   return httpGet<YoutubeResponse>(`/api/youtube?${params.toString()}`);
 }
