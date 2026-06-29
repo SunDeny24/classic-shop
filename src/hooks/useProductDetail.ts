@@ -19,10 +19,11 @@ export function useProductDetail(productId: string) {
     if (!productId) return null;
 
     /* 1. Tanstack query 캐시 전수 조사  */
-    const cached = queryClient.getQueriesData<{
-      pages: { curatedItems: CuratedProduct[] }[]; //무한스크롤 페이지 데이터 배열
-      pageParams: any[]; //페이지네이션을 위한 파라미터 배열
-    }>({ queryKey: ["products"] });
+    const cached =
+      queryClient.getQueriesData<{
+        pages: { curatedItems: CuratedProduct[] }[]; //무한스크롤 페이지 데이터 배열
+        pageParams: any[]; //페이지네이션을 위한 파라미터 배열
+      }>({ queryKey: ["products"] }) || [];
 
     for (const [, queryCacheData] of cached) {
       if (!queryCacheData || !queryCacheData.pages) continue; //데이터, 무한스크롤의 pages 없으면 스킵

@@ -5,7 +5,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ProductStorageData } from "@/types/fashion";
 
-interface ShoppingStore {
+export interface ShoppingStore {
   cart: (ProductStorageData & { quantity: number })[];
   wishList: ProductStorageData[];
   showPopup: boolean;

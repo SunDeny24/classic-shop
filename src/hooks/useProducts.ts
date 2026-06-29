@@ -1,5 +1,9 @@
 // 네이버 상품목록 조회 커스텀 훅
 // src/hooks/useProducts.ts
+// - useInfiniteQuery로 "product" 데이터 가져오기
+// - processNaverData 통해 가공된 데이터 curatedItems로 추가
+// - 정렬로직 (curatedItems 평탄화, 중복제거, 최저가·최고가 비교)
+
 "use client";
 
 import { useState, useMemo } from "react";
