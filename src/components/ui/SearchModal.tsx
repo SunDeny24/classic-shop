@@ -1,14 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { isStringArray } from "@/utils/typeGuards";
 
-interface SeacrchModalProps {
+interface SearchModalProps {
   closeSearch: () => void;
 }
 
-export default function SearchModal({ closeSearch }: SeacrchModalProps) {
+export default function SearchModal({ closeSearch }: SearchModalProps) {
   const router = useRouter();
   const [inputQuery, setInputQuery] = useState("");
   // 초기값을 [] 고정 → 서버/클라이언트 초기 렌더 일치
@@ -30,7 +30,7 @@ export default function SearchModal({ closeSearch }: SeacrchModalProps) {
   }, []);
 
   //검색어 입력 이벤트처리
-  const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setInputQuery(e.target.value);
   };
 
@@ -47,10 +47,7 @@ export default function SearchModal({ closeSearch }: SeacrchModalProps) {
   };
 
   //개별 검색어 삭제 함수
-  const deleteSearch = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    target: string,
-  ) => {
+  const deleteSearch = (e: MouseEvent<HTMLButtonElement>, target: string) => {
     e.preventDefault(); //Link 이동 방지
     e.stopPropagation(); //부모 클릭 방지
 
@@ -60,7 +57,7 @@ export default function SearchModal({ closeSearch }: SeacrchModalProps) {
   };
 
   //검색submit 이벤트
-  const handlerSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handlerSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const queryTrim = inputQuery.trim();
 
