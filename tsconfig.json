@@ -15,17 +15,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/app/*": ["./src/app/*"],
-      "@/api/*": ["./src/api/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/context/*": ["./src/context/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/styles/*": ["./src/styles/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/types/*"]
     },
     "types": ["node"],
     "plugins": [
