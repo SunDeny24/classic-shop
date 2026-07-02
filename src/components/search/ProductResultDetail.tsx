@@ -8,11 +8,7 @@ import { useProductDetail } from "@/hooks/useProductDetail";
 import ProductDetailSkeleton from "../ui/skeleton/ProductDetailSkeleton";
 import Image from "next/image";
 import { getSafeHref } from "@/utils/security"; //xss공격 방지 위해 URL 검증 함수 추가
-import {
-  isCuratedProduct,
-  isRecentViewDataArray,
-  isStringArray,
-} from "@/utils/typeGuards";
+import { isRecentViewDataArray, isStringArray } from "@/utils/typeGuards";
 
 export default function ProductResultDetail() {
   // zustand 스토어에서 찜목록과 장바구니 관련 함수 가져오기
@@ -46,7 +42,7 @@ export default function ProductResultDetail() {
       const linkUrl = String(product.link);
       await navigator.clipboard.writeText(linkUrl);
       setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 1500); // 2초 뒤 토스트 문구 리셋
+      setTimeout(() => setCopySuccess(false), 1000); // 2초 뒤 토스트 문구 리셋
     } catch (err) {
       console.error("링크 복사 실패:", err);
     }
@@ -130,7 +126,7 @@ export default function ProductResultDetail() {
     ? wishList.some((item) => item.productId === productData.productId)
     : false;
 
-  const toggleLike = (e: React.MouseEvent<HTMLDivElement>) => {
+  const toggleLike = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault(); // 링크 이동 방지 (부모가 Link일 경우)
     e.stopPropagation(); // 부모 요소(카드 링크) 클릭 방지
 
@@ -195,12 +191,13 @@ export default function ProductResultDetail() {
           {/* 하단 버튼 메뉴 섹션 */}
           <div className="flex items-center space-x-3 mt-auto pt-6 ">
             {/* 장바구니 버튼 */}
-            <div
+            <button
               onClick={() => addItemToCart(product)}
+              aria-label="장바구니 담기 버튼"
               className="flex-1 cursor-pointer flex items-center border border-zinc-300 justify-center text-lg font-bold py-4 rounded-lg hover:bg-zinc-100 transition-colors"
             >
               장바구니
-            </div>
+            </button>
 
             {/* 바로 구매 버튼 */}
             <div className="flex-1 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
@@ -215,9 +212,10 @@ export default function ProductResultDetail() {
             </div>
 
             {/* 위시리스트 버튼 */}
-            <div
+            <button
               onClick={toggleLike}
               data-like-button
+              aria-label={isLiked ? "찜 해제하기" : "찜하기"}
               className="flex items-center justify-center border border-gray-300 rounded-lg w-[60px] h-[60px] hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <svg
@@ -225,7 +223,6 @@ export default function ProductResultDetail() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   strokeLinecap="round"
@@ -234,29 +231,51 @@ export default function ProductResultDetail() {
                   d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 016.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
                 />
               </svg>
-            </div>
+            </button>
 
             {/* 공유 버튼 */}
-            <div
+            <button
               onClick={handleCopyLink}
               className="flex items-center justify-center border border-gray-300 rounded-lg w-[60px] h-[60px] hover:bg-gray-100 transition-colors cursor-pointer"
-              title="링크 공유하기"
+              title="링크 복사"
+              aria-label={
+                copySuccess ? "공유 링크 복사됨" : "공유링크 복사버튼"
+              }
             >
-              <svg
-                className="w-6 h-6 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
+              {copySuccess ? (
+                // 복사 성공시 체크 아이콘
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l9.566-5.345m-9.566 7.53l9.566 5.345m0 0a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185zm0-12.87a2.25 2.25 0 103.933-2.184 2.25 2.25 0 00-3.933 2.184z"
-                />
-              </svg>
-            </div>
+                  className="w-6 h-6 text-blue-600 scale-120 transition-transform duration-400"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              ) : (
+                // 기본상태는 공유 아이콘
+                <svg
+                  className="w-6 h-6 text-gray-500 transition-transform duration-300 hover:scale-110"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l9.566-5.345m-9.566 7.53l9.566 5.345m0 0a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185zm0-12.87a2.25 2.25 0 103.933-2.184 2.25 2.25 0 00-3.933 2.184z"
+                  />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
