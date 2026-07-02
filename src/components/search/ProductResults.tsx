@@ -6,6 +6,7 @@ import formatPrice from "@/utils/formatPrice";
 import { useInView } from "react-intersection-observer";
 import type { CuratedProduct } from "@/types/fashion";
 import { isStringArray } from "@/utils/typeGuards";
+import Link from "next/link";
 
 /* Props 타입 정의 */
 type ProductResultProps = {
@@ -241,8 +242,41 @@ export default function ProductResults({
     );
   }
 
-  if (error)
-    return <p className="p-10 text-center text-red-400">에러: {error}</p>;
+  if (error) {
+    // 400 에러라면 "더 이상 상품이 없습니다"로 간주
+    if (error.includes("400")) {
+      return (
+        <div className="bg-white w-full mx-auto text-center py-30 min-h-screen ">
+          <h2 className="text-3xl sm:text-4xl font-bold ">헉!</h2>
+          <p className="my-10 text-lg sm:text-xl font-medium  ">
+            더 이상 검색 결과가 없습니다...
+          </p>
+          <Link
+            href="/"
+            className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-600 transition-colors"
+          >
+            홈으로 돌아가기
+          </Link>
+        </div>
+      );
+    }
+    return (
+      <div className="bg-white w-full mx-auto text-center py-30 min-h-screen ">
+        <h2 className="text-3xl sm:text-4xl font-bold ">
+          오류가 발생했습니다!
+        </h2>
+        <p className="my-10 text-lg sm:text-xl font-medium text-red-400 ">
+          오류 내용 : {error}
+        </p>
+        <Link
+          href="/"
+          className="px-6 py-3 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-full font-semibold hover:bg-zinc-600 transition-colors"
+        >
+          홈으로 돌아가기
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full bg-white min-h-screen">
@@ -459,36 +493,40 @@ export default function ProductResults({
             Products Found
           </span>
         </div>
-        {/* 정렬 셀렉트박스 */}
+        {/* 정렬 필터링 텍스트 */}
         {(selectedCategory.cat2 ||
           selectedCategory.cat3 ||
           selectedCategory.cat4 ||
           priceRange.min ||
           priceRange.max) && (
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap ">
             {selectedCategory.cat2 && (
-              <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+              // 중분류
+              <span className="px-3 py-1  bg-zinc-100 text-[11px] text-zinc-600 font-semibold rounded-full">
                 {selectedCategory.cat2}
               </span>
             )}
             {selectedCategory.cat3 && (
-              <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+              //소분류
+              <span className="px-3 py-1 bg-zinc-100 text-[11px] text-zinc-600 font-semibold rounded-full">
                 {selectedCategory.cat3}
               </span>
             )}
-
             {selectedCategory.cat4 && (
-              <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+              //세분류
+              <span className="px-3 py-1 bg-zinc-100 text-[11px] text-zinc-600 font-semibold rounded-full ">
                 {selectedCategory.cat4}
               </span>
             )}
             {priceRange.min && (
-              <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+              //최소금액
+              <span className="px-3 py-1 bg-zinc-100 text-[11px] text-zinc-600 font-semibold rounded-full">
                 최소 {formatPrice(priceRange.min)}원
               </span>
             )}
             {priceRange.max && (
-              <span className="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-full border border-zinc-200">
+              //최대금액
+              <span className="px-3 py-1 bg-zinc-100 text-[11px] text-zinc-600 font-semibold rounded-full">
                 최대 {formatPrice(priceRange.max)}원
               </span>
             )}
@@ -497,7 +535,7 @@ export default function ProductResults({
                 setSelectedCategory({ cat2: "", cat3: "", cat4: "" });
                 setPriceRange({ min: "", max: "" });
               }}
-              className="text-[10px] text-zinc-400 underline underline-offset-4 hover:text-zinc-900"
+              className="text-[11px] text-zinc-400 underline underline-offset-4 hover:text-zinc-900"
             >
               필터 초기화
             </button>
@@ -566,8 +604,20 @@ export default function ProductResults({
             </div>
           )
         )}
-        {/* 순수 센서 역할의 Sentinel (투명 노드) - 시각적 요소가 없으며 무조건 리스트의 "진짜 바닥"에 존재합니다. */}
+        {/* 무한 스크롤 센서 : 순수 센서 역할의 Sentinel (투명 노드) - 시각적 요소가 없으며 무조건 리스트의 "진짜 바닥"에 존재합니다. */}
         <div ref={ref} className="w-full h-px" aria-hidden="true" />
+        {/* 데이터 적거나, 스크롤 안생길 경우의 더보기 시각적 버튼 */}
+        <div className="flex justify-center mt-10 ">
+          {hasNextPage && !isFetchingNextPage && (
+            <button
+              onClick={() => loadMore()}
+              disabled={isFetchingNextPage}
+              className="px-10 py-3 rounded border border-zinc-200 text-xs font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-20"
+            >
+              {loading ? "불러오는 중..." : "More"}
+            </button>
+          )}
+        </div>
       </main>
     </div>
   );
